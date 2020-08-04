@@ -18,7 +18,8 @@ $entry = $mempool_cache['junos'][$mempool['mempool_index']];
 
 $perc = $entry['jnxOperatingBuffer'];
 // FIX ME -- Maybe another OID? Some equipment do not provide jnxOperatingDRAMSize like MX960
-if ($entry['jnxOperatingDRAMSize']) {
+//        -- Workaround - junos 8.2-8.4 MX provides invalid negative jnxOperatingDRAMSize values. 
+if ($entry['jnxOperatingDRAMSize'] && $entry['jnxOperatingDRAMSize'] > 0) {
     $memory_available = $entry['jnxOperatingDRAMSize'];
 } else {
     $memory_available = ($entry['jnxOperatingMemory'] * 1024 * 1024);
