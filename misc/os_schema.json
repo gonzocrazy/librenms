@@ -137,6 +137,9 @@
                 "ucd-diskio": {
                     "type": "boolean"
                 },
+                "sensors": {
+                    "type": "boolean"
+                },
                 "services": {
                     "type": "boolean"
                 },
@@ -366,9 +369,6 @@
         "empty_ifdescr": {
             "type": "boolean"
         },
-        "register_mibs": {
-            "type": "object"
-        },
         "bad_if": {
             "type": "array",
             "items": {
@@ -530,7 +530,8 @@
                 "not_contains",
                 "not_regex",
                 "in_array",
-                "not_in_array"
+                "not_in_array",
+                "exists"
             ]
         }
     }

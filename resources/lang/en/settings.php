@@ -5,12 +5,14 @@ return [
     'readonly' => 'Set in config.php, remove from config.php to enable.',
     'groups' => [
         'alerting' => 'Alerting',
+        'api' => 'API',
         'auth' => 'Authentication',
         'authorization' => 'Authorization',
         'external' => 'External',
         'global' => 'Global',
         'os' => 'OS',
         'discovery' => 'Discovery',
+        'graphing' => 'Graphing',
         'poller' => 'Poller',
         'system' => 'System',
         'webui' => 'Web UI',
@@ -20,6 +22,9 @@ return [
             'general' => 'General Alert Settings',
             'email' => 'Email Options',
             'rules' => 'Alert Rule Default Settings',
+        ],
+        'api' => [
+            'cors' => 'CORS',
         ],
         'auth' => [
             'general' => 'General Authentication Settings',
@@ -43,6 +48,10 @@ return [
             'peeringdb' => 'PeeringDB Integration',
             'nfsen' => 'NfSen Integration',
             'unix-agent' => 'Unix-Agent Integration',
+            'smokeping' => 'Smokeping Integration'
+        ],
+        'graphing' => [
+            'availability' => 'Device Availability',
         ],
         'poller' => [
             'distributed' => 'Distributed Poller',
@@ -188,6 +197,38 @@ return [
             'description' => 'Allow the given networks graph access',
             'help' => 'Allow the given networks unauthenticated graph access (does not apply when unauthenticated graphs is enabled)'
         ],
+        'api' => [
+            'cors' => [
+                'allowheaders' => [
+                    'description' => 'Allow Headers',
+                    'help' => 'Sets the Access-Control-Allow-Headers response header',
+                ],
+                'allowcredentials' => [
+                    'description' => 'Allow Credentials',
+                    'help' => 'Sets the Access-Control-Allow-Credentials header',
+                ],
+                'allowmethods' => [
+                    'description' => 'Allowed Methods',
+                    'help' => 'Matches the request method.',
+                ],
+                'enabled' => [
+                    'description' => 'Enable CORS support for the API',
+                    'help' => 'Allows you to load api resources from a web client',
+                ],
+                'exposeheaders' => [
+                    'description' => 'Expose Headers',
+                    'help' => 'Sets the Access-Control-Expose-Headers response header',
+                ],
+                'maxage' => [
+                    'description' => 'Max Age',
+                    'help' => 'Sets the Access-Control-Max-Age response header',
+                ],
+                'origin' => [
+                    'description' => 'Allow Request Origins',
+                    'help' => 'Matches the request origin. Wildcards can be used, eg. *.mydomain.com',
+                ],
+            ],
+        ],
         'api_demo' => [
             'description' => 'This is the demo'
         ],
@@ -229,6 +270,10 @@ return [
         'auth_ad_user_filter' => [
             'description' => 'User LDAP filter',
             'help' => 'Active Directory LDAP filter for selecting users'
+        ],
+        'auth_ad_url' => [
+            'description' => 'Active Directory Server(s)',
+            'help' => 'Set server(s), space separated. Prefix with ldaps:// for ssl. Example: ldaps://dc1.example.com ldaps://dc2.example.com'
         ],
         'auth_ldap_attr' => [
             'uid' => [
@@ -506,7 +551,7 @@ return [
             'description' => 'Enable Distributed Polling (requires additional setup)',
             'help' => 'Enable distributed polling system wide. This is intended for load sharing, not remote polling. You must read the documentation for steps to enable: https://docs.librenms.org/Extensions/Distributed-Poller/'
         ],
-        'distributed_poller_group' => [
+        'default_poller_group' => [
             'description' => 'Default Poller Group',
             'help' => 'The default poller group all pollers should poll if none is set in config.php'
         ],
@@ -604,17 +649,21 @@ return [
         ],
         'geoloc' => [
             'api_key' => [
-                'description' => 'Geocoding API Key',
+                'description' => 'Mapping Engine API Key',
                 'help' => 'Geocoding API Key (Required to function)'
             ],
             'engine' => [
-                'description' => 'Geocoding Engine',
+                'description' => 'Mapping Engine',
                 'options' => [
                     'google' => 'Google Maps',
                     'openstreetmap' => 'OpenStreetMap',
                     'mapquest' => 'MapQuest',
                     'bing' => 'Bing Maps'
                 ]
+            ],
+            'latlng' => [
+                'description' => 'Attempt to Geocode Locations',
+                'help' => 'Try to lookup latitude and longitude via geocoding API during polling'
             ]
         ],
         'graphite' => [
@@ -634,6 +683,12 @@ return [
                 'description' => 'Prefix (Optional)',
                 'help' => 'Will add the prefix to the start of all metrics.  Must be alphanumeric separated by dots'
             ]
+        ],
+        'graphing' => [
+            'availability' => [
+                'description' => 'Duration',
+                'help' => 'Calculate Device Availability for listed durations. (Durations are defined in seconds)'
+            ],
         ],
         'graylog' => [
             'base_uri' => [
@@ -674,6 +729,14 @@ return [
                 'description' => 'Version',
                 'help' => 'This is used to automatically create the base_uri for the Graylog API. If you have modified the API uri from the default, set this to other and specify your base_uri.'
             ]
+        ],
+        'html' => [
+            'device' => [
+                'primary_link' => [
+                    'description' => 'Primary Dropdown Link',
+                    'help' => 'Sets the primary link in the device dropdown menu'
+                ]
+            ],
         ],
         'http_proxy' => [
             'description' => 'HTTP(S) Proxy',
@@ -992,6 +1055,9 @@ return [
             'aruba-controller' => [
                 'description' => 'Aruba Controller'
             ],
+            'availability' => [
+                'description' => 'Availability'
+            ],
             'entity-physical' => [
                 'description' => 'Entity Physical'
             ],
@@ -1263,7 +1329,24 @@ return [
         ],
         'whois' => [
             'description' => 'Path to whois'
+        ],
+        'smokeping.integration' => [
+            'description' => 'Enable',
+            'help' => 'Enable smokeping integration'
+        ],
+        'smokeping.dir' => [
+            'description' => 'Path to rrds',
+            'help' => 'Full path to Smokeping RRDs'
+        ],
+        'smokeping.pings' => [
+            'description' => 'Pings',
+            'help' => 'Number of pings configured in Smokeping'
+        ],
+        'smokeping.url' => [
+            'description' => 'URL to smokeping',
+            'help' => 'Full URL to the smokeping gui'
         ]
+
     ],
     'twofactor' => [
         'description' => 'Enable Two-Factor Auth',
@@ -1283,5 +1366,7 @@ return [
         'select' => ':value is not an allowed value',
         'text' => ':value is not allowed',
         'array' => 'Invalid format',
+        'executable' => ':value is not a valid executable',
+        'directory' => ':value is not a valid directory',
     ]
 ];
