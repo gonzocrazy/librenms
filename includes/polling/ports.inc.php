@@ -4,6 +4,7 @@
 use Illuminate\Support\Str;
 use LibreNMS\Config;
 use LibreNMS\RRD\RrdDefinition;
+use LibreNMS\Util\Debug;
 use LibreNMS\Util\Number;
 
 $data_oids = [
@@ -390,6 +391,22 @@ if (Config::get('enable_ports_poe')) {
             [$group_id, $if_id] = explode('.', $key);
             $port_stats[$if_id] = array_merge($port_stats[$if_id], $value);
         }
+    } elseif ($device['os'] == 'jetstream') {
+        echo 'tpPoePortConfigEntry';
+        $port_stats_poe = snmpwalk_cache_oid($device, 'tpPoePortConfigEntry', [], 'TPLINK-POWER-OVER-ETHERNET-MIB');
+        $ifTable_ifDescr = snmpwalk_cache_oid($device, 'ifDescr', [], 'IF-MIB');
+
+        $port_ent_to_if = [];
+        foreach ($ifTable_ifDescr as $if_index => $if_descr) {
+            if (preg_match('/^[a-z]+ethernet \d+\/\d+\/(\d+)$/i', $if_descr['ifDescr'], $matches)) {
+                $port_ent_to_if[$matches[1]] = $if_index;
+            }
+        }
+
+        foreach ($port_stats_poe as $p_index => $p_stats) {
+            $if_id = $port_ent_to_if[$p_index];
+            $port_stats[$if_id] = array_merge($port_stats[$if_id], $p_stats);
+        }
     }
 }
 
@@ -664,7 +681,7 @@ foreach ($ports as $port) {
             if ($port[$oid] != $this_port[$oid] && ! isset($this_port[$oid])) {
                 $port['update'][$oid] = ['NULL'];
                 log_event($oid . ': ' . $port[$oid] . ' -> NULL', $device, 'interface', 4, $port['port_id']);
-                if ($debug) {
+                if (Debug::isEnabled()) {
                     d_echo($oid . ': ' . $port[$oid] . ' -> NULL ');
                 } else {
                     echo $oid . ' ';
@@ -692,7 +709,7 @@ foreach ($ports as $port) {
                 }
 
                 log_event($oid . ': ' . $port[$oid] . ' -> ' . $this_port[$oid], $device, 'interface', 3, $port['port_id']);
-                if ($debug) {
+                if (Debug::isEnabled()) {
                     d_echo($oid . ': ' . $port[$oid] . ' -> ' . $this_port[$oid] . ' ');
                 } else {
                     echo $oid . ' ';
