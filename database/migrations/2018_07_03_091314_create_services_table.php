@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateServicesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table): void {
             $table->increments('service_id');
             $table->unsignedInteger('device_id')->index();
             $table->text('service_ip');
@@ -33,8 +33,8 @@ class CreateServicesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('services');
     }
-}
+};

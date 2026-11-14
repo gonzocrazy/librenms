@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LayoutComposer.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,16 +27,16 @@
 namespace App\Http\ViewComposers;
 
 use App\Checks;
+use App\Facades\LibrenmsConfig;
 use App\Models\UserPref;
 use Illuminate\View\View;
-use LibreNMS\Config;
 
 class LayoutComposer
 {
     /**
      * Bind data to the view.
      *
-     * @param  View $view
+     * @param  View  $view
      * @return void
      */
     public function compose(View $view)
@@ -42,17 +44,17 @@ class LayoutComposer
         // build page title
         if ($view->getFactory()->hasSection('title')) {
             // short sections escape the html entities, reverse that
-            $title = html_entity_decode(trim($view->getFactory()->getSection('title')), ENT_QUOTES);
+            $title = html_entity_decode(trim((string) $view->getFactory()->getSection('title')), ENT_QUOTES);
             $title = str_replace('    ', ' : ', $title);
-            $title .= ' | ' . Config::get('page_title_suffix');
+            $title .= ' | ' . LibrenmsConfig::get('page_title_suffix');
         } else {
-            $title = Config::get('page_title_suffix');
+            $title = LibrenmsConfig::get('page_title_suffix');
         }
 
         Checks::postAuth();
 
         $show_menu = auth()->check();
-        if ($show_menu && Config::get('twofactor') && ! session('twofactor')) {
+        if ($show_menu && LibrenmsConfig::get('twofactor') && ! session('twofactor')) {
             $show_menu = empty(UserPref::getPref(auth()->user(), 'twofactor'));
         }
 

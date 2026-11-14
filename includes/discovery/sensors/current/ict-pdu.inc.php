@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ict-pdu.inc.php
  *
@@ -18,12 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
 
+use LibreNMS\Enum\SensorType;
+
 // Output Current
-$oids = snmpwalk_cache_oid($device, 'outputEntry', [], 'ICT-DISTRIBUTION-PANEL-MIB');
+$oids = snmpwalk_cache_oid($device, 'outputEntry', [], 'ICT-PDU-MIB');
 
 foreach ($oids as $index => $entry) {
     $output_number = (int) $entry['outputNumber'] + 1;
@@ -38,11 +42,11 @@ foreach ($oids as $index => $entry) {
     $type = 'ict-pdu';
     $current = (float) $entry['outputCurrent'] / $divisor;
 
-    discover_sensor($valid['sensor'], 'current', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current);
+    discover_sensor(null, SensorType::Current, $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current);
 }
 
 // System Current
-$systemCurrent = trim(snmp_get($device, 'systemCurrent.0', '-Oqv', 'ICT-DISTRIBUTION-PANEL-MIB'), '" ');
+$systemCurrent = trim((string) SnmpQuery::get('ICT-PDU-MIB::systemCurrent.0')->value(), '" ');
 if (! empty($systemCurrent)) {
     $divisor = 1;
     $index = '7.0';
@@ -51,5 +55,5 @@ if (! empty($systemCurrent)) {
     $oid = '.1.3.6.1.4.1.39145.10.7.0';
     $current = $systemCurrent / $divisor;
 
-    discover_sensor($valid['sensor'], 'current', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current);
+    discover_sensor(null, SensorType::Current, $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current);
 }

@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateSensorsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('sensors', function (Blueprint $table) {
+        Schema::create('sensors', function (Blueprint $table): void {
             $table->increments('sensor_id');
             $table->boolean('sensor_deleted')->default(0);
             $table->string('sensor_class', 64)->index();
@@ -34,7 +34,7 @@ class CreateSensorsTable extends Migration
             $table->enum('sensor_custom', ['No', 'Yes'])->default('No');
             $table->string('entPhysicalIndex', 16)->nullable();
             $table->string('entPhysicalIndex_measured', 16)->nullable();
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('lastupdate')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('lastupdate')->useCurrent();
@@ -49,8 +49,8 @@ class CreateSensorsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('sensors');
     }
-}
+};

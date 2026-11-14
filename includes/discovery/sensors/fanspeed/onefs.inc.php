@@ -1,4 +1,5 @@
 <?php
+
 /**
  * onefs.inc.php
  *
@@ -18,10 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-echo 'OneFS: ';
+
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\SensorType;
+
+Log::info('OneFS: ', ['nlb' => true]);
 $oids = snmpwalk_cache_multi_oid($device, 'fanTable', [], 'ISILON-MIB');
 
 foreach ($oids as $index => $entry) {
@@ -29,7 +35,7 @@ foreach ($oids as $index => $entry) {
         $descr = $entry['fanDescription'];
         $oid = '.1.3.6.1.4.1.12124.2.53.1.4.' . $index;
         $current = $entry['fanSpeed'];
-        discover_sensor($valid['sensor'], 'fanspeed', $device, $oid, $index, 'onefs', $descr, '1', '1', 0, 0, 5000, 9000, $current);
+        discover_sensor(null, SensorType::Fanspeed, $device, $oid, $index, 'onefs', $descr, '1', '1', 0, 0, 5000, 9000, $current);
     }
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ChecksSnmpsim.php
  *
@@ -18,33 +19,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Tests;
 
-use LibreNMS\Util\Snmpsim;
-
 trait SnmpsimHelpers
 {
-    /** @var Snmpsim snmpsim instance */
-    protected $snmpsim = null;
-
-    public function requireSnmpsim()
+    public function requireSnmpsim(): void
     {
         if (! getenv('SNMPSIM')) {
-            $this->markTestSkipped('Snmpsim required for this test.  Set SNMPSIM=1 to enable.');
+            $this->markTestSkipped('Snmpsim required for this test. Start snmpsim in another console first with lnms dev:simulate and set SNMPSIM=127.1.6.1:1161');
         }
     }
 
-    public function getSnmpsim()
+    public function getSnmpsimIp(): ?string
     {
-        if (! $this->snmpsim) {
-            global $snmpsim;
-            $this->snmpsim = $snmpsim;
-        }
+        $snmpsim = explode(':', getenv('SNMPSIM'));
 
-        return $this->snmpsim;
+        return $snmpsim[0] ?? null;
+    }
+
+    public function getSnmpsimPort(): int
+    {
+        $snmpsim = explode(':', getenv('SNMPSIM'));
+
+        return (int) ($snmpsim[1] ?? 161);
     }
 }

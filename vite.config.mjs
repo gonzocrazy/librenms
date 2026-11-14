@@ -1,0 +1,34 @@
+import { defineConfig, loadEnv } from "vite";
+import laravel from "laravel-vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
+import { URL } from "node:url";
+
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+    const appUrl = new URL(env.APP_URL || 'http://localhost');
+
+    return {
+        plugins: [
+            laravel({
+                publicDirectory: 'html',
+                input: ['resources/js/app.js'],
+                refresh: true,
+            }),
+            tailwindcss(),
+        ],
+        server: {
+            host: appUrl.hostname,
+            port: appUrl.port || 5173,
+            https: appUrl.protocol === 'https:',
+            cors: {
+                origin: appUrl.origin,
+                credentials: true,
+            },
+            hmr: {
+                host: appUrl.hostname,
+                protocol: appUrl.protocol.replace(':', ''),
+                port: appUrl.port || 5173,
+            },
+        },
+    };
+});

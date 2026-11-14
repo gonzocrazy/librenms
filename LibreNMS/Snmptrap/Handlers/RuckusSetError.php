@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RuckusSetError.php
  *
@@ -21,6 +22,7 @@
  * value via SNMP. Contains the OID that is errored.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -30,7 +32,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class RuckusSetError implements SnmptrapHandler
 {
@@ -38,14 +39,14 @@ class RuckusSetError implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         $errorOidDirty = $trap->getOidData($trap->findOid('RUCKUS-EVENT-MIB::ruckusEventSetErrorOID'));
         $errorOid = substr($errorOidDirty, 43);
-        Log::event("SNMP set error on oid $errorOid", $device->device_id, 'trap', 2);
+        $trap->log("SNMP set error on oid $errorOid");
     }
 }

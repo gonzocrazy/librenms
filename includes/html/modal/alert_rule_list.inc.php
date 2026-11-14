@@ -18,15 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 use LibreNMS\Alerting\QueryBuilderParser;
-
-if (! Auth::user()->hasGlobalAdmin()) {
-    exit('ERROR: You need to be admin');
-}
 
 ?>
 
@@ -51,17 +48,15 @@ if (! Auth::user()->hasGlobalAdmin()) {
                         <?php
                         $alert_rules = dbFetchRows('SELECT * FROM alert_rules order by name');
                         foreach ($alert_rules as $rule) {
-                            if (empty($rule['builder'])) {
-                                $rule_display = $rule['rule'];
-                            } elseif ($rule_extra['options']['override_query'] === 'on') {
+                            if (isset($rule_extra['options']['override_query']) && ($rule_extra['options']['override_query'] === 'on' || $rule_extra['options']['override_query'] === true)) {
                                 $rule_display = 'Custom SQL Query';
                             } else {
                                 $rule_display = QueryBuilderParser::fromJson($rule['builder'])->toSql(false);
                             }
-                            echo "
+                            echo '
                                 <tr>
-                                    <td>{$rule['name']}</td>
-                                    <td><i>" . htmlentities($rule_display) . "</i></td>
+                                    <td>' . e(strip_tags((string) $rule['name'])) . '</td>
+                                    <td><i>' . e(strip_tags((string) $rule_display)) . "</i></td>
                                     <td>{$rule['severity']}</td>
                                     <td>{$rule['id']}</td>
                                 </tr>
@@ -85,15 +80,14 @@ if (! Auth::user()->hasGlobalAdmin()) {
                             alert_grid.find(".alert_rule_from_list").on("click", function(e) {
                                 var alert_rule_id = $(this).data("rule_id");
                                 $.ajax({
-                                    type: "POST",
-                                    url: "ajax_form.php",
-                                    data: {type: 'sql-from-alert-rules', rule_id: alert_rule_id},
+                                    type: "GET",
+                                    url: route('alert-rule-template.rule', alert_rule_id),
                                     dataType: "json",
                                     success: function (data) {
                                         if (data.status == 'ok') {
                                             $("#search_alert_rule_modal").one('hidden.bs.modal', function(event) {
-                                                loadRule(data);
                                                 $('#create-alert').modal('show');
+                                                loadRule(data);
                                             });
                                             $("#search_alert_rule_modal").modal('hide');
                                         } else {
@@ -118,5 +112,11 @@ if (! Auth::user()->hasGlobalAdmin()) {
         $("#alert_rule_id").val('');
         $("#rule_suggest").val('');
         $("#rule_display").html('');
+
+        var $parent = $('#create-alert');
+        if ($parent.hasClass('in')) {
+            $('body').addClass('modal-open');
+            $parent.modal('handleUpdate');
+        }
     });
 </script>

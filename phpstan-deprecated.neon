@@ -1,0 +1,43 @@
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - phpstan-baseline-deprecated.neon
+
+parameters:
+    phpVersion:
+        min: 80400
+        max: 80599
+
+    customRulesetUsed: true
+    reportUnmatchedIgnoredErrors: false
+    resultCachePath: %tmpDir%/resultCache-deprecated.php
+
+    paths:
+        - app
+        - bootstrap
+        - config
+        - database
+        - html
+        - includes
+        - LibreNMS
+        - resources
+        - routes
+        - scripts
+        - tests
+        - alerts.php
+        - billing-calculate.php
+        - check-services.php
+        - config_to_json.php
+        - daily.php
+        - delhost.php
+        - discovery.php
+        - irc.php
+        - ping.php
+        - poll-billing.php
+        - poller.php
+        - renamehost.php
+        - snmptrap.php
+        - syslog.php
+        - validate.php
+
+    excludePaths:
+        - bootstrap/cache

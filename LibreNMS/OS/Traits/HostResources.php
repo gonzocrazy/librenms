@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HostResources.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,11 +27,14 @@
 namespace LibreNMS\OS\Traits;
 
 use App\Models\Mempool;
-use Closure;
-use Exception;
+use App\Models\Processor;
+use App\Models\Storage;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use LibreNMS\Device\Processor;
-use Rrd;
+use LibreNMS\Exceptions\UncorrectableNegativeException;
+use LibreNMS\Util\Number;
+use SnmpQuery;
 
 trait HostResources
 {
@@ -39,16 +44,44 @@ trait HostResources
         'hrStorageRam',
         'hrStorageOther',
     ];
+    private $storageIgnoreTypes = [
+        'hrStorageVirtualMemory',
+        'hrStorageRam',
+        'hrStorageOther',
+        'nwhrStorageDOSMemory',
+        'nwhrStorageMemoryAlloc',
+        'nwhrStorageMemoryPermanent',
+        'nwhrStorageCacheBuffers',
+        'nwhrStorageCacheMovable',
+        'nwhrStorageCacheNonMovable',
+        'nwhrStorageCodeAndDataMemory',
+        'nwhrStorageIOEngineMemory',
+        'nwhrStorageMSEngineMemory',
+        'nwhrStorageUnclaimedMemory',
+    ];
+    private $hrTypes = [
+        1 => 'hrStorageOther',
+        2 => 'hrStorageRam',
+        3 => 'hrStorageVirtualMemory',
+        4 => 'hrStorageFixedDisk',
+        5 => 'hrStorageRemovableDisk',
+        6 => 'hrStorageFloppyDisk',
+        7 => 'hrStorageCompactDisc',
+        8 => 'hrStorageRamDisk',
+        9 => 'hrStorageFlashMemory',
+        10 => 'hrStorageNetworkDisk',
+    ];
     private $ignoreMemoryDescr = [
-        'MALLOC',
-        'UMA',
+        'malloc',
+        'uma',
         'procfs',
         '/proc',
     ];
     private $validOtherMemory = [
-        'Memory buffers',
-        'Cached memory',
-        'Shared memory',
+        'memory buffers',
+        'cached memory',
+        'memory cache',
+        'shared memory',
     ];
     private $memoryDescrWarn = [
         'Cached memory' => 0,
@@ -62,41 +95,28 @@ trait HostResources
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns a Collection of Processor models that have been discovered
      *
-     * @return array Processors
+     * @return Collection<Processor>
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): Collection
     {
-        echo 'Host Resources: ';
-        $processors = [];
+        Log::info('Host Resources: ');
 
-        try {
-            $hrProcessorLoad = $this->getCacheByIndex('hrProcessorLoad', 'HOST-RESOURCES-MIB');
-
-            if (empty($hrProcessorLoad)) {
-                // no hr data, return
-                return [];
+        return SnmpQuery::abortOnFailure()->walk([
+            'HOST-RESOURCES-MIB::hrProcessorLoad',
+            'HOST-RESOURCES-MIB::hrDeviceDescr',
+        ])->mapTable(function ($data, $hrDeviceIndex) {
+            if (! isset($data['HOST-RESOURCES-MIB::hrProcessorLoad']) || ! is_numeric($data['HOST-RESOURCES-MIB::hrProcessorLoad'])) {
+                return null;
             }
 
-            $hrDeviceDescr = $this->getCacheByIndex('hrDeviceDescr', 'HOST-RESOURCES-MIB');
-        } catch (Exception $e) {
-            return [];
-        }
-
-        foreach ($hrProcessorLoad as $index => $usage) {
-            $usage_oid = '.1.3.6.1.2.1.25.3.3.1.2.' . $index;
-            $descr = $hrDeviceDescr[$index];
-
-            if (! is_numeric($usage)) {
-                continue;
+            // FIXME ? use skip_values
+            if ($this->getName() == 'arista-eos' && $hrDeviceIndex == '1') {
+                return null;
             }
 
-            $device = $this->getDeviceArray();
-            if ($device['os'] == 'arista-eos' && $index == '1') {
-                continue;
-            }
-
+            $descr = $data['HOST-RESOURCES-MIB::hrDeviceDescr'] ?? null;
             if (empty($descr)
                 || $descr == 'Unknown Processor Type' // Windows: Unknown Processor Type
                 || $descr == 'An electronic chip that makes the computer work.'
@@ -104,56 +124,39 @@ trait HostResources
                 $descr = 'Processor';
             } else {
                 // Make the description a bit shorter
-                $remove_strings = [
-                    'GenuineIntel: ',
-                    'AuthenticAMD: ',
-                    'CPU ',
-                    '(TM)',
-                    '(R)',
-                ];
-                $descr = str_replace($remove_strings, '', $descr);
+                $descr = str_replace(['GenuineIntel: ', 'AuthenticAMD: ', 'CPU ', '(TM)', '(R)'], '', $descr);
                 $descr = str_replace('  ', ' ', $descr);
             }
 
-            $old_name = ['hrProcessor', $index];
-            $new_name = ['processor', 'hr', $index];
-            Rrd::renameFile($this->getDeviceArray(), $old_name, $new_name);
-
-            $processor = Processor::discover(
-                'hr',
-                $this->getDeviceId(),
-                $usage_oid,
-                $index,
-                $descr,
-                1,
-                $usage,
-                null,
-                null,
-                $index
-            );
-
-            if ($processor->isValid()) {
-                $processors[] = $processor;
-            }
-        }
-
-        return $processors;
+            return new Processor([
+                'hrDeviceIndex' => $hrDeviceIndex,
+                'processor_oid' => '.1.3.6.1.2.1.25.3.3.1.2.' . $hrDeviceIndex,
+                'processor_index' => $hrDeviceIndex,
+                'processor_type' => 'hr',
+                'processor_precision' => 1,
+                'processor_usage' => $data['HOST-RESOURCES-MIB::hrProcessorLoad'],
+                'processor_descr' => $descr,
+            ]);
+        })->filter();
     }
 
-    public function discoverMempools()
+    public function discoverMempools(): Collection
     {
-        $hr_storage = $this->getCacheTable('hrStorageTable', 'HOST-RESOURCES-MIB:HOST-RESOURCES-TYPES');
+        $hr_storage = SnmpQuery::cache()->hideMib()->mibs(['HOST-RESOURCES-TYPES'])->walk('HOST-RESOURCES-MIB::hrStorageTable')->table(1);
+        $this->fixBadData($hr_storage);
 
-        if (! is_array($hr_storage)) {
-            return collect();
+        if (empty($hr_storage)) {
+            return new Collection;
         }
 
-        $ram_bytes = snmp_get($this->getDeviceArray(), 'hrMemorySize.0', '-OQUv', 'HOST-RESOURCES-MIB') * 1024
-            ?: (isset($hr_storage[1]['hrStorageSize']) ? $hr_storage[1]['hrStorageSize'] * $hr_storage[1]['hrStorageAllocationUnits'] : 0);
+        $hrMemorySize = (int) SnmpQuery::get('HOST-RESOURCES-MIB::hrMemorySize.0')->value();
+        $ram_bytes = $hrMemorySize
+            ? $hrMemorySize * 1024
+            : (isset($hr_storage[1]['hrStorageSize']) ? $hr_storage[1]['hrStorageSize'] * $hr_storage[1]['hrStorageAllocationUnits'] : 0);
 
-        return collect($hr_storage)->filter(Closure::fromCallable([$this, 'memValid']))
+        return collect($hr_storage)->filter($this->memValid(...))
             ->map(function ($storage, $index) use ($ram_bytes) {
-                $total = $storage['hrStorageSize'];
+                $total = $storage['hrStorageSize'] ?? null;
                 if (Str::contains($storage['hrStorageDescr'], 'Real Memory Metrics') || ($storage['hrStorageType'] == 'hrStorageOther' && $total != 0)) {
                     // use total RAM for buffers, cached, and shared
                     // bsnmp does not report the same as net-snmp, total RAM is stored in hrMemorySize
@@ -162,7 +165,7 @@ trait HostResources
                     }
                 }
 
-                return (new Mempool([
+                return new Mempool([
                     'mempool_index' => $index,
                     'mempool_type' => 'hrstorage',
                     'mempool_precision' => $storage['hrStorageAllocationUnits'],
@@ -170,21 +173,136 @@ trait HostResources
                     'mempool_perc_warn' => $this->memoryDescrWarn[$storage['hrStorageDescr']] ?? 90,
                     'mempool_used_oid' => ".1.3.6.1.2.1.25.2.3.1.6.$index",
                     'mempool_total_oid' => null,
-                ]))->setClass(null, $storage['hrStorageType'] == 'hrStorageVirtualMemory' ? 'virtual' : 'system')
-                    ->fillUsage($storage['hrStorageUsed'], $total);
+                ])->setClass(null, $storage['hrStorageType'] == 'hrStorageVirtualMemory' ? 'virtual' : 'system')
+                    ->fillUsage($storage['hrStorageUsed'] ?? null, $total);
             });
     }
 
-    protected function memValid($storage)
+    public function discoverStorage(): Collection
     {
+        $hr_storage = SnmpQuery::cache()->hideMib()->mibs(['HOST-RESOURCES-TYPES'])->walk('HOST-RESOURCES-MIB::hrStorageTable')->table(1);
+        $this->fixBadData($hr_storage);
+
+        if (empty($hr_storage)) {
+            return new Collection;
+        }
+
+        return collect($hr_storage)->map(function ($storage, $index) {
+            // correct signed Integer32 wrap (e.g. Windows volumes > 2^31 allocation units) before validating
+            // -1 is commonly used as "unknown", leave it negative so the entry is skipped
+            if (isset($storage['hrStorageSize']) && is_numeric($storage['hrStorageSize']) && $storage['hrStorageSize'] < -1) {
+                $storage['hrStorageSize'] = Number::correctIntegerOverflow($storage['hrStorageSize']);
+            }
+
+            if (isset($storage['hrStorageUsed'], $storage['hrStorageSize']) && is_numeric($storage['hrStorageUsed'])
+                && $storage['hrStorageUsed'] < -1 && $storage['hrStorageSize'] > 0) {
+                try {
+                    $storage['hrStorageUsed'] = Number::correctIntegerOverflow($storage['hrStorageUsed'], (int) $storage['hrStorageSize']);
+                } catch (UncorrectableNegativeException) {
+                    Log::debug("Host Resources: could not correct negative hrStorageUsed for storage ($index), larger than hrStorageSize");
+                }
+            }
+
+            return $storage;
+        })->filter(function ($storage, $index) {
+            if (empty($storage['hrStorageType'])) {
+                Log::debug("Host Resources: skipped storage ($index) due to missing hrStorageType");
+
+                return false;
+            }
+
+            if (! isset($storage['hrStorageUsed']) || $storage['hrStorageUsed'] < 0) {
+                Log::debug("Host Resources: skipped storage ($index) due to missing or negative hrStorageUsed");
+
+                return false;
+            }
+
+            if (! isset($storage['hrStorageSize']) || $storage['hrStorageSize'] <= 0) {
+                Log::debug("Host Resources: skipped storage ($index) due to missing, negative, or 0 hrStorageSize");
+
+                return false;
+            }
+
+            return ! in_array($storage['hrStorageType'], $this->storageIgnoreTypes);
+        })->map(fn ($storage) => new Storage([
+            'type' => 'hrstorage',
+            'storage_index' => $storage['hrStorageIndex'],
+            'storage_type' => $storage['hrStorageType'],
+            'storage_descr' => $storage['hrStorageDescr'],
+            'storage_used_oid' => '.1.3.6.1.2.1.25.2.3.1.6.' . $storage['hrStorageIndex'],
+            'storage_units' => $storage['hrStorageAllocationUnits'],
+        ])->fillUsage(
+            $storage['hrStorageUsed'] ?? null,
+            $storage['hrStorageSize'] ?? null,
+        ));
+    }
+
+    protected function memValid($storage): bool
+    {
+        if (! isset($storage['hrStorageIndex'])) {
+            Log::debug('hrStorage invalid: missing hrStorageIndex');
+
+            return false;
+        }
+
+        if (empty($storage['hrStorageType']) || empty($storage['hrStorageDescr'])) {
+            Log::debug("hrStorageIndex {$storage['hrStorageIndex']} invalid: empty hrStorageType or hrStorageDescr");
+
+            return false;
+        }
+
         if (! in_array($storage['hrStorageType'], $this->memoryStorageTypes)) {
+            Log::debug("hrStorageIndex {$storage['hrStorageIndex']} invalid: bad hrStorageType ({$storage['hrStorageType']})");
+
             return false;
         }
 
-        if ($storage['hrStorageType'] == 'hrStorageOther' && ! in_array($storage['hrStorageDescr'], $this->validOtherMemory)) {
+        $hrStorageDescr = strtolower((string) $storage['hrStorageDescr']);
+
+        if ($storage['hrStorageType'] == 'hrStorageOther' && ! in_array($hrStorageDescr, $this->validOtherMemory)) {
+            Log::debug("hrStorageIndex {$storage['hrStorageIndex']} invalid: hrStorageOther & not an exception");
+
             return false;
         }
 
-        return ! Str::contains($storage['hrStorageDescr'], $this->ignoreMemoryDescr);
+        if (Str::contains($hrStorageDescr, $this->ignoreMemoryDescr)) {
+            Log::debug("hrStorageIndex {$storage['hrStorageIndex']} invalid: bad hrStorageDescr ({$hrStorageDescr})");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function fixBadData(array &$data): void
+    {
+        foreach ($data as $index => $entry) {
+            if (isset($entry['hrStorageType'])) {
+                $data[$index]['hrStorageType'] = $this->fixBadTypes($entry['hrStorageType']);
+            }
+        }
+    }
+
+    protected function fixBadTypes($hrStorageType): string
+    {
+        if (str_starts_with((string) $hrStorageType, 'hrStorage')) {
+            // fix some that set them incorrectly as scalars
+            return preg_replace('/\.0$/', '', (string) $hrStorageType);
+        }
+
+        // if the agent returns with a bad base oid, just take the last index off the oid and manually convert it
+        if (preg_match('/\.(\d+)$/', (string) $hrStorageType, $matches)) {
+            if (isset($this->hrTypes[$matches[1]])) {
+                return $this->hrTypes[$matches[1]];
+            }
+        }
+
+        if (str_starts_with((string) $hrStorageType, 'hr')) {
+            return $hrStorageType; // pass through other types (such as fs)
+        }
+
+        Log::debug("Could not fix bad hrStorageType: $hrStorageType");
+
+        return 'unknown';
     }
 }

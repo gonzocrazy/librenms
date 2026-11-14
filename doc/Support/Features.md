@@ -1,15 +1,12 @@
-source: Support/Features.md
-path: blob/master/doc/
-
 # Features
 
-Here's a brief list of supported features, some might be missing.
-If you think something is missing, feel free to ask us.
+This is a short list of the supported features. The list can be
+incomplete. If a feature is not in the list, ask us about it.
 
 * Auto discovery
 * Alerting
 * Multiple environment sensors support
-* Multiple protocols data collection (STP, OSPF, BGP etc)
+* Multiple protocols data collection (STP, OSPF, OSPFv3, BGP etc)
 * VLAN, ARP and FDB table collection
 * Customizable Dashboards
 * Device Backup integration (Oxidized, RANCID)
@@ -23,147 +20,20 @@ If you think something is missing, feel free to ask us.
 * API
 * Auto Updating
 
-# Vendors
+## Supported Vendors
 
-Here's a brief list of supported vendors, some might be missing.
-If you are unsure of whether your device is supported or not, feel free to ask us.
+This is a list of the supported vendors. The list can be incomplete.
+If you do not know whether LibreNMS supports your device, ask us.
 
-* 3Com
-* ADTRAN
-* Acceidan
-* Aerohive
-* AKCP
-* Alcatel-Lucent
-* Allied Telesis
-* APC
-* Apple
-* Areca
-* Arista
-* Aruba
-* Audiocodes
-* Avaya
-* Avocent
-* AVTECH
-* Axis
-* Barracuda
-* BCM963
-* BDCom
-* Bintec
-* Bluecat
-* BNT
-* Brocade
-* Brother
-* Buffalo
-* Calix
-* Cambium
-* Canon
-* Canopy
-* Check Point
-* Cisco
-* Cisco Small Business
-* Citrix
-* Cometsystem
-* Comware
-* D-Link
-* Datacom
-* Deliberant
-* Dell
-* Delta Power Solutions
-* DEVELOP
-* DKT Comega
-* Eaton
-* EDS
-* EMC
-* Engenius
-* Enterasys
-* Epson
-* Extreme Networks
-* F5
-* Fastback Networks
-* Fiberstore
-* FiberHome
-* Force10
-* Fortinet
-* FreeBSD
-* Gamatronic
-* Hikvision
-* HP
-* Huawei
-* HW group
-* IBM
-* Infoblox
-* iPoMan
-* ITWatchDogs
-* Juniper
-* Konica Minolta
-* Kyocera
-* Lantronix
-* Lenovo
-* Lexmark
-* Liebert
-* LigoWave
-* Linux
-* Maipu
-* Mellanox
-* Meraki
-* MGE
-* Microsemi
-* Mikrotik
-* MRVLD
-* Multimatic
-* NetApp
-* NetBSD
-* NETGEAR
-* NetMan
-* Netonix
-* Netopia
-* NetVision
-* NetWare
-* Nokia
-* NRG
-* OKI
-* OpenBSD
-* Oracle
-* PacketShaper
-* Palo Alto Networks
-* Papouch
-* PBN
-* Perle
-* Powercode
-* Powerwalker
-* Prestige
-* Proxim
-* Proxmox
-* Quanta
-* Radlan
-* Raritan
-* Redback
-* Ricoh
-* Riverbed
-* Ruckus
-* SAF Tehnika
-* Samsung
-* Siklu
-* Sentry3
-* Solaris
-* SonicWALL
-* SpeedTouch
-* Supermicro
-* Symbol
-* Telco Systems
-* TPLink
-* Tranzeo
-* Tripp Lite
-* Ubiquiti
-* Viprinet
-* VMware
-* VRP
-* Vyatta
-* VyOS
-* Watchguard
-* WebPower
-* Windows
-* Xerox
-* Xirrus
-* ZTE
-* ZyXEL
+```sh exec="1"
+grep -h "^text: " resources/definitions/os_detection/*.yaml \
+| sed -E "s/^text: *[\"']?([^\"']+).*/\1/" \
+| sort -f -u \
+| awk '{\
+  if (last != tolower(substr($0, 0, 1))) {\
+    print "\n### "toupper(substr($0,0,1))"\n* "$0; last = tolower(substr($1, 0, 1))\
+  } else {\
+    print "* "$0\
+  }\
+}'
+```

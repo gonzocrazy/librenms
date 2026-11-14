@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DeviceSummaryHoriz.php
  *
@@ -18,23 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Widgets;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-
 class DeviceSummaryHorizController extends DeviceSummaryController
 {
-    /**
-     * @param Request $request
-     * @return View
-     */
-    public function getView(Request $request)
-    {
-        return view('widgets.device-summary-horiz', $this->getData($request));
-    }
+    protected string $name = 'device-summary-horiz';
 }

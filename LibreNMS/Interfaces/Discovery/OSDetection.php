@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OSDetection.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,7 +35,7 @@ interface OSDetection
      * $device->sysObjectID and $device->sysDescr will be pre-populated
      * Please avoid additional snmp queries if possible
      *
-     * @param Device $device
+     * @param  Device  $device
      * @return bool
      */
     public static function detectOS(Device $device): bool;

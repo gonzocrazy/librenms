@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateMacAccountingTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('mac_accounting', function (Blueprint $table) {
+        Schema::create('mac_accounting', function (Blueprint $table): void {
             $table->increments('ma_id');
             $table->unsignedInteger('port_id')->index();
             $table->string('mac', 32);
@@ -47,8 +47,8 @@ class CreateMacAccountingTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('mac_accounting');
     }
-}
+};

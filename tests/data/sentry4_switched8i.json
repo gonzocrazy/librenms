@@ -3,18 +3,18 @@
         "discovery": {
             "devices": [
                 {
-                    "sysName": "",
+                    "sysName": null,
                     "sysObjectID": ".1.3.6.1.4.1.1718.4",
                     "sysDescr": "Sentry Smart PDU",
                     "sysContact": null,
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": null,
                     "os": "sentry4",
                     "type": "power",
                     "serial": null,
-                    "icon": "servertech.png",
-                    "location": null
+                    "icon": "servertech.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -254,9 +240,6 @@
                     "ifSpeed": 0,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -266,15 +249,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -361,9 +340,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -373,15 +349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "000a9c605685",
-                    "ifHardType": null,
                     "ifLastChange": 1650,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -470,6 +442,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Line, AA:L, Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 4.03,
@@ -483,6 +456,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -494,6 +468,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Line, BA:L, Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 4.27,
@@ -507,6 +482,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -518,6 +494,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, AA:L-L/N, Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 4.03,
@@ -531,6 +508,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -542,6 +520,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, BA:L-L/N, Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 4.29,
@@ -555,6 +534,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -566,6 +546,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Line, Master_Cord_A, Frequency",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 60,
@@ -579,6 +560,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -590,6 +572,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Line, Link1_Cord_A, Frequency",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 60,
@@ -603,6 +586,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -614,6 +598,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Humid_Sensor_E1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 37,
@@ -627,6 +612,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -638,6 +624,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Humid_Sensor_E2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 31,
@@ -651,6 +638,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -662,6 +650,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Cord, Master_Cord_A, Active Power",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 806,
@@ -675,6 +664,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -686,6 +676,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Cord, Link1_Cord_A, Active Power",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 856,
@@ -699,6 +690,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -710,6 +702,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, AA:L-L/N, Active Power",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 806,
@@ -723,6 +716,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -734,6 +728,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, BA:L-L/N, Active Power",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 856,
@@ -747,6 +742,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -758,6 +754,7 @@
                     "sensor_type": "st4BranchState",
                     "sensor_descr": "Branch AA:BR1 State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -771,6 +768,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchState"
                 },
                 {
@@ -782,6 +780,7 @@
                     "sensor_type": "st4BranchState",
                     "sensor_descr": "Branch AA:BR2 State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -795,6 +794,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchState"
                 },
                 {
@@ -806,6 +806,7 @@
                     "sensor_type": "st4BranchState",
                     "sensor_descr": "Branch BA:BR1 State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -819,6 +820,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchState"
                 },
                 {
@@ -830,6 +832,7 @@
                     "sensor_type": "st4BranchState",
                     "sensor_descr": "Branch BA:BR2 State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -843,6 +846,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchState"
                 },
                 {
@@ -854,6 +858,7 @@
                     "sensor_type": "st4BranchStatus",
                     "sensor_descr": "Branch AA:BR1 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -867,6 +872,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchStatus"
                 },
                 {
@@ -878,6 +884,7 @@
                     "sensor_type": "st4BranchStatus",
                     "sensor_descr": "Branch AA:BR2 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -891,6 +898,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchStatus"
                 },
                 {
@@ -902,6 +910,7 @@
                     "sensor_type": "st4BranchStatus",
                     "sensor_descr": "Branch BA:BR1 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -915,6 +924,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchStatus"
                 },
                 {
@@ -926,6 +936,7 @@
                     "sensor_type": "st4BranchStatus",
                     "sensor_descr": "Branch BA:BR2 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -939,6 +950,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4BranchStatus"
                 },
                 {
@@ -950,6 +962,7 @@
                     "sensor_type": "st4InputCordActivePowerStatus",
                     "sensor_descr": "Input Cord Active Power Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -963,6 +976,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordActivePowerStatus"
                 },
                 {
@@ -974,6 +988,7 @@
                     "sensor_type": "st4InputCordActivePowerStatus",
                     "sensor_descr": "Input Cord Active Power Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -987,6 +1002,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordActivePowerStatus"
                 },
                 {
@@ -998,6 +1014,7 @@
                     "sensor_type": "st4InputCordApparentPowerStatus",
                     "sensor_descr": "Input Cord Apparent Power Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1011,6 +1028,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordApparentPowerStatus"
                 },
                 {
@@ -1022,6 +1040,7 @@
                     "sensor_type": "st4InputCordApparentPowerStatus",
                     "sensor_descr": "Input Cord Apparent Power Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1035,6 +1054,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordApparentPowerStatus"
                 },
                 {
@@ -1046,6 +1066,7 @@
                     "sensor_type": "st4InputCordPowerFactorStatus",
                     "sensor_descr": "Input Cord Power Factor Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1059,6 +1080,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordPowerFactorStatus"
                 },
                 {
@@ -1070,6 +1092,7 @@
                     "sensor_type": "st4InputCordPowerFactorStatus",
                     "sensor_descr": "Input Cord Power Factor Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1083,6 +1106,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordPowerFactorStatus"
                 },
                 {
@@ -1094,6 +1118,7 @@
                     "sensor_type": "st4InputCordState",
                     "sensor_descr": "Input Cord State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1107,6 +1132,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordState"
                 },
                 {
@@ -1118,6 +1144,7 @@
                     "sensor_type": "st4InputCordState",
                     "sensor_descr": "Input Cord State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1131,6 +1158,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordState"
                 },
                 {
@@ -1142,6 +1170,7 @@
                     "sensor_type": "st4InputCordStatus",
                     "sensor_descr": "Input Cord Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1155,6 +1184,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordStatus"
                 },
                 {
@@ -1166,6 +1196,7 @@
                     "sensor_type": "st4InputCordStatus",
                     "sensor_descr": "Input Cord Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1179,6 +1210,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4InputCordStatus"
                 },
                 {
@@ -1190,6 +1222,7 @@
                     "sensor_type": "st4LineState",
                     "sensor_descr": "Line AA:L State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1203,6 +1236,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4LineState"
                 },
                 {
@@ -1214,6 +1248,7 @@
                     "sensor_type": "st4LineState",
                     "sensor_descr": "Line BA:L State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1227,6 +1262,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4LineState"
                 },
                 {
@@ -1238,6 +1274,7 @@
                     "sensor_type": "st4LineStatus",
                     "sensor_descr": "Line AA:L Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1251,6 +1288,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4LineStatus"
                 },
                 {
@@ -1262,6 +1300,7 @@
                     "sensor_type": "st4LineStatus",
                     "sensor_descr": "Line BA:L Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1275,6 +1314,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4LineStatus"
                 },
                 {
@@ -1286,6 +1326,7 @@
                     "sensor_type": "st4OcpStatus",
                     "sensor_descr": "Over-current Protector AA:BR1 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1299,6 +1340,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4OcpStatus"
                 },
                 {
@@ -1310,6 +1352,7 @@
                     "sensor_type": "st4OcpStatus",
                     "sensor_descr": "Over-current Protector AA:BR2 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1323,6 +1366,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4OcpStatus"
                 },
                 {
@@ -1334,6 +1378,7 @@
                     "sensor_type": "st4OcpStatus",
                     "sensor_descr": "Over-current Protector BA:BR1 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1347,6 +1392,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4OcpStatus"
                 },
                 {
@@ -1358,6 +1404,7 @@
                     "sensor_type": "st4OcpStatus",
                     "sensor_descr": "Over-current Protector BA:BR2 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1371,6 +1418,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4OcpStatus"
                 },
                 {
@@ -1382,6 +1430,7 @@
                     "sensor_type": "st4PhasePowerFactorStatus",
                     "sensor_descr": "Phase AA:L-L/N Power Factor Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1395,6 +1444,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhasePowerFactorStatus"
                 },
                 {
@@ -1406,6 +1456,7 @@
                     "sensor_type": "st4PhasePowerFactorStatus",
                     "sensor_descr": "Phase BA:L-L/N Power Factor Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1419,6 +1470,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhasePowerFactorStatus"
                 },
                 {
@@ -1430,6 +1482,7 @@
                     "sensor_type": "st4PhaseState",
                     "sensor_descr": "Phase AA:L-L/N State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1443,6 +1496,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseState"
                 },
                 {
@@ -1454,6 +1508,7 @@
                     "sensor_type": "st4PhaseState",
                     "sensor_descr": "Phase BA:L-L/N State",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1467,6 +1522,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseState"
                 },
                 {
@@ -1478,6 +1534,7 @@
                     "sensor_type": "st4PhaseStatus",
                     "sensor_descr": "Phase AA:L-L/N Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1491,6 +1548,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseStatus"
                 },
                 {
@@ -1502,6 +1560,7 @@
                     "sensor_type": "st4PhaseStatus",
                     "sensor_descr": "Phase BA:L-L/N Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1515,6 +1574,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseStatus"
                 },
                 {
@@ -1526,6 +1586,7 @@
                     "sensor_type": "st4PhaseVoltageStatus",
                     "sensor_descr": "Phase AA:L-L/N Voltage Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1539,6 +1600,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseVoltageStatus"
                 },
                 {
@@ -1550,6 +1612,7 @@
                     "sensor_type": "st4PhaseVoltageStatus",
                     "sensor_descr": "Phase BA:L-L/N Voltage Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1563,6 +1626,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4PhaseVoltageStatus"
                 },
                 {
@@ -1574,6 +1638,7 @@
                     "sensor_type": "st4UnitStatus",
                     "sensor_descr": "Unit Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1587,6 +1652,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4UnitStatus"
                 },
                 {
@@ -1598,6 +1664,7 @@
                     "sensor_type": "st4UnitStatus",
                     "sensor_descr": "Unit Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1611,6 +1678,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4UnitStatus"
                 },
                 {
@@ -1622,6 +1690,7 @@
                     "sensor_type": "st4UnitStatus",
                     "sensor_descr": "Unit Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1635,6 +1704,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "st4UnitStatus"
                 },
                 {
@@ -1646,6 +1716,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Temp_Sensor_E1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 23.9,
@@ -1659,6 +1730,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1670,6 +1742,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Temp_Sensor_E2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 27.1,
@@ -1683,6 +1756,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1694,6 +1768,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, AA:L-L/N, Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 211.7,
@@ -1707,6 +1782,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1718,6 +1794,7 @@
                     "sensor_type": "sentry4",
                     "sensor_descr": "Phase, BA:L-L/N, Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 209.8,
@@ -1731,6 +1808,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -1738,1783 +1816,1549 @@
                 {
                     "state_name": "st4BranchState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4BranchState",
                     "state_descr": "on",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4BranchState",
                     "state_descr": "off",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4BranchStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordActivePowerStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordApparentPowerStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordPowerFactorStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordState",
                     "state_descr": "on",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4InputCordState",
                     "state_descr": "off",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4InputCordStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4LineState",
                     "state_descr": "on",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4LineState",
                     "state_descr": "off",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4LineStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4OcpStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhasePowerFactorStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseState",
                     "state_descr": "on",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4PhaseState",
                     "state_descr": "off",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4PhaseVoltageStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "purged",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "reading",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "settle",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "notFound",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "lost",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "readError",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "noComm",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "pwrError",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "breakerTripped",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "fuseBlown",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "lowAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "lowWarning",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "highWarning",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "highAlarm",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "alarm",
-                    "state_draw_graph": 1,
                     "state_value": 18,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "underLimit",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "overLimit",
-                    "state_draw_graph": 1,
                     "state_value": 20,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "nvmFail",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "profileError",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "st4UnitStatus",
                     "state_descr": "conflict",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 2
                 }
             ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "11.11.11.11",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "11.11.11.0/24",
+                    "ifIndex": 2
+                },
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 32,
+                    "context_name": "",
+                    "ipv4_network": null,
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

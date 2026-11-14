@@ -10,11 +10,11 @@
                     "version": "4.0.0.1",
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "netsure",
                     "type": "power",
                     "serial": null,
-                    "icon": "emerson.svg",
-                    "location": "<private>"
+                    "icon": "emerson.svg"
                 }
             ]
         },
@@ -32,6 +32,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Total Battery Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -56,6 +58,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20,
@@ -69,6 +72,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -80,6 +84,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #10",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -93,6 +98,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -104,6 +110,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #11",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -117,6 +124,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -128,6 +136,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #12",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -141,6 +150,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -152,6 +162,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #13",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -165,6 +176,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -176,6 +188,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #14",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -189,6 +202,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -200,6 +214,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #15",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -213,6 +228,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -224,6 +240,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #16",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -237,6 +254,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -248,6 +266,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #17",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -261,6 +280,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -272,6 +292,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #18",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -285,6 +306,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -296,6 +318,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #19",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -309,6 +332,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -320,6 +344,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -333,6 +358,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -344,6 +370,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #20",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20,
@@ -357,6 +384,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -368,6 +396,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #21",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -381,6 +410,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -392,6 +422,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #22",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -405,6 +436,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -416,6 +448,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #23",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -429,6 +462,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -440,6 +474,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #24",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -453,6 +488,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -464,6 +500,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #25",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -477,6 +514,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -488,6 +526,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #26",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -501,6 +540,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -512,6 +552,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #27",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -525,6 +566,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -536,6 +578,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #28",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 23,
@@ -549,6 +592,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -560,6 +604,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #29",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -573,6 +618,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -584,6 +630,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -597,6 +644,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -608,6 +656,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #30",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -621,6 +670,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -632,6 +682,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #31",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -645,6 +696,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -656,6 +708,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #32",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -669,6 +722,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -680,6 +734,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #33",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -693,6 +748,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -704,6 +760,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #34",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -717,6 +774,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -728,6 +786,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #35",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -741,6 +800,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -752,6 +812,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #36",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -765,6 +826,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -776,6 +838,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #4",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -789,6 +852,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -800,6 +864,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #41",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -813,6 +878,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -824,6 +890,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #42",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -837,6 +904,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -848,6 +916,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #43",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -861,6 +930,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -872,6 +942,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #44",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -885,6 +956,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -896,6 +968,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #45",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -909,6 +982,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -920,6 +994,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #46",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20,
@@ -933,6 +1008,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -944,6 +1020,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #47",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -957,6 +1034,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -968,6 +1046,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #48",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -981,6 +1060,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -992,6 +1072,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #49",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1005,6 +1086,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1016,6 +1098,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #5",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1029,6 +1112,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1040,6 +1124,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #50",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1053,6 +1138,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1064,6 +1150,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #51",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1077,6 +1164,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1088,6 +1176,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #52",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1101,6 +1190,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1112,6 +1202,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #53",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1125,6 +1216,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1136,6 +1228,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #54",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1149,6 +1242,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1160,6 +1254,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #55",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1173,6 +1268,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1184,6 +1280,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #56",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1197,6 +1294,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1208,6 +1306,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #57",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20,
@@ -1221,6 +1320,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1232,6 +1332,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #58",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1245,6 +1346,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1256,6 +1358,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #59",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1269,6 +1372,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1280,6 +1384,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #6",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1293,6 +1398,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1304,6 +1410,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #60",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1317,6 +1424,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1328,6 +1436,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #61",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1341,6 +1450,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1352,6 +1462,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #62",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1365,6 +1476,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1376,6 +1488,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #63",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1389,6 +1502,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1400,6 +1514,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #64",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1413,6 +1528,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1424,6 +1540,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #65",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1437,6 +1554,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1448,6 +1566,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #66",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1461,6 +1580,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1472,6 +1592,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #67",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1485,6 +1606,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1496,6 +1618,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #68",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1509,6 +1632,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1520,6 +1644,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #69",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1533,6 +1658,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1544,6 +1670,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #7",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1557,6 +1684,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1568,6 +1696,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #70",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1581,6 +1710,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1592,6 +1722,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #71",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1605,6 +1736,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1616,6 +1748,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #72",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1629,6 +1762,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1640,6 +1774,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #73",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1653,6 +1788,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1664,6 +1800,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #74",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1677,6 +1814,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1688,6 +1826,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #75",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1701,6 +1840,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1712,6 +1852,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #76",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1725,6 +1866,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1736,6 +1878,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1749,6 +1892,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1760,6 +1904,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "PCU Current #9",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -1773,6 +1918,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1784,6 +1930,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Total PCU Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1576,
@@ -1797,6 +1944,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1808,6 +1956,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 267,
@@ -1821,6 +1970,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1832,6 +1982,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 447,
@@ -1845,6 +1996,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1856,6 +2008,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 56,
@@ -1869,6 +2022,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1880,6 +2034,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #4",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 40,
@@ -1893,6 +2048,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1904,6 +2060,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #5",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 325,
@@ -1917,6 +2074,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1928,6 +2086,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #6",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 286,
@@ -1941,6 +2100,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1952,6 +2112,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #7",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 98,
@@ -1965,6 +2126,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1976,6 +2138,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Shunt Current #8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 63,
@@ -1989,6 +2152,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": "string_to_float",
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2000,6 +2164,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "System Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1580,
@@ -2013,6 +2178,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2024,6 +2190,7 @@
                     "sensor_type": "psHighestSeverityLevel",
                     "sensor_descr": "System Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2037,6 +2204,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "psHighestSeverityLevel"
                 },
                 {
@@ -2048,6 +2216,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "Sense DC Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 54.01,
@@ -2061,6 +2230,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2072,6 +2242,7 @@
                     "sensor_type": "netsure",
                     "sensor_descr": "System DC Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 54.01,
@@ -2085,6 +2256,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -2092,21 +2264,18 @@
                 {
                     "state_name": "psHighestSeverityLevel",
                     "state_descr": "normal",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "psHighestSeverityLevel",
                     "state_descr": "minor",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "psHighestSeverityLevel",
                     "state_descr": "major",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Disk.php
  *
@@ -18,13 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Validations;
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 use LibreNMS\Validator;
 
 class Disk extends BaseValidation
@@ -33,18 +35,18 @@ class Disk extends BaseValidation
      * Validate this module.
      * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
      *
-     * @param Validator $validator
+     * @param  Validator  $validator
      */
-    public function validate(Validator $validator)
+    public function validate(Validator $validator): void
     {
         // Disk space and permission checks
-        $temp_dir = Config::get('temp_dir');
+        $temp_dir = LibrenmsConfig::get('temp_dir');
         if (substr(sprintf('%o', fileperms($temp_dir)), -3) != 777) {
             $validator->warn("Your tmp directory ($temp_dir) " .
                 "is not set to 777 so graphs most likely won't be generated");
         }
 
-        $rrd_dir = Config::get('rrd_dir');
+        $rrd_dir = LibrenmsConfig::get('rrd_dir');
         $space_check = (disk_free_space($rrd_dir) / 1024 / 1024);
         if ($space_check < 512 && $space_check > 1) {
             $validator->warn("Disk space where $rrd_dir is located is less than 512Mb");

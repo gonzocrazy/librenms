@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MapquestGeocodeApi.php
  *
@@ -18,47 +19,44 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\ApiClients;
 
+use App\Facades\LibrenmsConfig;
 use Exception;
-use LibreNMS\Config;
+use Illuminate\Http\Client\Response;
 use LibreNMS\Interfaces\Geocoder;
 
 class MapquestApi extends BaseApi implements Geocoder
 {
     use GeocodingHelper;
 
-    protected $base_uri = 'https://open.mapquestapi.com';
-    protected $geocoding_uri = '/geocoding/v1/address';
+    protected string $base_uri = 'https://mapquestapi.com';
+    protected string $geocoding_uri = '/geocoding/v1/address';
 
     /**
      * Get latitude and longitude from geocode response
-     *
-     * @param array $data
-     * @return array
      */
-    protected function parseLatLng($data)
+    protected function parseLatLng(array $data): array
     {
         return [
-            'lat' => isset($data['results'][0]['locations'][0]['latLng']['lat']) ? $data['results'][0]['locations'][0]['latLng']['lat'] : 0,
-            'lng' => isset($data['results'][0]['locations'][0]['latLng']['lng']) ? $data['results'][0]['locations'][0]['latLng']['lng'] : 0,
+            'lat' => $data['results'][0]['locations'][0]['latLng']['lat'] ?? 0,
+            'lng' => $data['results'][0]['locations'][0]['latLng']['lng'] ?? 0,
         ];
     }
 
     /**
-     * Build Guzzle request option array
+     * Build request option array
      *
-     * @param string $address
-     * @return array
-     * @throws \Exception you may throw an Exception if validation fails
+     * @throws Exception you may throw an Exception if validation fails
      */
-    protected function buildGeocodingOptions($address)
+    protected function buildGeocodingOptions(string $address): array
     {
-        $api_key = Config::get('geoloc.api_key');
+        $api_key = LibrenmsConfig::get('geoloc.api_key');
         if (! $api_key) {
             throw new Exception('MapQuest API key missing, set geoloc.api_key');
         }
@@ -74,13 +72,9 @@ class MapquestApi extends BaseApi implements Geocoder
 
     /**
      * Checks if the request was a success
-     *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     * @param array $data decoded response data
-     * @return bool
      */
-    protected function checkResponse($response, $data)
+    protected function checkResponse(Response $response, array $data): bool
     {
-        return $response->getStatusCode() == 200 && $data['info']['statuscode'] == 0;
+        return $response->successful() && $data['info']['statuscode'] == 0;
     }
 }

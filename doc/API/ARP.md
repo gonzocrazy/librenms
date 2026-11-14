@@ -1,6 +1,3 @@
-source: API/ARP.md
-path: blob/master/doc/
-
 ### `list_arp`
 
 Retrieve a specific ARP entry or all ARP entries for a device
@@ -15,15 +12,15 @@ Query can be:
 
 Input:
 
-- device if you specify all for the query then you need to populate this
-  with the hostname or id of the device.
+- device: with the query `all`, give the hostname or the id of the
+  device here.
 
 Example:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/resources/ip/arp/1.1.1.1
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/resources/ip/arp/192.168.1.0/24
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/resources/ip/arp/all?device=localhost
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/resources/ip/arp/1.1.1.1
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/resources/ip/arp/192.168.1.0/24
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/resources/ip/arp/all?device=localhost
 ```
 
 Output:

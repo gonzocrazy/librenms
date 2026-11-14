@@ -1,19 +1,19 @@
-<h3> Applications </h3>
 <?php
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 
+$device = DeviceCache::getPrimary();
 // Load our list of available applications
 $applications = [];
-foreach (glob(Config::get('install_dir') . '/includes/polling/applications/*.inc.php') as $file) {
+foreach (glob(LibrenmsConfig::get('install_dir') . '/includes/polling/applications/*.inc.php') as $file) {
     $name = basename($file, '.inc.php');
     $applications[$name] = $name;
 }
 
 // Generate a list of enabled apps with a value of whether they are discovered or not
 $enabled_apps = array_reduce(dbFetchRows(
-    'SELECT `app_type`,`discovered` FROM `applications` WHERE `device_id`=? ORDER BY `app_type`',
-    [$device['device_id']]
+    'SELECT `app_type`,`discovered` FROM `applications` WHERE `device_id`=? AND deleted_at IS NULL ORDER BY `app_type`',
+    [$device->device_id]
 ), function ($result, $app) {
     $result[$app['app_type']] = $app['discovered'];
 
@@ -28,7 +28,7 @@ foreach ($applications as $app) {
     if (isset($enabled_apps[$app])) {
         $modifiers = ' checked';
         if ($enabled_apps[$app]
-            && (get_dev_attrib($device, 'poll_applications') || Config::getOsSetting($device['os'], 'poller_modules.applications'))
+            && ($device->getAttrib('poll_applications') || LibrenmsConfig::getOsSetting($device->os, 'poller_modules.applications'))
         ) {
             $app_text .= '<span class="text-success"> (Discovered)</span>';
             $modifiers .= ' disabled';
@@ -37,7 +37,7 @@ foreach ($applications as $app) {
 
     echo '<li class="list-group-item col-xs-12 col-md-6 col-lg-4">';
     echo "<input style='visibility:hidden;width:100px;' type='checkbox' name='application' data-size='small'";
-    echo " data-application='$app' data-device_id='{$device['device_id']}'$modifiers>";
+    echo " data-application='$app' data-device_id='{$device->device_id}'$modifiers>";
     echo '<span style="font-size:medium;padding-left:5px;"> ' . $app_text . '</span>';
     echo '</li>';
 }

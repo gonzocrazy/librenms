@@ -3,13 +3,11 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'nvidia';
-$app_id = $app['app_id'];
-
 $options = '-Oqv';
 $oid = '.1.3.6.1.4.1.8072.1.3.2.3.1.2.6.110.118.105.100.105.97';
 $gpus = snmp_walk($device, $oid, $options);
 
-$gpuArray = explode("\n", $gpus);
+$gpuArray = explode("\n", (string) $gpus);
 
 $rrd_def = RrdDefinition::make()
     ->addDataset('pwr', 'GAUGE', 0)
@@ -34,18 +32,22 @@ $sm_total = 0;
 $metrics = [];
 foreach ($gpuArray as $index => $gpu) {
     $stats = explode(',', $gpu);
-
-    if (count($stats) == 19) {
+    $stats_count = count($stats);
+    if ($stats_count == 22 || $stats_count == 23) {
+        [$gpu, $pwr, $temp, $memtemp, $sm, $mem, $enc, $dec, $jpg, $ofa,
+            $mclk, $pclk, $pviol, $tviol, $fb, $bar1, $ccpm, $sbecc, $dbecc,
+            $pci, $rxpci, $txpci] = $stats;
+    } elseif ($stats_count == 19 || $stats_count == 20) {
         [$gpu, $pwr, $temp, $memtemp, $sm, $mem, $enc, $dec, $mclk, $pclk, $pviol, $tviol,
-        $fb, $bar1, $sbecc, $dbecc, $pci, $rxpci, $txpci] = $stats;
+            $fb, $bar1, $sbecc, $dbecc, $pci, $rxpci, $txpci] = $stats;
     } else {
         [$gpu, $pwr, $temp, $sm, $mem, $enc, $dec, $mclk, $pclk, $pviol, $tviol,
-        $fb, $bar1, $sbecc, $dbecc, $pci, $rxpci, $txpci] = $stats;
+            $fb, $bar1, $sbecc, $dbecc, $pci, $rxpci, $txpci] = $stats;
     }
 
     $sm_total += $sm;
 
-    $rrd_name = ['app', $name, $app_id, $index];
+    $rrd_name = ['app', $name, $app->app_id, $index];
 
     $fields = [
         'pwr' => $pwr,
@@ -68,8 +70,8 @@ foreach ($gpuArray as $index => $gpu) {
     ];
     $metrics[$index] = $fields;
 
-    $tags = ['name' => $name, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-    data_update($device, 'app', $tags, $fields);
+    $tags = ['name' => $name, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+    app('Datastore')->put($device, 'app', $tags, $fields);
 }
 $sm_average = ($sm_total ? ($sm_total / count($gpuArray)) : 0);
 

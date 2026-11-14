@@ -2,16 +2,16 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class EventlogSensorReferenceCleanup extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        foreach (\App\Models\Sensor::getTypes() as $type) {
+        foreach (\LibreNMS\Enum\SensorType::values() as $type) {
             DB::table('eventlog')->where('type', ucfirst($type))->update(['type' => $type]);
         }
     }
@@ -21,10 +21,10 @@ class EventlogSensorReferenceCleanup extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        foreach (\App\Models\Sensor::getTypes() as $type) {
+        foreach (\LibreNMS\Enum\SensorType::values() as $type) {
             DB::table('eventlog')->where('type', $type)->update(['type' => ucfirst($type)]);
         }
     }
-}
+};

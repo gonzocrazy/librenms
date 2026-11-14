@@ -1,4 +1,5 @@
 <?php
+
 /**
  * airflow.inc.php
  *
@@ -18,11 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$class = 'airflow';
-$unit = 'CFM';
-$graph_type = 'sensor_airflow';
+$class = \LibreNMS\Enum\SensorType::Airflow;
 
 require 'sensors.inc.php';

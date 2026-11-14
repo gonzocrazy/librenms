@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RipeNccApiController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,21 +29,23 @@ namespace App\Http\Controllers\Ajax;
 use App\ApiClients\RipeApi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use LibreNMS\Exceptions\ApiException;
+use LibreNMS\Exceptions\ApiClientException;
 
 class RipeNccApiController extends Controller
 {
     public function raw(Request $request, RipeApi $api)
     {
+        $this->authorize('tools.ripe');
+
         $this->validate($request, [
             'data_param' => 'required|in:whois,abuse-contact-finder',
             'query_param' => 'required|ip_or_hostname',
         ]);
 
-        $is_whois = $request->get('data_param') == 'whois';
+        $is_whois = $request->input('data_param') == 'whois';
 
         try {
-            $resource = $request->get('query_param');
+            $resource = $request->input('query_param');
             $output = $is_whois ? $api->getWhois($resource) : $api->getAbuseContact($resource);
 
             return response()->json([
@@ -49,14 +53,14 @@ class RipeNccApiController extends Controller
                 'message' => 'Queried',
                 'output' => $output,
             ]);
-        } catch (ApiException $e) {
+        } catch (ApiClientException $e) {
             $response = $e->getOutput();
             $message = $e->getMessage();
 
             if (isset($response['messages'])) {
                 $message .= ': ' . collect($response['messages'])
                         ->flatten()
-                        ->reject('error')
+                        ->reject(fn ($value, $key) => $value != 'error')
                         ->implode(', ');
             }
 

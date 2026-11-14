@@ -3,18 +3,18 @@
         "discovery": {
             "devices": [
                 {
-                    "sysName": "",
+                    "sysName": null,
                     "sysObjectID": ".1.3.6.1.4.1.24681",
                     "sysDescr": "Linux hostname 4.2.2",
                     "sysContact": null,
                     "version": "4.3.3",
                     "hardware": "TVS-871U-RP",
                     "features": null,
+                    "location": null,
                     "os": "qnap",
                     "type": "storage",
                     "serial": "Q157I12451",
-                    "icon": "qnap.svg",
-                    "location": null
+                    "icon": "qnap.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth3",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -357,9 +336,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -369,15 +345,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth2",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -464,9 +436,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -476,15 +445,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth1",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -571,9 +536,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -583,15 +545,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "bond0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -678,9 +636,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -690,15 +645,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "bond1",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -785,9 +736,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -797,15 +745,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "br0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -896,9 +840,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -908,15 +849,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1003,9 +940,6 @@
                     "ifSpeed": 1000000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 1000,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1015,15 +949,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "00089bf14623",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1110,9 +1040,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1122,15 +1049,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth3",
                     "ifPhysAddress": "00089bf14626",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1217,9 +1140,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1229,15 +1149,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth2",
                     "ifPhysAddress": "00089bf14625",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1324,9 +1240,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1336,15 +1249,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth1",
                     "ifPhysAddress": "00089bf14624",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1431,9 +1340,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1443,15 +1349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "bond0",
                     "ifPhysAddress": "56de827b966d",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1538,9 +1440,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "down",
@@ -1550,15 +1449,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "bond1",
                     "ifPhysAddress": "52a9ffc647f8",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1645,9 +1540,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1657,15 +1549,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "br0",
                     "ifPhysAddress": "00089bf14623",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1746,7 +1634,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 768,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.768",
                     "processor_index": "768",
@@ -1757,7 +1644,6 @@
                     "processor_perc_warn": 75
                 },
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 769,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.769",
                     "processor_index": "769",
@@ -1768,7 +1654,6 @@
                     "processor_perc_warn": 75
                 },
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 770,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.770",
                     "processor_index": "770",
@@ -1779,7 +1664,6 @@
                     "processor_perc_warn": 75
                 },
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 771,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.771",
                     "processor_index": "771",
@@ -1912,6 +1796,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "FAN 1",
                     "group": "System enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4504,
@@ -1925,6 +1810,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1936,6 +1822,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "FAN 2",
                     "group": "System enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4451,
@@ -1949,6 +1836,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1960,6 +1848,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "FAN 3",
                     "group": "System enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4373,
@@ -1973,6 +1862,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1984,6 +1874,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "FAN 4",
                     "group": "System enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 6480,
@@ -1997,6 +1888,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2008,6 +1900,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "FAN 5",
                     "group": "System enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 6480,
@@ -2021,6 +1914,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2032,6 +1926,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 1",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2045,6 +1940,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2056,6 +1952,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 10",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2069,6 +1966,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2080,6 +1978,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 11",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2093,6 +1992,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2104,6 +2004,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 12",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2117,6 +2018,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2128,6 +2030,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 13",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2141,6 +2044,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2152,6 +2056,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 14",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2165,6 +2070,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2176,6 +2082,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 15",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2189,6 +2096,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2200,6 +2108,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 16",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2213,6 +2122,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2224,6 +2134,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 17",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2237,6 +2148,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2248,6 +2160,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 18",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2261,6 +2174,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2272,6 +2186,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 19",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2285,6 +2200,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2296,6 +2212,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 2",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2309,6 +2226,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2320,6 +2238,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 20",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2333,6 +2252,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2344,6 +2264,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 3",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2357,6 +2278,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2368,6 +2290,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 4",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2381,6 +2304,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2392,6 +2316,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 5",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2405,6 +2330,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2416,6 +2342,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 6",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2429,6 +2356,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2440,6 +2368,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 7",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2453,6 +2382,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2464,6 +2394,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 8",
                     "group": "Disk S.M.A.R.T. enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2477,6 +2408,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2488,6 +2420,7 @@
                     "sensor_type": "diskSmartInfo",
                     "sensor_descr": "Disk 9",
                     "group": "Disk S.M.A.R.T. enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2501,6 +2434,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "diskSmartInfo"
                 },
                 {
@@ -2512,6 +2446,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 1",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2525,6 +2460,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2536,6 +2472,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 2",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2549,6 +2486,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2560,6 +2498,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 3",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2573,6 +2512,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2584,6 +2524,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 4",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2597,6 +2538,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2608,6 +2550,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 5",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2621,6 +2564,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2632,6 +2576,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 6",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2645,6 +2590,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2656,6 +2602,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 7",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2669,6 +2616,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2680,6 +2628,7 @@
                     "sensor_type": "hdStatus",
                     "sensor_descr": "Disk 8",
                     "group": "Disk Status",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2693,6 +2642,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "hdStatus"
                 },
                 {
@@ -2704,6 +2654,7 @@
                     "sensor_type": "systemFanStatus",
                     "sensor_descr": "FAN 1",
                     "group": "FANs enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2717,6 +2668,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemFanStatus"
                 },
                 {
@@ -2728,6 +2680,7 @@
                     "sensor_type": "systemFanStatus",
                     "sensor_descr": "FAN 2",
                     "group": "FANs enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2741,6 +2694,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemFanStatus"
                 },
                 {
@@ -2752,6 +2706,7 @@
                     "sensor_type": "systemFanStatus",
                     "sensor_descr": "FAN 3",
                     "group": "FANs enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2765,6 +2720,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemFanStatus"
                 },
                 {
@@ -2776,6 +2732,7 @@
                     "sensor_type": "systemFanStatus",
                     "sensor_descr": "FAN 4",
                     "group": "FANs enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2789,6 +2746,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemFanStatus"
                 },
                 {
@@ -2800,6 +2758,7 @@
                     "sensor_type": "systemFanStatus",
                     "sensor_descr": "FAN 5",
                     "group": "FANs enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2813,6 +2772,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemFanStatus"
                 },
                 {
@@ -2824,6 +2784,7 @@
                     "sensor_type": "systemPowerStatus",
                     "sensor_descr": "PSU 1",
                     "group": "PSUs enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2837,6 +2798,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemPowerStatus"
                 },
                 {
@@ -2848,6 +2810,7 @@
                     "sensor_type": "systemPowerStatus",
                     "sensor_descr": "PSU 2",
                     "group": "PSUs enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2861,6 +2824,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemPowerStatus"
                 },
                 {
@@ -2872,6 +2836,7 @@
                     "sensor_type": "systemPowerStatus",
                     "sensor_descr": "PSU 3",
                     "group": "PSUs enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2885,6 +2850,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemPowerStatus"
                 },
                 {
@@ -2896,6 +2862,7 @@
                     "sensor_type": "systemPowerStatus",
                     "sensor_descr": "PSU 4",
                     "group": "PSUs enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2909,6 +2876,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemPowerStatus"
                 },
                 {
@@ -2920,6 +2888,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 1 WDC WD6003FFBX-68MU3N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -2933,6 +2902,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2944,6 +2914,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 10 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -2957,6 +2928,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2968,6 +2940,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 11 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 31,
@@ -2981,6 +2954,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2992,6 +2966,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 12 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 32,
@@ -3005,6 +2980,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3016,6 +2992,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 13 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -3029,6 +3006,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3040,6 +3018,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 14 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -3053,6 +3032,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3064,6 +3044,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 15 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 46,
@@ -3077,6 +3058,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3088,6 +3070,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 16 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 45,
@@ -3101,6 +3084,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3112,6 +3096,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 17 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 39,
@@ -3125,6 +3110,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3136,6 +3122,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 18 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 41,
@@ -3149,6 +3136,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3160,6 +3148,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 19 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 45,
@@ -3173,6 +3162,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3184,6 +3174,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 2 WDC WD6003FFBX-68MU3N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -3197,6 +3188,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3208,6 +3200,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 20 Seagate ST8000VN0022-2EL112 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 42,
@@ -3221,6 +3214,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3232,6 +3226,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 3 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -3245,6 +3240,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3256,6 +3252,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 4 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -3269,6 +3266,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3280,6 +3278,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 5 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 27,
@@ -3293,6 +3292,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3304,6 +3304,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 6 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -3317,6 +3318,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3328,6 +3330,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 7 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -3341,6 +3344,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3352,6 +3356,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 8 WDC WD6001FFWX-68Z39N0 (SATA)",
                     "group": "Disks enclosure 0",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -3365,6 +3370,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3376,6 +3382,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Disk 9 WDC WD6002FFWX-68TZ4N0 (SATA)",
                     "group": "Disks enclosure 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 27,
@@ -3389,6 +3396,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3400,6 +3408,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Enclosure 0",
                     "group": "System",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 33,
@@ -3413,6 +3422,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -3424,6 +3434,7 @@
                     "sensor_type": "qnap",
                     "sensor_descr": "Enclosure 1",
                     "group": "System",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 32,
@@ -3437,6 +3448,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -3444,91 +3456,78 @@
                 {
                     "state_name": "diskSmartInfo",
                     "state_descr": "Error",
-                    "state_draw_graph": 0,
                     "state_value": -1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "diskSmartInfo",
                     "state_descr": "Good",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "diskSmartInfo",
                     "state_descr": "Warning",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "diskSmartInfo",
                     "state_descr": "Abnormal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "hdStatus",
                     "state_descr": "RW Error",
-                    "state_draw_graph": 0,
                     "state_value": -9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "hdStatus",
                     "state_descr": "Invalid",
-                    "state_draw_graph": 0,
                     "state_value": -6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "hdStatus",
                     "state_descr": "No Disk",
-                    "state_draw_graph": 0,
                     "state_value": -5,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "hdStatus",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 0,
                     "state_value": -4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "hdStatus",
                     "state_descr": "Ready",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemFanStatus",
                     "state_descr": "Fail",
-                    "state_draw_graph": 0,
                     "state_value": -1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemFanStatus",
                     "state_descr": "Ok",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemPowerStatus",
                     "state_descr": "Fail",
-                    "state_draw_graph": 0,
                     "state_value": -1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemPowerStatus",
                     "state_descr": "Ok",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 }
@@ -3540,138 +3539,132 @@
         "discovery": {
             "storage": [
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "31",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/mnt/HDA_ROOT",
                     "storage_size": 517427200,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 126971904,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.31",
+                    "storage_free": 390455296,
+                    "storage_free_oid": null,
+                    "storage_perc": 25,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "33",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/share/CACHEDEV1_DATA",
                     "storage_size": 23435388878848,
+                    "storage_size_oid": null,
                     "storage_units": 16384,
                     "storage_used": 16456484995072,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.33",
+                    "storage_free": 6978903883776,
+                    "storage_free_oid": null,
+                    "storage_perc": 70,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "34",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/share/CACHEDEV2_DATA",
                     "storage_size": 29332320665600,
+                    "storage_size_oid": null,
                     "storage_units": 16384,
                     "storage_used": 17684859076608,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.34",
+                    "storage_free": 11647461588992,
+                    "storage_free_oid": null,
+                    "storage_perc": 60,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "35",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/share/CACHEDEV3_DATA",
                     "storage_size": 39177245097984,
+                    "storage_size_oid": null,
                     "storage_units": 32768,
                     "storage_used": 34752595132416,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.35",
+                    "storage_free": 4424649965568,
+                    "storage_free_oid": null,
+                    "storage_perc": 89,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "36",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/mnt/ext",
                     "storage_size": 372228096,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 346607616,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.36",
+                    "storage_free": 25620480,
+                    "storage_free_oid": null,
+                    "storage_perc": 93,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 }
             ]
         },
-        "poller": {
-            "storage": [
+        "poller": "matches discovery"
+    },
+    "entity-physical": {
+        "discovery": {
+            "entPhysical": [
                 {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "31",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/mnt/HDA_ROOT",
-                    "storage_size": 517427200,
-                    "storage_units": 4096,
-                    "storage_used": 126971904,
-                    "storage_free": 390455296,
-                    "storage_perc": 25,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "entPhysicalIndex": 1,
+                    "entPhysicalDescr": "QNAP Turbo NAS TVS-871U-RP",
+                    "entPhysicalClass": "chassis",
+                    "entPhysicalName": "Turbo NAS TVS-871U-RP",
+                    "entPhysicalHardwareRev": "1.0",
+                    "entPhysicalFirmwareRev": "\\\"4.3.3",
+                    "entPhysicalSoftwareRev": "\\4.3.3",
+                    "entPhysicalAlias": "",
+                    "entPhysicalAssetID": "",
+                    "entPhysicalIsFRU": "0",
+                    "entPhysicalModelName": "TVS-871U-RP",
+                    "entPhysicalVendorType": "zeroDotZero.0",
+                    "entPhysicalSerialNum": "Q157I12451",
+                    "entPhysicalContainedIn": 0,
+                    "entPhysicalParentRelPos": 0,
+                    "entPhysicalMfgName": "QNAP",
+                    "entPhysicalMfgDate": "",
+                    "ifIndex": null
+                }
+            ]
+        },
+        "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.3.19.10",
+                    "ipv4_prefixlen": 25,
+                    "context_name": "",
+                    "ipv4_network": "10.3.19.0/25",
+                    "ifIndex": 8
                 },
                 {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "33",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/share/CACHEDEV1_DATA",
-                    "storage_size": 23435388878848,
-                    "storage_units": 16384,
-                    "storage_used": 16456484995072,
-                    "storage_free": 6978903883776,
-                    "storage_perc": 70,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "34",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/share/CACHEDEV2_DATA",
-                    "storage_size": 29332320665600,
-                    "storage_units": 16384,
-                    "storage_used": 17684859076608,
-                    "storage_free": 11647461588992,
-                    "storage_perc": 60,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "35",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/share/CACHEDEV3_DATA",
-                    "storage_size": 39177245097984,
-                    "storage_units": 32768,
-                    "storage_used": 34752595132416,
-                    "storage_free": 4424649965568,
-                    "storage_perc": 89,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "36",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/mnt/ext",
-                    "storage_size": 372228096,
-                    "storage_units": 4096,
-                    "storage_used": 346607616,
-                    "storage_free": 25620480,
-                    "storage_perc": 93,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 8,
+                    "context_name": "",
+                    "ipv4_network": "127.0.0.0/8",
+                    "ifIndex": 1
                 }
             ]
         }

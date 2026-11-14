@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FileCategorizerTest.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,15 +30,15 @@ use Illuminate\Support\Arr;
 use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\FileCategorizer;
 
-class FileCategorizerTest extends TestCase
+final class FileCategorizerTest extends TestCase
 {
-    public function testEmptyFiles()
+    public function testEmptyFiles(): void
     {
         $cat = new FileCategorizer();
         $this->assertEquals($this->getCategorySkeleton(), $cat->categorize());
     }
 
-    public function testIgnoredFiles()
+    public function testIgnoredFiles(): void
     {
         $this->assertCategorized([], [
             'docs/Nothing.md',
@@ -52,7 +54,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testPhpFiles()
+    public function testPhpFiles(): void
     {
         $this->assertCategorized([
             'php' => [
@@ -64,7 +66,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testDocsFiles()
+    public function testDocsFiles(): void
     {
         $this->assertCategorized([
             'docs' => [
@@ -75,7 +77,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testPython()
+    public function testPython(): void
     {
         $this->assertCategorized([
             'python' => [
@@ -85,7 +87,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testBash()
+    public function testBash(): void
     {
         $this->assertCategorized([
             'bash' => [
@@ -95,7 +97,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testSvg()
+    public function testSvg(): void
     {
         $this->assertCategorized([
             'svg' => [
@@ -106,12 +108,12 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testResources()
+    public function testResources(): void
     {
         $this->assertCategorized([
             'resources' => [
                 'resources/js/app.js',
-                'resources/js/components/LibrenmsSetting.vue',
+                'resources/js/components/alpine/settings.js',
                 'resources/views/layouts/librenmsv1.blade.php',
             ],
             'php' => [
@@ -120,7 +122,7 @@ class FileCategorizerTest extends TestCase
         ]);
     }
 
-    public function testOsFiles()
+    public function testOsFiles(): void
     {
         $this->assertCategorized([
             'os' => ['ftd', '3com', 'adva_fsp150', 'saf-integra-b'],
@@ -173,13 +175,13 @@ class FileCategorizerTest extends TestCase
         $this->assertCategorized([
             'os' => ['dlink', 'eltex-olt'],
             'os-files' => [
-                'includes/definitions/dlink.yaml',
-                'includes/definitions/discovery/eltex-olt.yaml',
+                'resources/definitions/os_detection/dlink.yaml',
+                'resources/definitions/os_discovery/eltex-olt.yaml',
             ],
         ]);
     }
 
-    public function testFullChecks()
+    public function testFullChecks(): void
     {
         $this->assertCategorized(['full-checks' => ['composer.lock']]);
         $this->assertCategorized(['full-checks' => ['.github/workflows/test.yml']], ['other', '.github/workflows/test.yml']);
@@ -190,8 +192,8 @@ class FileCategorizerTest extends TestCase
                 'tests/data/3com.json',
                 'tests/snmpsim/calix.snmprec',
                 'LibreNMS/OS/Ptp650.php',
-                'includes/definitions/dd-wrt.yaml',
-                'includes/definitions/discovery/arista_eos.yaml',
+                'resources/definitions/os_detection/dd-wrt.yaml',
+                'resources/definitions/os_discovery/arista_eos.yaml',
             ],
             'php' => [
                 'LibreNMS/OS/Ptp650.php',
@@ -201,8 +203,8 @@ class FileCategorizerTest extends TestCase
             'tests/data/3com.json',
             'tests/snmpsim/calix.snmprec',
             'LibreNMS/OS/Ptp650.php',
-            'includes/definitions/dd-wrt.yaml',
-            'includes/definitions/discovery/arista_eos.yaml',
+            'resources/definitions/os_detection/dd-wrt.yaml',
+            'resources/definitions/os_discovery/arista_eos.yaml',
         ]);
     }
 
@@ -211,7 +213,7 @@ class FileCategorizerTest extends TestCase
         $files = $input ?? array_unique(Arr::flatten(Arr::except($expected, ['os']))); // os is a virtual category
         $expected = array_merge($this->getCategorySkeleton(), $expected);
 
-        $this->assertEquals($expected, (new FileCategorizer($files))->categorize(), $message);
+        $this->assertEquals($expected, new FileCategorizer($files)->categorize(), $message);
     }
 
     private function getCategorySkeleton()

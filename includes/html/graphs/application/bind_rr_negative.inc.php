@@ -9,7 +9,7 @@ $unit_text = 'RR sets';
 $colours = 'psychedelic';
 $rrd_list = [];
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'bind', $app['app_id'], 'rrnegative']);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'bind', $app->app_id, 'rrnegative']);
 $array = [
     'any',
     'a',
@@ -55,16 +55,12 @@ $array = [
     'ixfr',
     'opt',
 ];
-if (Rrd::checkRrdExists($rrd_filename)) {
-    foreach ($array as $ds) {
-        $rrd_list[] = [
-            'filename' => $rrd_filename,
-            'descr' => '!' . strtoupper($ds),
-            'ds' => $ds,
-        ];
-    }
-} else {
-    echo "file missing: $file";
+foreach ($array as $ds) {
+    $rrd_list[] = [
+        'filename' => $rrd_filename,
+        'descr' => '!' . strtoupper($ds),
+        'ds' => $ds,
+    ];
 }
 
 require 'includes/html/graphs/generic_multi_line.inc.php';

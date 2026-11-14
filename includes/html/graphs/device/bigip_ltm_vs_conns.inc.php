@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LibreNMS module to display F5 LTM Virtual Server Details
  *
@@ -35,7 +36,6 @@ if (isset($components[$vars['id']])) {
         $colour_area_max = '9999cc';
 
         $graph_max = 1;
-        $graph_min = 0;
 
         $unit_text = 'Total Connections';
         $line_text = 'Connections';

@@ -5,7 +5,7 @@ $i = 0;
 $scale_min = 0;
 $nototal = 1;
 $unit_text = 'Per Sec.';
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'freeradius-queue', $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'freeradius-queue', $app->app_id]);
 $fr_queue_array = [
     'len_internal' => 'Len Internal',
     'len_proxy' => 'Len Proxy',
@@ -25,6 +25,6 @@ if (Rrd::checkRrdExists($rrd_filename)) {
         $i++;
     }
 } else {
-    echo "file missing: $rrd_filename";
+    throw new \LibreNMS\Exceptions\RrdGraphException("No Data file $rrd_filename");
 }
 require 'includes/html/graphs/generic_multi_line.inc.php';

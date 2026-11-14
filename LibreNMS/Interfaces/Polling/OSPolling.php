@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OSPolling.php
  *
@@ -18,11 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Interfaces\Polling;
+
+use LibreNMS\Interfaces\Data\DataStorageInterface;
 
 interface OSPolling
 {
@@ -30,5 +34,5 @@ interface OSPolling
      * Poll additional OS data.
      * Data must be manually saved within this method.
      */
-    public function pollOS();
+    public function pollOS(DataStorageInterface $datastore): void;
 }

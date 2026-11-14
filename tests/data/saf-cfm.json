@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "saf-cfm",
                     "type": "wireless",
                     "serial": null,
-                    "icon": "saf.png",
-                    "location": "<private>"
+                    "icon": "saf.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "Nucleus NET Software Loopback Interface",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Samsung KS50100 Ethernet: Software revision 5.1",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "slip",
                     "ifAlias": "SLIP interface: Software revision 1.0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -357,9 +336,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -369,15 +345,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "Nucleus NET Software Magement Interface",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -468,9 +440,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -480,15 +449,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "Nucleus NET Software Loopback Interface",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 514,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -575,9 +540,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -587,15 +549,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Samsung KS50100 Ethernet: Software revision 5.1",
                     "ifPhysAddress": "0004a6807d18",
-                    "ifHardType": null,
                     "ifLastChange": 524,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -682,9 +640,6 @@
                     "ifSpeed": 115200,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -694,15 +649,11 @@
                     "ifType": "slip",
                     "ifAlias": "SLIP interface: Software revision 1.0",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 524,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -789,9 +740,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -801,15 +749,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "Nucleus NET Software Magement Interface",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 525,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -890,7 +834,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.7571.100.1.1.2.22.1.28.0",
                     "processor_index": "0",
@@ -916,6 +859,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "ODU-1 Amp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0.45,
@@ -929,6 +873,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -940,6 +885,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "ODU-2 Amp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0.45,
@@ -953,6 +899,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -964,6 +911,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "OUD-1 Watt",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 10,
@@ -977,6 +925,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -988,6 +937,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "OUD-2 Watt",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 10,
@@ -1001,6 +951,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1012,6 +963,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "R1 cable attenuation",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1025,6 +977,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1036,6 +989,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "R2 cable attenuation",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -5,
@@ -1049,6 +1003,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1060,6 +1015,7 @@
                     "sensor_type": "activeLink",
                     "sensor_descr": "Active link",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1073,6 +1029,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "activeLink"
                 },
                 {
@@ -1084,6 +1041,7 @@
                     "sensor_type": "activeTx",
                     "sensor_descr": "Active TX",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1097,6 +1055,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "activeTx"
                 },
                 {
@@ -1108,6 +1067,7 @@
                     "sensor_type": "bbSyncLostAlarm",
                     "sensor_descr": "Sync",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1121,6 +1081,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "bbSyncLostAlarm"
                 },
                 {
@@ -1132,6 +1093,7 @@
                     "sensor_type": "forcedLink",
                     "sensor_descr": "Forced link",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1145,6 +1107,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "forcedLink"
                 },
                 {
@@ -1156,6 +1119,7 @@
                     "sensor_type": "rf1OduHumidity",
                     "sensor_descr": "R1 Humidity",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1169,6 +1133,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rf1OduHumidity"
                 },
                 {
@@ -1180,6 +1145,7 @@
                     "sensor_type": "rf1Operation",
                     "sensor_descr": "R1 Operation",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1193,6 +1159,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rf1Operation"
                 },
                 {
@@ -1204,6 +1171,7 @@
                     "sensor_type": "rf2OduHumidity",
                     "sensor_descr": "R2 Humidity",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1217,6 +1185,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rf2OduHumidity"
                 },
                 {
@@ -1228,6 +1197,7 @@
                     "sensor_type": "rf2Operation",
                     "sensor_descr": "R2 Operation",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1241,6 +1211,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rf2Operation"
                 },
                 {
@@ -1252,6 +1223,7 @@
                     "sensor_type": "switchEnabledForRxBer",
                     "sensor_descr": "Switch enabled for RX BER",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1265,6 +1237,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "switchEnabledForRxBer"
                 },
                 {
@@ -1276,6 +1249,7 @@
                     "sensor_type": "switchMode",
                     "sensor_descr": "Switch mode",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1289,6 +1263,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "switchMode"
                 },
                 {
@@ -1300,6 +1275,7 @@
                     "sensor_type": "termRf1CablePowerStatus",
                     "sensor_descr": "R1CblPwrStat",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1313,6 +1289,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "termRf1CablePowerStatus"
                 },
                 {
@@ -1324,6 +1301,7 @@
                     "sensor_type": "termRf2CablePowerStatus",
                     "sensor_descr": "R2CblPwrStat",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1337,6 +1315,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "termRf2CablePowerStatus"
                 },
                 {
@@ -1348,6 +1327,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "R1 odu temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1361,6 +1341,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1372,6 +1353,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "R2 odu temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1385,6 +1367,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1396,6 +1379,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "Idu temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 38,
@@ -1409,6 +1393,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1420,6 +1405,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-1 3V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3.53,
@@ -1433,6 +1419,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1444,6 +1431,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-2 3V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3.53,
@@ -1457,6 +1445,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1468,6 +1457,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-1 5V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5.06,
@@ -1481,6 +1471,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1492,6 +1483,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-2 5V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5.06,
@@ -1505,6 +1497,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1516,6 +1509,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-1 -5V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -5.28,
@@ -1529,6 +1523,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1540,6 +1535,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "PSU-2 -5V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -5.28,
@@ -1553,6 +1549,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1564,6 +1561,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "ODU-1 V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22.72,
@@ -1577,6 +1575,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1588,6 +1587,7 @@
                     "sensor_type": "saf-cfm",
                     "sensor_descr": "ODU-2 V",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22.72,
@@ -1601,6 +1601,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -1608,322 +1609,276 @@
                 {
                     "state_name": "activeLink",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "activeLink",
                     "state_descr": "Link 1",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "activeLink",
                     "state_descr": "Link 2",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "activeLink",
                     "state_descr": "Error",
-                    "state_draw_graph": 1,
                     "state_value": 255,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "activeTx",
                     "state_descr": "None",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "activeTx",
                     "state_descr": "Link 1",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "activeTx",
                     "state_descr": "Link 2",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "activeTx",
                     "state_descr": "Both",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "bbSyncLostAlarm",
                     "state_descr": "Ok",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "bbSyncLostAlarm",
                     "state_descr": "Alarm",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "forcedLink",
                     "state_descr": "Off",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "forcedLink",
                     "state_descr": "Link 1",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "forcedLink",
                     "state_descr": "Link 2",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "forcedLink",
                     "state_descr": "Error",
-                    "state_draw_graph": 1,
                     "state_value": 255,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rf1OduHumidity",
                     "state_descr": "Low",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rf1OduHumidity",
                     "state_descr": "High",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "None",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "Booting",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "Ok",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "Testing",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "Error",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rf1Operation",
                     "state_descr": "No data from ODU",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rf2OduHumidity",
                     "state_descr": "Low",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rf2OduHumidity",
                     "state_descr": "High",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "None",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "Booting",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "Ok",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "Testing",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "Error",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rf2Operation",
                     "state_descr": "No data from ODU",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "switchEnabledForRxBer",
                     "state_descr": "Disabled",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "switchEnabledForRxBer",
                     "state_descr": "Enabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "switchMode",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "switchMode",
                     "state_descr": "Frequency diversity",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "switchMode",
                     "state_descr": "Hot standby",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "switchMode",
                     "state_descr": "Independent",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "termRf1CablePowerStatus",
                     "state_descr": "false",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "termRf1CablePowerStatus",
                     "state_descr": "ok",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "termRf1CablePowerStatus",
                     "state_descr": "short",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "termRf1CablePowerStatus",
                     "state_descr": "error",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "termRf1CablePowerStatus",
                     "state_descr": "power-off",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "termRf2CablePowerStatus",
                     "state_descr": "false",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "termRf2CablePowerStatus",
                     "state_descr": "ok",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "termRf2CablePowerStatus",
                     "state_descr": "short",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "termRf2CablePowerStatus",
                     "state_descr": "error",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "termRf2CablePowerStatus",
                     "state_descr": "power-off",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 2
                 }
@@ -1936,14 +1891,14 @@
             "wireless_sensors": [
                 {
                     "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR1TxPower",
-                    "sensor_type": "saf-cfml4-tx-power",
-                    "sensor_descr": "Radio 1 Tx Power",
+                    "sensor_class": "errors",
+                    "sensor_index": "cfml4termBFrameErr",
+                    "sensor_type": "saf-cfml4",
+                    "sensor_descr": "Background Frame errors",
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_aggregator": "sum",
-                    "sensor_current": 27,
+                    "sensor_current": 68,
                     "sensor_prev": null,
                     "sensor_limit": null,
                     "sensor_limit_warn": null,
@@ -1953,70 +1908,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.8.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR1RxLevel",
-                    "sensor_type": "saf-cfml4-rx-level",
-                    "sensor_descr": "Radio 1 Rx Level",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": -54,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.10.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR2TxPower",
-                    "sensor_type": "saf-cfml4-tx-power",
-                    "sensor_descr": "Radio 2 Tx Power",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 27,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.8.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR2RxLevel",
-                    "sensor_type": "saf-cfml4-rx-level",
-                    "sensor_descr": "Radio 2 Rx Level",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": -51,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.10.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.29.0\"]",
+                    "rrd_type": "COUNTER"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2037,49 +1930,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.10.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "errors",
-                    "sensor_index": "cfml4termBFrameErr",
-                    "sensor_type": "saf-cfml4",
-                    "sensor_descr": "Background Frame errors",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 68,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.29.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "frequency",
-                    "sensor_index": "cfml4radioR1TxFrequency",
-                    "sensor_type": "saf-cfml4-tx",
-                    "sensor_descr": "Radio 1 Tx Frequency",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 7777.777,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.6.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.10.0\"]",
+                    "rrd_type": "COUNTER"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2100,28 +1952,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.7.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "frequency",
-                    "sensor_index": "cfml4radioR2TxFrequency",
-                    "sensor_type": "saf-cfml4-tx",
-                    "sensor_descr": "Radio 2 Tx Frequency",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 7777.333,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.6.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.7.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2142,23 +1974,20 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.7.0\"]"
-                }
-            ]
-        },
-        "poller": {
-            "wireless_sensors": [
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.7.0\"]",
+                    "rrd_type": "GAUGE"
+                },
                 {
                     "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR1TxPower",
-                    "sensor_type": "saf-cfml4-tx-power",
-                    "sensor_descr": "Radio 1 Tx Power",
+                    "sensor_class": "frequency",
+                    "sensor_index": "cfml4radioR1TxFrequency",
+                    "sensor_type": "saf-cfml4-tx",
+                    "sensor_descr": "Radio 1 Tx Frequency",
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_aggregator": "sum",
-                    "sensor_current": 27,
-                    "sensor_prev": 27,
+                    "sensor_current": 7777.777,
+                    "sensor_prev": null,
                     "sensor_limit": null,
                     "sensor_limit_warn": null,
                     "sensor_limit_low": null,
@@ -2167,7 +1996,30 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.8.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.6.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "frequency",
+                    "sensor_index": "cfml4radioR2TxFrequency",
+                    "sensor_type": "saf-cfml4-tx",
+                    "sensor_descr": "Radio 2 Tx Frequency",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 7777.333,
+                    "sensor_prev": null,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.6.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2179,7 +2031,7 @@
                     "sensor_multiplier": 1,
                     "sensor_aggregator": "sum",
                     "sensor_current": -54,
-                    "sensor_prev": -54,
+                    "sensor_prev": null,
                     "sensor_limit": null,
                     "sensor_limit_warn": null,
                     "sensor_limit_low": null,
@@ -2188,28 +2040,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.10.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "power",
-                    "sensor_index": "cfml4radioR2TxPower",
-                    "sensor_type": "saf-cfml4-tx-power",
-                    "sensor_descr": "Radio 2 Tx Power",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 27,
-                    "sensor_prev": 27,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.8.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.10.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2221,7 +2053,7 @@
                     "sensor_multiplier": 1,
                     "sensor_aggregator": "sum",
                     "sensor_current": -51,
-                    "sensor_prev": -51,
+                    "sensor_prev": null,
                     "sensor_limit": null,
                     "sensor_limit_warn": null,
                     "sensor_limit_low": null,
@@ -2230,7 +2062,78 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.10.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.10.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR1TxPower",
+                    "sensor_type": "saf-cfml4-tx-power",
+                    "sensor_descr": "Radio 1 Tx Power",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 27,
+                    "sensor_prev": null,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.8.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR2TxPower",
+                    "sensor_type": "saf-cfml4-tx-power",
+                    "sensor_descr": "Radio 2 Tx Power",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 27,
+                    "sensor_prev": null,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.8.0\"]",
+                    "rrd_type": "GAUGE"
+                }
+            ]
+        },
+        "poller": {
+            "wireless_sensors": [
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "errors",
+                    "sensor_index": "cfml4termBFrameErr",
+                    "sensor_type": "saf-cfml4",
+                    "sensor_descr": "Background Frame errors",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 68,
+                    "sensor_prev": 68,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.29.0\"]",
+                    "rrd_type": "COUNTER"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2251,49 +2154,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.10.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "errors",
-                    "sensor_index": "cfml4termBFrameErr",
-                    "sensor_type": "saf-cfml4",
-                    "sensor_descr": "Background Frame errors",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 68,
-                    "sensor_prev": 68,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.29.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "frequency",
-                    "sensor_index": "cfml4radioR1TxFrequency",
-                    "sensor_type": "saf-cfml4-tx",
-                    "sensor_descr": "Radio 1 Tx Frequency",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 7777.777,
-                    "sensor_prev": 7777.777,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.6.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.1.10.0\"]",
+                    "rrd_type": "COUNTER"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2314,28 +2176,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.7.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "frequency",
-                    "sensor_index": "cfml4radioR2TxFrequency",
-                    "sensor_type": "saf-cfml4-tx",
-                    "sensor_descr": "Radio 2 Tx Frequency",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 7777.333,
-                    "sensor_prev": 7777.333,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.6.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.7.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2356,7 +2198,341 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.7.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.7.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "frequency",
+                    "sensor_index": "cfml4radioR1TxFrequency",
+                    "sensor_type": "saf-cfml4-tx",
+                    "sensor_descr": "Radio 1 Tx Frequency",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 7777.777,
+                    "sensor_prev": 7777.777,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.6.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "frequency",
+                    "sensor_index": "cfml4radioR2TxFrequency",
+                    "sensor_type": "saf-cfml4-tx",
+                    "sensor_descr": "Radio 2 Tx Frequency",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 7777.333,
+                    "sensor_prev": 7777.333,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.6.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR1RxLevel",
+                    "sensor_type": "saf-cfml4-rx-level",
+                    "sensor_descr": "Radio 1 Rx Level",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": -54,
+                    "sensor_prev": -54,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.10.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR2RxLevel",
+                    "sensor_type": "saf-cfml4-rx-level",
+                    "sensor_descr": "Radio 2 Rx Level",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": -51,
+                    "sensor_prev": -51,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.10.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR1TxPower",
+                    "sensor_type": "saf-cfml4-tx-power",
+                    "sensor_descr": "Radio 1 Tx Power",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 27,
+                    "sensor_prev": 27,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.3.8.0\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "power",
+                    "sensor_index": "cfml4radioR2TxPower",
+                    "sensor_type": "saf-cfml4-tx-power",
+                    "sensor_descr": "Radio 2 Tx Power",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 27,
+                    "sensor_prev": 27,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.7571.100.1.1.2.22.4.8.0\"]",
+                    "rrd_type": "GAUGE"
+                }
+            ]
+        }
+    },
+    "entity-physical": {
+        "discovery": {
+            "entPhysical": [
+                {
+                    "entPhysicalIndex": 1,
+                    "entPhysicalDescr": "SAF CFM-M4P-MUX",
+                    "entPhysicalClass": "chassis",
+                    "entPhysicalName": "Chassis",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "true",
+                    "entPhysicalModelName": "312850100000",
+                    "entPhysicalVendorType": "SAF CFM-M4P-MUX",
+                    "entPhysicalSerialNum": "312850100000",
+                    "entPhysicalContainedIn": 0,
+                    "entPhysicalParentRelPos": -1,
+                    "entPhysicalMfgName": "SAF",
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 11,
+                    "entPhysicalDescr": "SAF CFM-7-L4 +27dBm v2.23 2005.10.21 Copyright (c) 2006 SAF Tehnika",
+                    "entPhysicalClass": "module",
+                    "entPhysicalName": "Radio 1",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "true",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "radio",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 1,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 12,
+                    "entPhysicalDescr": "SAF CFM-7-L4 +27dBm v2.23 2005.10.21 Copyright (c) 2006 SAF Tehnika",
+                    "entPhysicalClass": "module",
+                    "entPhysicalName": "Radio 2",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "true",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "radio",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 2,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 21,
+                    "entPhysicalDescr": "Module Container",
+                    "entPhysicalClass": "container",
+                    "entPhysicalName": "Slot 1",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "false",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "containerSlot",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 3,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 22,
+                    "entPhysicalDescr": "Module Container",
+                    "entPhysicalClass": "container",
+                    "entPhysicalName": "Slot 2",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "false",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "containerSlot",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 4,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 23,
+                    "entPhysicalDescr": "Module Container",
+                    "entPhysicalClass": "container",
+                    "entPhysicalName": "Slot 3",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "false",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "containerSlot",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 5,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 24,
+                    "entPhysicalDescr": "Module Container",
+                    "entPhysicalClass": "container",
+                    "entPhysicalName": "Slot 4",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "false",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "containerSlot",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 1,
+                    "entPhysicalParentRelPos": 6,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                },
+                {
+                    "entPhysicalIndex": 31,
+                    "entPhysicalDescr": "Module 1 4xE1",
+                    "entPhysicalClass": "module",
+                    "entPhysicalName": "Module 1",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "true",
+                    "entPhysicalModelName": null,
+                    "entPhysicalVendorType": "module",
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 4,
+                    "entPhysicalParentRelPos": 1,
+                    "entPhysicalMfgName": null,
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                }
+            ]
+        },
+        "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.50.135.106",
+                    "ipv4_prefixlen": 30,
+                    "context_name": "",
+                    "ipv4_network": "10.50.135.104/30",
+                    "ifIndex": 2
+                },
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 8,
+                    "context_name": "",
+                    "ipv4_network": "127.0.0.0/8",
+                    "ifIndex": 1
+                },
+                {
+                    "ipv4_address": "127.1.1.1",
+                    "ipv4_prefixlen": 32,
+                    "context_name": "",
+                    "ipv4_network": null,
+                    "ifIndex": 4
+                },
+                {
+                    "ipv4_address": "192.168.0.9",
+                    "ipv4_prefixlen": 30,
+                    "context_name": "",
+                    "ipv4_network": "192.168.0.8/30",
+                    "ifIndex": 3
                 }
             ]
         }

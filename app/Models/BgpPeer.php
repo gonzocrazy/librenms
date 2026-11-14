@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BgpPeer.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,20 +28,73 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use LibreNMS\Interfaces\Models\HasSyncProtectedAttributes;
+use LibreNMS\Interfaces\Models\Keyable;
 
-class BgpPeer extends DeviceRelatedModel
+class BgpPeer extends DeviceRelatedModel implements Keyable, HasSyncProtectedAttributes
 {
     use HasFactory;
 
     public $timestamps = false;
     protected $table = 'bgpPeers';
     protected $primaryKey = 'bgpPeer_id';
+    protected $fillable = [
+        'vrf_id',
+        'bgpPeerIdentifier',
+        'bgpPeerRemoteAs',
+        'bgpPeerState',
+        'bgpPeerAdminStatus',
+        'bgpPeerLastErrorCode',
+        'bgpPeerLastErrorSubCode',
+        'bgpPeerLastErrorText',
+        'bgpLocalAddr',
+        'bgpPeerRemoteAddr',
+        'bgpPeerInUpdates',
+        'bgpPeerOutUpdates',
+        'bgpPeerInTotalMessages',
+        'bgpPeerOutTotalMessages',
+        'bgpPeerFsmEstablishedTime',
+        'bgpPeerInUpdateElapsedTime',
+        'bgpPeerDescr',
+        'bgpPeerIface',
+        'astext',
+        'context_name',
+    ];
+
+    /**
+     * Session state is updated by polling, so state changes are seen there
+     */
+    private const array POLLED_ATTRIBUTES = [
+        'bgpPeerState',
+        'bgpPeerAdminStatus',
+        'bgpPeerLastErrorCode',
+        'bgpPeerLastErrorSubCode',
+        'bgpPeerLastErrorText',
+        'bgpPeerIface',
+        'bgpLocalAddr',
+        'bgpPeerInUpdates',
+        'bgpPeerOutUpdates',
+        'bgpPeerInTotalMessages',
+        'bgpPeerOutTotalMessages',
+        'bgpPeerFsmEstablishedTime',
+        'bgpPeerInUpdateElapsedTime',
+    ];
+
+    public function getCompositeKey(): string
+    {
+        return "$this->bgpPeerIdentifier|$this->context_name|$this->vrf_id";
+    }
+
+    public function getSyncProtectedAttributes(): array
+    {
+        return self::POLLED_ATTRIBUTES;
+    }
 
     // ---- Query scopes ----
 
-    public function scopeInAlarm(Builder $query)
+    protected function scopeInAlarm(Builder $query)
     {
-        return $query->where(function (Builder $query) {
+        return $query->where(function (Builder $query): void {
             $query->where('bgpPeerAdminStatus', 'start')
                 ->orWhere('bgpPeerAdminStatus', 'running');
         })->where('bgpPeerState', '!=', 'established');

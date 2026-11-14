@@ -11,19 +11,27 @@
     <div class="table-responsive">
         <table class="table table-striped table-bordered table-hover table-condensed">
             <tr>
-                <th>@lang('Poller Name')</th>
-                <th>@lang('Devices Polled')</th>
-                <th>@lang('Total Poll Time')</th>
-                <th>@lang('Last Run')</th>
-                <th>@lang('Actions')</th>
+                <th>{{ __('Poller Name') }}</th>
+                <th>{{ __('Environment') }}</th>
+                <th>{{ __('Devices Polled') }}</th>
+                <th>{{ __('Total Poll Time') }}</th>
+                <th>{{ __('Last Run') }}</th>
+                <th>{{ __('Actions') }}</th>
             </tr>
             @foreach($pollers as $poller)
             <tr class="{{ $poller['row_class'] }}" id="row_{{ $poller['id'] }}">
                 <td>{{ $poller['poller_name'] }}</td>
+                <td>@include('poller.details', ['details' => $poller->poller_details])</td>
                 <td>{{ $poller['devices'] }}</td>
                 <td>{{ $poller['time_taken'] }} Seconds</td>
-                <td>{{ $poller['last_polled'] }}</td>
-                <td>@if( $poller['long_not_polled'] )<button type='button' class='btn btn-danger btn-sm' aria-label=@lang('Delete') data-toggle='modal' data-target='#confirm-delete' data-id='{{ $poller['id'] }}' data-pollertype='delete-poller' name='delete-poller'><i class='fa fa-trash' aria-hidden='true'></i></button>@endif</td>
+                <td>{{ \LibreNMS\Util\Time::format($poller['last_polled'], 'compact') }}</td>
+                <td>
+                    @can('delete', $poller)
+                    @if($poller['long_not_polled'])
+                        <button type='button' class='btn btn-danger btn-sm' aria-label={{ __('Delete') }} data-toggle='modal' data-target='#confirm-delete' data-id='{{ $poller['id'] }}' data-pollertype='delete-poller' name='delete-poller'><i class='fa fa-trash' aria-hidden='true'></i></button>
+                    @endif
+                    @endcan
+                </td>
             </tr>
             @endforeach
         </table>
@@ -36,37 +44,44 @@
     <div class="table-responsive">
         <table class="table table-striped table-bordered table-condensed">
             <tr>
-                <th>@lang('Name')</th>
-                <th>@lang('Node ID')</th>
-                <th>@lang('Version')</th>
-                <th>@lang('Groups Served')</th>
-                <th>@lang('Last Checkin')</th>
-                <th>@lang('Cluster Master')</th>
-                <th>@lang('Job')</th>
-                <th>@lang('Workers')</th>
-                <th>@lang('Devices Actioned')<br><small>@lang('Last Interval')</small></th>
-                <th>@lang('Devices Pending')</th>
-                <th>@lang('Worker Seconds')<br><small>@lang('Consumed/Maximum')</small></th>
-                <th>@lang('Actions')</th>
+                <th>{{ __('Name') }}</th>
+                <th>{{ __('Node ID') }}</th>
+                <th>{{ __('Version') }}</th>
+                <th>{{ __('Environment') }}</th>
+                <th>{{ __('Groups Served') }}</th>
+                <th>{{ __('Last Checkin') }}</th>
+                <th>{{ __('Cluster Master') }}</th>
+                <th>{{ __('Job') }}</th>
+                <th>{{ __('Workers') }}</th>
+                <th>{{ __('Devices Actioned') }}<br><small>{{ __('Last Interval') }}</small></th>
+                <th>{{ __('Devices Pending') }}</th>
+                <th>{{ __('Worker Seconds') }}<br><small>{{ __('Consumed/Maximum') }}</small></th>
+                <th>{{ __('Actions') }}</th>
             </tr>
             @foreach($poller_cluster as $poller)
-                @foreach($poller->stats as $stat)
+                @php($rows = max(1, $poller->stats->count()))
+                @foreach($poller->stats->isEmpty() ? [null] : $poller->stats as $stat)
                 <tr class="{{ $poller['row_class'] }}" id="row_{{ $poller->id }}">
                 @if( $loop->first )
-                    <td rowspan="{{ $poller->stats->count() }}">{{ $poller->poller_name }}</td>
-                    <td rowspan="{{ $poller->stats->count() }}" @if($poller->node_id == '') class="danger" @endif>{{ $poller->node_id }}</td>
-                    <td rowspan="{{ $poller->stats->count() }}">{{ $poller->poller_version }}</td>
-                    <td rowspan="{{ $poller->stats->count() }}">{{ $poller->poller_groups }}</td>
-                    <td rowspan="{{ $poller->stats->count() }}">{{ $poller->last_report }}</td>
-                    <td rowspan="{{ $poller->stats->count() }}">@lang($poller->master ? 'Yes' : 'No')</td>
+                    <td rowspan="{{ $rows }}">{{ $poller->poller_name }}</td>
+                    <td rowspan="{{ $rows }}" @if($poller->node_id == '') class="danger" @endif>{{ $poller->node_id }}</td>
+                    <td rowspan="{{ $rows }}">{{ $poller->poller_version }}</td>
+                    <td rowspan="{{ $rows }}">@include('poller.details', ['details' => $poller->poller_details])</td>
+                    <td rowspan="{{ $rows }}">{{ $poller->poller_groups }}</td>
+                    <td rowspan="{{ $rows }}">{{ \LibreNMS\Util\Time::format($poller->last_report, 'compact') }}</td>
+                    <td rowspan="{{ $rows }}">{{ __($poller->master ? 'Yes' : 'No') }}</td>
                 @endif
+                @if($stat)
                     <td>{{ $stat->poller_type }}</td>
                     <td>{{ $stat->workers }}</td>
                     <td>{{ $stat->devices }}</td>
                     <td>{{ $stat->depth }}</td>
                     <td>{{ $stat->worker_seconds }} / {{ $stat->frequency * $stat->workers }}</td>
+                @else
+                    <td colspan="5">@if($poller->poller_version == \App\Queue\WorkerNode::VERSION && \App\Queue\QueueStatus::showPages())<a href="{{ route('poller.queues') }}">{{ __('Queue workers share the queues of their poller groups, see Queues') }}</a>@endif</td>
+                @endif
                 @if( $loop->first )
-                    <td rowspan="{{ $poller->stats->count() }}">@if($poller->long_not_polled)<button type='button' class='btn btn-danger btn-sm' aria-label=@lang('Delete') data-toggle='modal' data-target='#confirm-delete' data-id='{{ $poller->id }}' data-pollertype='delete-cluster-poller' name='delete-cluster-poller'><i class='fa fa-trash' aria-hidden='true'></i></button>@endif</td>
+                    <td rowspan="{{ $rows }}">@if($poller->long_not_polled)<button type='button' class='btn btn-danger btn-sm' aria-label={{ __('Delete') }} data-toggle='modal' data-target='#confirm-delete' data-id='{{ $poller->id }}' data-pollertype='delete-cluster-poller' name='delete-cluster-poller'><i class='fa fa-trash' aria-hidden='true'></i></button>@endif</td>
                 @endif
                 </tr>
                 @endforeach
@@ -80,23 +95,22 @@
 </x-panel>
 @endif
 
-@if(auth()->user()->isAdmin())
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="@lang('Delete')" aria-hidden="true">
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="{{ __('Delete') }}" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="Delete">@lang('Confirm Delete')</h5>
+                <h5 class="modal-title" id="Delete">{{ __('Confirm Delete') }}</h5>
             </div>
             <div class="modal-body">
-                <p>@lang('Please confirm that you would like to delete this poller.')</p>
+                <p>{{ __('Please confirm that you would like to delete this poller.') }}</p>
             </div>
             <div class="modal-footer">
                 <form role="form" class="remove_token_form">
                     @csrf
-                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('Cancel')</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" class="btn btn-danger danger" id="poller-removal"
-                            data-target="poller-removal">@lang('Delete')
+                            data-target="poller-removal">{{ __('Delete') }}
                     </button>
                     <input type="hidden" name="id" id="id" value="">
                     <input type="hidden" name="pollertype" id="pollertype" value="">
@@ -106,11 +120,9 @@
         </div>
     </div>
 </div>
-@endif
 @endsection
 
 @section('scripts')
-@if(auth()->user()->isAdmin())
 <script>
     $('#confirm-delete').on('show.bs.modal', function (e) {
         id = $(e.relatedTarget).data('id');
@@ -119,14 +131,19 @@
         $("#pollertype").val(pollertype);
     });
 
-    $('#poller-removal').click('', function (e) {
+    $('#poller-removal').on("click", function (e) {
         e.preventDefault();
         var id = $("#id").val();
         var pollertype = $("#pollertype").val();
+        var url;
+        if (pollertype === 'delete-poller') {
+            url = route('poller.destroy', {poller: id});
+        } else {
+            url = route('poller-cluster.destroy', {poller_cluster: id});
+        }
         $.ajax({
-            type: 'POST',
-            url: 'ajax_form.php',
-            data: {type: pollertype, id: id},
+            type: 'DELETE',
+            url: url,
             success: function (result) {
                 if (result.status == 0) {
                     toastr.success(result.message);
@@ -138,11 +155,10 @@
                 $("#confirm-delete").modal('hide');
             },
             error: function () {
-                toastr.error('@lang('An error occurred deleting this poller.')');
+                toastr.error('{{ __('An error occurred deleting this poller.') }}');
                 $("#confirm-delete").modal('hide');
             }
         });
     });
 </script>
-@endif
 @endsection

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AuthenticationException.php
  *
@@ -18,16 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Exceptions;
 
-class AuthenticationException extends \Exception
+use Exception;
+
+class AuthenticationException extends Exception
 {
     // Redefine the exception so message defaults to a generic 'Invalid credentials'
-    public function __construct($message = 'Invalid credentials', $hide_message = false, $code = 0, \Exception $previous = null)
+    public function __construct($message = 'Invalid credentials', $hide_message = false, $code = 0, ?Exception $previous = null)
     {
         if ($hide_message) {
             $message = '';

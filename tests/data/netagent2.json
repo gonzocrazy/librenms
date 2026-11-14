@@ -7,14 +7,14 @@
                     "sysObjectID": ".1.3.6.1.4.1.935",
                     "sysDescr": "NET Agent II",
                     "sysContact": "<private>",
-                    "version": null,
+                    "version": "2.48.DP520.WEST",
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "netagent2",
                     "type": "power",
                     "serial": null,
-                    "icon": "netagent2.png",
-                    "location": "<private>"
+                    "icon": "netagent2.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "0",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ppp",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "loopback",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -361,9 +340,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -373,15 +349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -468,9 +440,6 @@
                     "ifSpeed": 0,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "0",
                     "ifOperStatus_prev": "0",
                     "ifAdminStatus": "0",
@@ -480,15 +449,11 @@
                     "ifType": "ppp",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -575,9 +540,6 @@
                     "ifSpeed": 10000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -587,15 +549,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "loopback",
                     "ifPhysAddress": "000000000000",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -684,10 +642,11 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Battery Charge",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 100,
-                    "sensor_limit": 100,
+                    "sensor_limit": null,
                     "sensor_limit_warn": null,
                     "sensor_limit_low": 0,
                     "sensor_limit_low_warn": 10,
@@ -697,6 +656,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -708,6 +668,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Battery Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -721,6 +682,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -732,6 +694,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Input frequency",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 49.9,
@@ -745,6 +708,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -756,6 +720,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Output frequency",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 49.9,
@@ -769,6 +734,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -780,6 +746,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Bypass frequency",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 49.9,
@@ -793,6 +760,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -804,6 +772,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L1 (R)",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 23.5,
@@ -817,6 +786,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -828,6 +798,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L2 (S)",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 32.7,
@@ -841,6 +812,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -852,6 +824,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L3 (T)",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 32.7,
@@ -865,6 +838,33 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
+                    "state_name": null
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "runtime",
+                    "poller_type": "snmp",
+                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.2.2.4.0",
+                    "sensor_index": "upsSmartBatteryRunTimeRemaining.0",
+                    "sensor_type": "netagent2",
+                    "sensor_descr": "Estimated Runtime",
+                    "group": null,
+                    "category": null,
+                    "sensor_divisor": 60,
+                    "sensor_multiplier": 1,
+                    "sensor_current": 166.65,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_prev": null,
+                    "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -876,6 +876,7 @@
                     "sensor_type": "netagent2upsstate",
                     "sensor_descr": "UPS state",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 9,
@@ -889,6 +890,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "netagent2upsstate"
                 },
                 {
@@ -900,6 +902,7 @@
                     "sensor_type": "upsBaseBatteryStatus",
                     "sensor_descr": "Battery Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -913,6 +916,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsBaseBatteryStatus"
                 },
                 {
@@ -924,6 +928,7 @@
                     "sensor_type": "upsEnvSmoke",
                     "sensor_descr": "Smoke Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -937,6 +942,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsEnvSmoke"
                 },
                 {
@@ -948,6 +954,7 @@
                     "sensor_type": "upsEnvWater",
                     "sensor_descr": "Water Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -961,271 +968,8 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsEnvWater"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.5.5.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseDCandRectifierStatusBatteryStatus",
-                    "sensor_descr": "Back Status",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseDCandRectifierStatusBatteryStatus"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.5.6.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseDCandRectifierStatusChargeStatus",
-                    "sensor_descr": "Charge Status",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseDCandRectifierStatusChargeStatus"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.5.4.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseDCandRectifierStatusInAndOut",
-                    "sensor_descr": "In And Out",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseDCandRectifierStatusInAndOut"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.5.7.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseDCandRectifierStatusRecOperating",
-                    "sensor_descr": "Rectifier Operating",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecOperating"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.5.1.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseDCandRectifierStatusRecRotError",
-                    "sensor_descr": "Rectifier Rotation Error",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecRotError"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.7.7.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseFaultStatusShortCircuit",
-                    "sensor_descr": "Short Circuit",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseFaultStatusShortCircuit"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.6.4.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseUPSStaticSwitchMode",
-                    "sensor_descr": "Switch Mode",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseUPSStaticSwitchMode"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.6.3.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseUPSStatusACStatus",
-                    "sensor_descr": "AC status",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseUPSStatusACStatus"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.6.1.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseUPSStatusBypassFreqFail",
-                    "sensor_descr": "Bypass freq. fail",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseUPSStatusBypassFreqFail"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.6.5.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseUPSStatusInverterOperating",
-                    "sensor_descr": "Inverter Operating",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseUPSStatusInverterOperating"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.935.1.1.1.8.6.2.0",
-                    "sensor_index": "0",
-                    "sensor_type": "upsThreePhaseUPSStatusManualBypassBreaker",
-                    "sensor_descr": "Breaker Status",
-                    "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": 10,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "upsThreePhaseUPSStatusManualBypassBreaker"
                 },
                 {
                     "sensor_deleted": 0,
@@ -1236,6 +980,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 25,
@@ -1249,6 +994,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1260,6 +1006,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "In L1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 236,
@@ -1273,6 +1020,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1284,6 +1032,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "In L2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 236.7,
@@ -1297,6 +1046,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1308,6 +1058,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "In L3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 237.9,
@@ -1321,6 +1072,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1332,6 +1084,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 231.2,
@@ -1345,6 +1098,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1356,6 +1110,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 231.3,
@@ -1369,6 +1124,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1380,6 +1136,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Out L3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 231.2,
@@ -1393,6 +1150,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1404,6 +1162,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Bypass L1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 234.6,
@@ -1417,6 +1176,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1428,6 +1188,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Bypass L2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 236.2,
@@ -1441,6 +1202,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1452,6 +1214,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Bypass L3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 236.4,
@@ -1465,6 +1228,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1476,6 +1240,7 @@
                     "sensor_type": "netagent2",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 269,
@@ -1489,6 +1254,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -1496,299 +1262,139 @@
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "OnLine",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "OnBattery",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "OnBoost",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "Sleeping",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "OnBypass",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "Rebooting",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "Standby",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "netagent2upsstate",
                     "state_descr": "OnBuck",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsBaseBatteryStatus",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsBaseBatteryStatus",
                     "state_descr": "BatteryNormal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsBaseBatteryStatus",
                     "state_descr": "BatteryLow",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "upsEnvSmoke",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsEnvSmoke",
                     "state_descr": "normal",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsEnvSmoke",
                     "state_descr": "abnormal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsEnvWater",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsEnvWater",
                     "state_descr": "normal",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsEnvWater",
                     "state_descr": "abnormal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusBatteryStatus",
-                    "state_descr": "backup",
-                    "state_draw_graph": 0,
-                    "state_value": 4,
-                    "state_generic_value": 1
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusBatteryStatus",
-                    "state_descr": "acnormal",
-                    "state_draw_graph": 0,
-                    "state_value": 5,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusChargeStatus",
-                    "state_descr": "boost",
-                    "state_draw_graph": 0,
-                    "state_value": 6,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusChargeStatus",
-                    "state_descr": "float",
-                    "state_draw_graph": 0,
-                    "state_value": 7,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusChargeStatus",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusInAndOut",
-                    "state_descr": "threeInOneOut",
-                    "state_draw_graph": 0,
-                    "state_value": 2,
-                    "state_generic_value": 3
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusInAndOut",
-                    "state_descr": "threeInThreeOut",
-                    "state_draw_graph": 0,
-                    "state_value": 3,
-                    "state_generic_value": 3
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecOperating",
-                    "state_descr": "yes",
-                    "state_draw_graph": 0,
-                    "state_value": 14,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecOperating",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecRotError",
-                    "state_descr": "yes",
-                    "state_draw_graph": 0,
-                    "state_value": 14,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseDCandRectifierStatusRecRotError",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseFaultStatusShortCircuit",
-                    "state_descr": "yes",
-                    "state_draw_graph": 0,
-                    "state_value": 14,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseFaultStatusShortCircuit",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStaticSwitchMode",
-                    "state_descr": "invermode",
-                    "state_draw_graph": 0,
-                    "state_value": 12,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStaticSwitchMode",
-                    "state_descr": "bypassmode",
-                    "state_draw_graph": 0,
-                    "state_value": 13,
-                    "state_generic_value": 1
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusACStatus",
-                    "state_descr": "normal",
-                    "state_draw_graph": 0,
-                    "state_value": 10,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusACStatus",
-                    "state_descr": "abnormal",
-                    "state_draw_graph": 0,
-                    "state_value": 11,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusBypassFreqFail",
-                    "state_descr": "yes",
-                    "state_draw_graph": 0,
-                    "state_value": 14,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusBypassFreqFail",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusInverterOperating",
-                    "state_descr": "yes",
-                    "state_draw_graph": 0,
-                    "state_value": 14,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusInverterOperating",
-                    "state_descr": "no",
-                    "state_draw_graph": 0,
-                    "state_value": 16,
-                    "state_generic_value": 2
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusManualBypassBreaker",
-                    "state_descr": "close",
-                    "state_draw_graph": 0,
-                    "state_value": 8,
-                    "state_generic_value": 1
-                },
-                {
-                    "state_name": "upsThreePhaseUPSStatusManualBypassBreaker",
-                    "state_descr": "open",
-                    "state_draw_graph": 0,
-                    "state_value": 9,
-                    "state_generic_value": 0
                 }
             ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 8,
+                    "context_name": "",
+                    "ipv4_network": "127.0.0.0/8",
+                    "ifIndex": 6
+                },
+                {
+                    "ipv4_address": "192.168.100.22",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "192.168.100.0/24",
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

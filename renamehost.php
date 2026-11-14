@@ -14,22 +14,35 @@
 $init_modules = [];
 require __DIR__ . '/includes/init.php';
 
+use App\Facades\DeviceCache;
+use LibreNMS\Exceptions\HostRenameException;
+
+c_echo('%RWarning: renamehost.php is deprecated!%n Use %9lnms device:rename%n instead.' . PHP_EOL . PHP_EOL);
+
 // Remove a host and all related data from the system
 if ($argv[1] && $argv[2]) {
-    $host = strtolower($argv[1]);
-    $id = getidbyname($host);
-    if ($id) {
-        $tohost = strtolower($argv[2]);
-        $toid = getidbyname($tohost);
-        if ($toid) {
-            echo "NOT renamed. New hostname $tohost already exists.\n";
-        } else {
-            renamehost($id, $tohost, 'console');
-            echo "Renamed $host\n";
-        }
+    $hostname = $argv[1];
+    $device = DeviceCache::get($hostname);
+    $new_hostname = $argv[2];
+
+    if (! $device->exists) {
+        echo "Existing device not found\n";
+        exit(1);
     } else {
-        echo "Host doesn't exist!\n";
+        try {
+            $device->hostname = $new_hostname;
+            $device->save();
+            echo "Renamed $hostname\n";
+            exit(0);
+        } catch (HostRenameException $e) {
+            echo $e->getMessage() . PHP_EOL;
+            exit(1);
+        } catch (\Throwable) {
+            echo "Device failed to be renamed\n";
+            exit(1);
+        }
     }
 } else {
     echo "Host Rename Tool\nUsage: ./renamehost.php <old hostname> <new hostname>\n";
+    exit(1);
 }

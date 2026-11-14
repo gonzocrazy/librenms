@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -24,7 +25,7 @@ $dostack = 0;
 $printtotal = 0;
 $addarea = 1;
 $transparency = 33;
-$rrd_filename = Rrd::name($device['hostname'], ['app', $app['app_type'], $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', $app->app_type, $app->app_id]);
 
 $array = [
     'dynamic_blocked' => ['descr' => 'Dropped', 'colour' => 'BF3F7F'],
@@ -33,16 +34,12 @@ $array = [
 
 $i = 0;
 
-if (Rrd::checkRrdExists($rrd_filename)) {
-    foreach ($array as $ds => $var) {
-        $rrd_list[$i]['filename'] = $rrd_filename;
-        $rrd_list[$i]['descr'] = $var['descr'];
-        $rrd_list[$i]['ds'] = $ds;
-        $rrd_list[$i]['colour'] = $var['colour'];
-        $i++;
-    }
-} else {
-    echo "file missing: $rrd_filename";
+foreach ($array as $ds => $var) {
+    $rrd_list[$i]['filename'] = $rrd_filename;
+    $rrd_list[$i]['descr'] = $var['descr'];
+    $rrd_list[$i]['ds'] = $ds;
+    $rrd_list[$i]['colour'] = $var['colour'];
+    $i++;
 }
 
 require 'includes/html/graphs/generic_v3_multiline_float.inc.php';

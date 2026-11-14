@@ -9,7 +9,7 @@ $unit_text = 'Changes';
 $colours = 'psychedelic';
 $rrd_list = [];
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'puppet-agent', $app['app_id'], 'changes']);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'puppet-agent', $app->app_id, 'changes']);
 $array = [
     'total',
 ];
@@ -22,7 +22,7 @@ if (Rrd::checkRrdExists($rrd_filename)) {
         ];
     }
 } else {
-    echo "file missing: $file";
+    throw new \LibreNMS\Exceptions\RrdGraphException("No Data file $rrd_filename");
 }
 
 require 'includes/html/graphs/generic_multi_line_exact_numbers.inc.php';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * quantastor.inc.php
  *
@@ -18,8 +19,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Cercel Valentin
  * @author     Cercel Valentin <crc@nuamchefazi.ro>
  */
-preg_match('/([0-9]+)/', $sensor_value, $temps);
+preg_match('/([0-9]+)/', (string) $sensor_value, $temps);
 $sensor_value = $temps[0];

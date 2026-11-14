@@ -1,4 +1,5 @@
 <?php
+
 /**
  * app/Models/AlertTemplateMap.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
@@ -32,9 +34,11 @@ class AlertTemplateMap extends BaseModel
     public $timestamps = false;
 
     // ---- Define Relationships ----
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\AlertTemplate, $this>
+     */
     public function template(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\AlertTemplate::class, 'alert_templates_id');
+        return $this->belongsTo(AlertTemplate::class, 'alert_templates_id');
     }
 }

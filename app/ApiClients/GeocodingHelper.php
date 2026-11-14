@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GeocodingHelper.php *
  * -Description-
@@ -17,45 +18,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\ApiClients;
 
+use App\Facades\LibrenmsConfig;
 use Exception;
-use LibreNMS\Config;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Log;
 
 trait GeocodingHelper
 {
-    /**
-     * From BaseApi...
-     *
-     * @return \GuzzleHttp\Client
-     */
-    abstract protected function getClient();
+    abstract protected function getClient(): PendingRequest;
 
     /**
      * Try to get the coordinates of a given address.
      * If unsuccessful, the returned array will be empty
      *
-     * @param string $address
+     * @param  string  $address
      * @return array ['lat' => 0, 'lng' => 0]
      */
     public function getCoordinates($address)
     {
-        if (! Config::get('geoloc.latlng', true)) {
+        if (! LibrenmsConfig::get('geoloc.latlng', true)) {
             Log::debug('Geocoding disabled');
 
             return [];
         }
 
         try {
-            $options = $this->buildGeocodingOptions($address);
+            $client = $this->getClient()->withOptions($this->buildGeocodingOptions($address));
 
-            $response = $this->getClient()->get($this->geocoding_uri, $options);
-            $response_data = json_decode($response->getBody(), true);
+            $response = $client->get($this->geocoding_uri);
+            $response_data = $response->json();
             if ($this->checkResponse($response, $response_data)) {
                 return $this->parseLatLng($response_data);
             } else {
@@ -70,30 +69,27 @@ trait GeocodingHelper
 
     /**
      * Checks if the request was a success
-     *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     * @param array $data decoded response data
-     * @return bool
      */
-    protected function checkResponse($response, $data)
+    protected function checkResponse(Response $response, array $data): bool
     {
-        return $response->getStatusCode() == 200;
+        return $response->successful();
     }
 
     /**
      * Get latitude and longitude from geocode response
      *
-     * @param array $data
+     * @param  array  $data
      * @return array
      */
-    abstract protected function parseLatLng($data);
+    abstract protected function parseLatLng(array $data): array;
 
     /**
-     * Build Guzzle request option array
+     * Build request option array
      *
-     * @param string $address
+     * @param  string  $address
      * @return array
-     * @throws \Exception you may throw an Exception if validation fails
+     *
+     * @throws Exception you may throw an Exception if validation fails
      */
-    abstract protected function buildGeocodingOptions($address);
+    abstract protected function buildGeocodingOptions(string $address): array;
 }

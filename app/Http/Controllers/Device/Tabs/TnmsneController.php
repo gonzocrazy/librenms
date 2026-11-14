@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TnmsneController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,6 +28,7 @@ namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
 use App\Models\TnmsneInfo;
+use Illuminate\Http\Request;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class TnmsneController implements DeviceTab
@@ -50,7 +53,7 @@ class TnmsneController implements DeviceTab
         return __('Hardware');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
         return [];
     }

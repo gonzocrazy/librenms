@@ -1,65 +1,82 @@
-source: Alerting/index.md
-path: blob/master/doc/
+# Introduction
 
-# About
+LibreNMS alerting has several connected parts. This page describes each part and the connections between them.
 
-LibreNMS includes a highly customizable alerting system.
-The system requires a set of user-defined rules to evaluate the
-situation of each device, port, service or any other entity.
+## Alerting chart
 
-> You can configure all options for alerting and transports via the
-> WebUI, config options in this document are crossed out but left for reference.
+| Part | Purpose | Required | Linked guide |
+| --- | --- | --- | --- |
+| Alert Rules | They define the trigger condition of an alert | Yes | [Creating alert rules](Rules.md) |
+| Alert Operations | They define the recipients and the time of a notification | Notifications need them | [Creating alert operations](Operations.md) |
+| Alert Transports | They define the delivery method of a notification, such as email or Slack | Notifications need them | [Configuring alert transports](Transports.md) |
+| Alert Templates | They define the format of the notification message | No. We recommend them | [Configuring alert templates](Templates.md) |
 
-Table of Content:
+Flow:
 
-- [Introduction](Introduction.md)
-- [Rules](Rules.md)
-  - [Syntax](Rules.md#syntax)
-  - [Options](Rules.md#options)
-  - [Examples](Rules.md#examples)
-  - [Procedure](Rules.md#procedure)
-- [Templates](Templates.md)
-  - [Syntax](Templates.md#syntax)
-  - [Testing](Templates.md#testing)
-  - [Examples](Templates.md#examples)
-  - [Included](Templates.md#included)
-- [Transports](Transports.md)
-  - [E-Mail](Transports.md#e-mail)
-  - [API](Transports.md#api)
-  - [Nagios-Compatible](Transports.md#nagios-compatible)
-  - [IRC](Transports.md#irc)
-  - [Slack](Transports.md#slack)
-  - [Rocket.chat](Transports.md#rocketchat)
-  - [HipChat](Transports.md#hipchat)
-  - [PagerDuty](Transports.md#pagerduty)
-  - [Pushover](Transports.md#pushover)
-  - [Boxcar](Transports.md#boxcar)
-  - [Telegram](Transports.md#telegram)
-  - [Pushbullet](Transports.md#pushbullet)
-  - [Clickatell](Transports.md#clickatell)
-  - [PlaySMS](Transports.md#playsms)
-  - [VictorOps](Transports.md#victorops)
-  - [Canopsis](Transports.md#canopsis)
-  - [osTicket](Transports.md#osticket)
-  - [Microsoft Teams](Transports.md#microsoftteams)
-  - [Cisco Spark](Transports.md#ciscospark)
-  - [SMSEagle](Transports.md#smseagle)
-  - [Syslog](Transports.md#syslog)
-  - [Elasticsearch](Transports.md#elasticsearch)
-  - [Jira](Transports.md#jira)
-- [Entities](Entities.md)
-  - [Devices](Entities.md#devices)
-  - [BGP Peers](Entities.md#bgppeers)
-  - [IPSec Tunnels](Entities.md#ipsec)
-  - [Memory Pools](Entities.md#entity-mempools)
-  - [Ports](Entities.md#entity-ports)
-  - [Processors](Entities.md#entity-processors)
-  - [Storage](Entities.md#entity-storage)
-  - [Sensors](Entities.md#entity-sensors)
-- [Macros](Macros.md)
-  - [Device](Macros.md#macros-device)
-  - [Port](Macros.md#macros-port)
-  - [Time](Macros.md#macros-time)
-  - [Sensors](Macros.md#macros-sensors)
-  - [Misc](Macros.md#macros-misc)
-- [Device Dependencies](Device-Dependencies.md)
+`Rule matches` -> `Alert is raised` -> `Operation decides timing/targets` -> `Transport sends notification` -> `Template formats message`
+
+```mermaid
+flowchart LR
+    A[Alert Rule matches condition] --> B[Alert is raised]
+    B --> C{Operation assigned?}
+    C -->|No| D[No notification sent]
+    C -->|Yes| E[Operation applies segment timing and targets]
+    E --> F[Transport sends notification]
+    F --> G[Template formats notification message]
+```
+
+A rule without an operation still raises the alert. LibreNMS then sends
+no notification.
+
+## Recommended setup order
+
+This order is the easiest one for most users:
+
+1. Create one or more operations. An operation sets the notification behaviour.
+2. Create the alert rules. A rule sets a trigger condition.
+3. Assign an operation to each rule with a notification.
+
+[Creating alert operations](Operations.md)
+
+You then need an alert rule. The rule reacts to a change on your
+devices and raises an alert.
+
+[Creating alert rules](Rules.md)
+
+You must also give LibreNMS a notification method for a raised alert.
+`Alert Transports` give this method.
+
+[Configuring alert transports](Transports.md)
+
+The next step is not necessary, but most users find it useful. Your own
+alert templates increase the value of the alert system. We supply a
+default template, but it holds a small amount of data.
+
+[Configuring alert templates](Templates.md)
+
+## Managing faults
+
+A triggered alert appears on the Alerts -> Faults page in the
+web interface.
+
+This list has some options. The sections below describe them.
+
+### ACK
+
+This column shows the status of the fault:
+
+![ack fault](img/ack.png) This fault is active and sends alerts. Click
+this icon to acknowledge the fault.
+
+![unack fault](img/unack.png) This fault is acknowledged until it
+clears. Click this icon to un-acknowledge the alert.
+
+![unack fault until fault worsens](img/nunack.png) This fault is
+acknowledged until the fault becomes worse, becomes better, or changes.
+LibreNMS then un-acknowledges the fault automatically and the alerts
+continue. Click this icon to un-acknowledge the fault.
+
+### Notes
+
+![fault notes](img/notes.png) This column gives access to the
+acknowledge notes and the un-acknowledge notes of this fault.

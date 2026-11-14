@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ict-psu.inc.php
  *
@@ -18,14 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
 
+use LibreNMS\Enum\SensorType;
+
 // Output Current
 // SNMPv2-SMI::enterprises.39145.11.8.0 = STRING: "0.4" -- outputCurrent
 
-$outputCurrent = trim(snmp_get($device, 'outputCurrent.0', '-Oqv', 'ICT-DIGITAL-SERIES-MIB'), '" ');
+$outputCurrent = trim((string) SnmpQuery::get('ICT-PLATINUM-MIB::outputCurrent.0')->value(), '" ');
 if (! empty($outputCurrent)) {
     $divisor = 1;
     $index = 0;
@@ -34,5 +38,5 @@ if (! empty($outputCurrent)) {
     $type = 'ict-psu';
     $currentValue = $outputCurrent / $divisor;
 
-    discover_sensor($valid['sensor'], 'current', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $currentValue);
+    discover_sensor(null, SensorType::Current, $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $currentValue);
 }

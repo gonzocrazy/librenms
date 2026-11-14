@@ -1,96 +1,169 @@
-source: Extensions/Plugin-System.md
-path: blob/master/doc/
-
 # Developing for the Plugin System
 
-This will most likely be deprecated in favour of adding the possible
-extensions to the core code base.
+With plugins you can extend LibreNMS with special functions that are
+specific to your setup or are not relevant or interesting for all community members.
 
-This documentation will hopefully give you a basis for how to write a
-plugin for LibreNMS. A test plugin is included in LibreNMS distribution.
+You can intervene at defined places in the behaviour of
+the website, without it coming to problems with future updates.
 
-# Generic structure
+This documentation gives the basis of a plugin for
+LibreNMS.
 
-Plugins need to be installed into html/plugins
+## Distribution
+
+There are two ways to create a plugin.
+
+ 1. Local plugin: Within LibreNMS under the app/Plugins directory. This is appropriate for plugins that are
+    for your own instance only. A local plugin uses ONLY the plugin
+    hooks to extend LibreNMS.
+ 3. Plugin package: A php package that can be distributed via composer/packagist.org.  This is appropriate
+    for plugins that are intended to be installed by many people. A plugin package can publish multiple
+    routes, views, database migrations and more in addition to using hooks to augment specific parts of LibreNMS.
+
+### Plugin package
+
+Create a package according to the Laravel documentation [https://laravel.com/docs/packages](https://laravel.com/docs/packages)
+To tie in to specific parts of LibreNMS such as the Menu, Device Overview or a Port Tab, use Plugin Hooks.
+
+You can see an example plugin here: [example plugin repository](https://github.com/murrant/librenms-example-plugin).
+
+> Please come to discord and share any experiences and update this documentation!
+
+## Local plugin
+
+Local plugins need to be placed in app/Plugins
+
+> Note: Plugins are disabled when the have an error, to show errors instead set plugins.show_errors
 
 The structure of a plugin is follows:
 
 ```
-html/plugins
+app/Plugins
             /PluginName
-                       /PluginName.php
-                       /PluginName.inc.php
+                       /DeviceOverview.php
+                       /Menu.php
+                       /Page.php
+                       /PortTab.php
+                       /Settings.php
+                       /resources/views
+                                       /device-overview.blade.php
+                                       /menu.blade.php
+                                       /page.blade.php
+                                       /port-tab.blade.php
+                                       /settings.blade.php
 ```
 
 The above structure is checked before a plugin can be installed.
 
-All files / folder names are case sensitive and must match.
+All file/folder names are case sensitive and must match the structure.
 
-PluginName - This is a directory and needs to be named as per the
-plugin you are creating.
+Only the blade files that are really needed need to be created. A plugin manager
+then loads a hook with a basic function.
 
-- PluginName.php :: This file is used to process calls into the plugin
-  from the main LibreNMS install. Here only functions within the class
-  for your plugin that LibreNMS calls will be executed. For a list of
-  currently enabled system hooks, please see further down. The minimum
-  code required in this file is (replace Test with the name of your
-  plugin):
+If you want to customize the basic behavior of the hooks, you can create a
+class in 'app/Plugins/PluginName' and overload the hook methods.
 
-```
-<?php
-
-class Test {
-}
-
-?>
-```
-
-- PluginName.inc.php :: This file is the main included file when
-                     browsing to the plugin itself. You can use this
-                     to display / edit / remove whatever you like. The
-                     minimum code required in this file is:
-
-```
-<?php
-
-?>
-```
-
-# System Hooks
-
-System hooks are called as functions within your plugin class. The
-following system hooks are currently available:
-
-- menu() :: This is called to build the plugin menu system and you
-   can use this to link to your plugin (you don't have to).
-
-```
-    public static function menu() {
-        echo('<li><a href="plugin/p='.get_class().'">'.get_class().'</a></li>');
-    }
-```
-
-- device_overview_container($device) :: This is called in the Device
-  Overview page. You receive the $device as a parameter, can do your
+- device-overview.blade.php :: This is called in the Device
+  Overview page. You receive the $device as a object per default, you can do your
   work here and display your results in a frame.
 
 ```
-    public function device_overview_container($device) {
-        echo('<div class="container-fluid"><div class="row"> <div class="col-md-12"> <div class="panel panel-default panel-condensed"> <div class="panel-heading"><strong>'.get_class().' Plugin </strong> </div>');
-        echo('  Example plugin in "Device - Overview" tab <br>');
-        echo('</div></div></div></div>');
-    }
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default panel-condensed">
+            <div class="panel-heading">
+                <strong>{{ $title }}</strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                         {{ $device->hostname }}
+                 <!-- Do you stuff here -->
+                    </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
 ```
 
-- port_container($device, $port) :: This is called in the Port page,
-  in the "Plugins" menu_option that will appear when your plugin gets
-  enabled. In this function, you can do your work and display your
+- port-tab.blade.php :: This is called in the Port page,
+  in the "Plugins" menu option. This option appears when LibreNMS
+  enabled. In this blade, you can do your work and display your
   results in a frame.
 
-```
-    public function port_container($device, $port) {
-        echo('<div class="container-fluid"><div class="row"> <div class="col-md-12"> <div class="panel panel-default panel-condensed"> <div class="panel-heading"><strong>'.get_class().' plugin in "Port" tab</strong> </div>');
-        echo ('Example display in Port tab</br>');
-        echo('</div></div></div></div>');
+- menu.blade.php :: For a menu entry
+
+- page.blade.pho :: Here is a good place to add a own LibreNMS page without dependence with a device. A good place to create your own lists with special requirements and behavior.
+
+- settings.blade.php :: If you need your own settings and variables, you can have a look in the ExamplePlugin.
+
+
+### PHP Hooks customization
+
+Put your PHP code in the hook method, not in the blade view.
+The built in hooks support authorize and data methods.
+
+These methods are called with [Dependency Injection](https://laravel.com/docs/container#method-invocation-and-injection)
+A hook with database models passes them in these calls.
+The settings argument passes the plugin settings to the method.
+
+#### Data
+
+Override the data method to give data to your view. Do the processing
+in this method.
+You can do things like access the database or configuration settings and more.
+
+In the data method we are injecting settings here to count how many we have for display in the menu entry blade view.
+Note: give a default value, `= []` here, for each argument outside the
+parent method.
+
+```php
+class Menu extends MenuEntryHook
+{
+    public function data(array $settings = []): array
+    {
+        return [
+            'count' => count($settings),
+        ];
     }
+}
+```
+
+#### Authorize 
+
+By default, LibreNMS always shows the hooks. You can control the access
+of the user to the hook content.
+
+For example, `device-overview.blade.php` appears only when the
+device is in a maintenance mode and the current user has the admin role.
+
+Type hint the `$user` argument as `Illuminate\Contracts\Auth\Authenticatable`.
+LibreNMS injects the current user into that type.
+
+```php
+use Illuminate\Contracts\Auth\Authenticatable;
+
+class DeviceOverview extends DeviceOverviewHook
+{
+    public function authorize(Authenticatable $user, Device $device): bool
+    {
+        return $user->can('admin') && $device->isUnderMaintenance();
+    }
+}
+```
+
+Check permissions with `can()` or with the `Gate` facade. Both work on an `Authenticatable`.
+
+```php
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Gate;
+
+class DeviceOverview extends DeviceOverviewHook
+{
+    public function authorize(Authenticatable $user, Device $device): bool
+    {
+        return Gate::allows('view', $device);
+    }
+}
 ```

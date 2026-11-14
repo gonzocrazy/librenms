@@ -4,20 +4,31 @@ namespace App\Console\Commands;
 
 use App\Console\LnmsCommand;
 use App\Models\Device;
+use App\Models\DevicePollingMethod;
+use App\Models\Secret;
 use Illuminate\Support\Str;
+use Laravel\Prompts\Progress;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Enum\SecretType;
 use LibreNMS\Util\Snmpsim;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
+
+use function Laravel\Prompts\progress;
 
 class DevSimulate extends LnmsCommand
 {
     protected $name = 'dev:simulate';
-    protected $developer = true;
+    protected bool $developer = true;
     /**
      * @var Snmpsim
      */
     protected $snmpsim = null;
+    /**
+     * @var int[] devices saved by this run, removed on exit with --remove
+     */
+    private array $addedDeviceIds = [];
 
     /**
      * The console command description.
@@ -35,9 +46,9 @@ class DevSimulate extends LnmsCommand
     {
         parent::__construct();
 
-        $this->addArgument('file', InputArgument::OPTIONAL);
-        $this->addOption('multiple', 'm', InputOption::VALUE_NONE);
-        $this->addOption('remove', 'r', InputOption::VALUE_NONE);
+        $this->addArgument('file', InputArgument::OPTIONAL | InputArgument::IS_ARRAY);
+        $this->addOption('keep', 'k', InputOption::VALUE_NONE);
+        $this->addOption('setup-venv', mode: InputOption::VALUE_NONE);
     }
 
     /**
@@ -45,85 +56,142 @@ class DevSimulate extends LnmsCommand
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
-        $this->snmpsim = new Snmpsim();
-        $snmprec_dir = $this->snmpsim->getDir();
-        $listen = $this->snmpsim->getIp() . ':' . $this->snmpsim->getPort();
+        // accept paths like tests/snmpsim/*.snmprec, so the shell can do the globbing
+        $files = array_unique(array_map(fn ($file) => basename($file, '.snmprec'), $this->argument('file')));
+        foreach ($files as $file) {
+            if (! file_exists(base_path("tests/snmpsim/$file.snmprec"))) {
+                $this->error("$file does not exist");
 
-        $snmpsim = new Process([
-            $this->snmpsim->findSnmpsimd(),
-            "--data-dir=$snmprec_dir",
-            "--agent-udpv4-endpoint=$listen",
-        ]);
-        $snmpsim->setTimeout(null);
-
-        $snmpsim->run(function ($type, $buffer) use ($listen) {
-            if (Process::ERR === $type) {
-                if (Str::contains($buffer, $listen)) {
-                    $this->line(trim($buffer));
-                    $this->started();
-                    $this->line(trans('commands.dev:simulate.exit'));
-                }
+                return 1;
             }
-        });
+        }
+
+        $this->snmpsim = new Snmpsim;
+        if (! $this->snmpsim->isVenvSetUp()) {
+            $this->line(trans('commands.dev:simulate.setup', ['dir' => $this->snmpsim->getVenvPath()]));
+            $this->snmpsim->setupVenv($this->getOutput()->isVeryVerbose());
+        }
+
+        if ($this->option('setup-venv')) {
+            return 0; // venv is set up exit
+        }
+
+        $this->snmpsim->start();
+        $this->line($this->snmpsim->waitForStartup());
+        $this->started($files);
+        $this->line(trans('commands.dev:simulate.exit'));
+        try {
+            $this->snmpsim->wait();
+        } catch(ProcessSignaledException $e) {
+            $this->error($e->getMessage());
+
+            return 1;
+        }
+
+        if (! $this->snmpsim->isSuccessful()) {
+            $this->line($this->snmpsim->getErrorOutput());
+
+            return 1;
+        }
 
         return 0;
     }
 
-    private function started()
+    private function started(array $files): void
     {
-        if ($file = $this->argument('file')) {
-            $this->addDevice($file);
+        // set up removal shutdown function before adding, so a failure part way still cleans up
+        if ($files && ! $this->option('keep')) {
+            $this->queueRemoval();
+        }
+
+        if (count($files) > 1) {
+            progress(
+                label: trans('commands.dev:simulate.adding'),
+                steps: $files,
+                callback: fn (string $file, Progress $progress) => $progress->hint($this->addDevice($file)),
+            );
+        } else {
+            foreach ($files as $file) {
+                $this->info($this->addDevice($file));
+            }
+        }
+
+        // after the progress bar, it resets the SIGINT handler when finished
+        if ($files && ! $this->option('keep') && function_exists('pcntl_signal')) {
+            pcntl_signal(SIGINT, function (): void {
+                exit; // exit normally on SIGINT, so the removal shutdown function runs
+            });
         }
     }
 
-    private function addDevice($community)
+    /**
+     * @return string added or updated message
+     */
+    private function addDevice(string $community): string
     {
-        $hostname = $this->option('multiple') ? $community : 'snmpsim';
-        $device = Device::firstOrNew(['hostname' => $hostname]);
+        $device = Device::with('pollingMethods')->firstOrNew(['hostname' => "snmpsim-$community"]);
+        $device->overwrite_ip = $this->snmpsim->ip;
         $action = $device->exists ? 'updated' : 'added';
 
-        $device->overwrite_ip = $this->snmpsim->getIp();
-        $device->port = $this->snmpsim->getPort();
-        $device->snmpver = 'v2c';
-        $device->transport = 'udp';
-        $device->community = $community;
         $device->last_discovered = null;
         $device->status_reason = '';
         $device->save();
+        $this->addedDeviceIds[] = $device->device_id;
 
-        $this->info(trans("commands.dev:simulate.$action", ['hostname' => $device->hostname, 'id' => $device->device_id]));
-
-        // set up removal shutdown function if requested
-        if ($this->option('remove')) {
-            $this->queueRemoval($device->device_id);
+        $method = $device->pollingMethod(PollingMethodType::Snmp);
+        if ($method === null) {
+            $method = new DevicePollingMethod([
+                'device_id' => $device->device_id,
+                'method_type' => PollingMethodType::Snmp,
+                'affects_availability' => true,
+            ]);
+            $device->setRelation('pollingMethods', collect([$method]));
+        } else {
+            $device->pollingMethod(PollingMethodType::Icmp)?->delete(); // don't need icmp, cleanup legacy
         }
+        $method->settings = [...$method->settings ?? [], 'transport' => 'udp', 'port' => $this->snmpsim->port];
+
+        $secret = Secret::updateOrCreate([
+            'description' => "snmpsim secret ($device->hostname)",
+            'secret_type' => SecretType::SnmpCommunity,
+        ], [
+            'data' => ['community' => $community],
+        ]);
+        $method->secret()->associate($secret)->save();
+
+        return trans("commands.dev:simulate.$action", ['hostname' => $device->hostname, 'id' => $device->device_id]);
     }
 
-    private function queueRemoval($device_id)
+    private function queueRemoval(): void
     {
-        if (function_exists('pcntl_signal')) {
-            pcntl_signal(SIGINT, function () {
-                exit(); // exit normally on SIGINT
-            });
-        }
+        register_shutdown_function(function (): void {
+            $devices = Device::whereIn('device_id', $this->addedDeviceIds)->get();
 
-        register_shutdown_function(function () use ($device_id) {
-            Device::findOrNew($device_id)->delete();
-            $this->info(trans('commands.dev:simulate.removed', ['id' => $device_id]));
-            exit();
+            if ($devices->count() > 1) {
+                progress(
+                    label: trans('commands.dev:simulate.removing'),
+                    steps: $devices,
+                    callback: function (Device $device, Progress $progress): void {
+                        $progress->hint($device->hostname);
+                        $device->delete();
+                    },
+                );
+            } else {
+                foreach ($devices as $device) {
+                    $device->delete();
+                    $this->info(trans('commands.dev:simulate.removed', ['id' => $device->device_id]));
+                }
+            }
+            exit;
         });
     }
 
     public function completeArgument($name, $value)
     {
         if ($name == 'file') {
-            return collect(glob(base_path('tests/snmpsim/*.snmprec')))->map(function ($file) {
-                return basename($file, '.snmprec');
-            })->filter(function ($snmprec) use ($value) {
-                return ! $value || Str::startsWith($snmprec, $value);
-            })->all();
+            return collect(glob(base_path('tests/snmpsim/*.snmprec')))->map(fn ($file) => basename($file, '.snmprec'))->filter(fn ($snmprec) => ! $value || Str::startsWith($snmprec, $value))->all();
         }
 
         return false;

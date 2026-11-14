@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -Description-
  *
@@ -16,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 PipoCanaja
  * @author     PipoCanaja <pipocanaja@gmail.com>
  */
@@ -23,6 +25,7 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
 use Log;
@@ -33,8 +36,8 @@ class UpsmgUtilityRestored implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -47,6 +50,6 @@ class UpsmgUtilityRestored implements SnmptrapHandler
         }
         $sensor->sensor_current = 2;
         $sensor->save();
-        Log::event('UPS power restored, state sensor ' . $sensor->sensor_descr . ' has changed to ' . $sensor->sensor_current . '.', $device->device_id, 'Power', 1);
+        $trap->log('UPS power restored, state sensor ' . $sensor->sensor_descr . ' has changed to ' . $sensor->sensor_current . '.', Severity::Ok, 'Power');
     }
 }

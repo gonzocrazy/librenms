@@ -1,37 +1,264 @@
+import json
+import logging
 import os
+import re
+import signal
 import subprocess
+import sys
+import tempfile
 import threading
 import timeit
 from collections import deque
-
-from logging import critical, info, debug, exception
-from math import ceil
+from logging.handlers import RotatingFileHandler
 from queue import Queue
 from time import time
 
-from .service import Service, ServiceConfig
+from math import ceil
+
+from .command_runner import command_runner
 from .queuemanager import (
-    QueueManager,
-    TimedQueueManager,
-    BillingQueueManager,
-    PingQueueManager,
-    ServicesQueueManager,
     AlertQueueManager,
-    PollerQueueManager,
+    BillingQueueManager,
     DiscoveryQueueManager,
+    PingQueueManager,
+    PollerQueueManager,
+    ServicesQueueManager,
 )
+from .service import Service, ServiceConfig, LogOutput
+
+# Hard limit script execution time so we don't get to "hang"
+DEFAULT_SCRIPT_TIMEOUT = 3600
+MAX_LOGFILE_SIZE = (1024**2) * 10  # 10 Megabytes max log files
+
+logger = logging.getLogger(__name__)
+
+# Logging functions ########################################################
+# Original logger functions from ofunctions.logger_utils package
+
+FORMATTER = logging.Formatter("%(asctime)s :: %(levelname)s :: %(message)s")
+
+
+def logger_get_console_handler():
+    try:
+        console_handler = logging.StreamHandler(sys.stdout)
+    except OSError as exc:
+        print("Cannot log to stdout, trying stderr. Message %s" % exc)
+        try:
+            console_handler = logging.StreamHandler(sys.stderr)
+            console_handler.setFormatter(FORMATTER)
+            return console_handler
+        except OSError as exc:
+            print("Cannot log to stderr neither. Message %s" % exc)
+            return False
+    else:
+        console_handler.setFormatter(FORMATTER)
+        return console_handler
+
+
+def logger_get_file_handler(log_file):
+    err_output = None
+    try:
+        file_handler = RotatingFileHandler(
+            log_file,
+            mode="a",
+            encoding="utf-8",
+            maxBytes=MAX_LOGFILE_SIZE,
+            backupCount=3,
+        )
+    except OSError as exc:
+        try:
+            print(
+                "Cannot create logfile. Trying to obtain temporary log file.\nMessage: %s"
+                % exc
+            )
+            err_output = str(exc)
+            temp_log_file = tempfile.gettempdir() + os.sep + __name__ + ".log"
+            print("Trying temporary log file in " + temp_log_file)
+            file_handler = RotatingFileHandler(
+                temp_log_file,
+                mode="a",
+                encoding="utf-8",
+                maxBytes=MAX_LOGFILE_SIZE,
+                backupCount=1,
+            )
+            file_handler.setFormatter(FORMATTER)
+            err_output += "\nUsing [%s]" % temp_log_file
+            return file_handler, err_output
+        except OSError as exc:
+            print(
+                "Cannot create temporary log file either. Will not log to file. Message: %s"
+                % exc
+            )
+            return False
+    else:
+        file_handler.setFormatter(FORMATTER)
+        return file_handler, err_output
+
+
+def logger_get_logger(log_file=None, temp_log_file=None, debug=False):
+    # If a name is given to getLogger, than modules can't log to the root logger
+    _logger = logging.getLogger()
+    if debug is True:
+        _logger.setLevel(logging.DEBUG)
+    else:
+        _logger.setLevel(logging.INFO)
+    console_handler = logger_get_console_handler()
+    if console_handler:
+        _logger.addHandler(console_handler)
+    if log_file is not None:
+        file_handler, err_output = logger_get_file_handler(log_file)
+        if file_handler:
+            _logger.addHandler(file_handler)
+            _logger.propagate = False
+            if err_output is not None:
+                print(err_output)
+                _logger.warning(
+                    "Failed to use log file [%s], %s.", log_file, err_output
+                )
+    if temp_log_file is not None:
+        if os.path.isfile(temp_log_file):
+            try:
+                os.remove(temp_log_file)
+            except OSError:
+                logger.warning("Cannot remove temp log file [%s]." % temp_log_file)
+        file_handler, err_output = logger_get_file_handler(temp_log_file)
+        if file_handler:
+            _logger.addHandler(file_handler)
+            _logger.propagate = False
+            if err_output is not None:
+                print(err_output)
+                _logger.warning(
+                    "Failed to use log file [%s], %s.", log_file, err_output
+                )
+    return _logger
+
+
+# Generic functions ########################################################
+
+
+def check_for_file(file):
+    try:
+        with open(file) as file:
+            pass
+    except IOError as exc:
+        logger.error("File '%s' is not readable" % file)
+        logger.debug("Traceback:", exc_info=True)
+        sys.exit(2)
+
+
+# Config functions #########################################################
+
+
+def get_config_data(base_dir):
+    env_path = os.path.join(base_dir, ".env")
+    check_for_file(env_path)
+
+    try:
+        import dotenv
+
+        logger.info("Attempting to load .env from '%s'", env_path)
+        dotenv.load_dotenv(dotenv_path=env_path, verbose=True)
+
+        if not os.getenv("NODE_ID"):
+            logger.critical(".env does not contain a valid NODE_ID setting.")
+
+    except (ImportError, ModuleNotFoundError) as exc:
+        logger.critical(
+            'Could not import "%s" - Please check that the poller user can read the file, and python-dotenv/python3-dotenv is installed\nAdditional info: %s'
+            % (env_path, exc)
+        )
+        logger.debug("Traceback:", exc_info=True)
+
+    config_cmd = ["/usr/bin/env", "php", "%s/lnms" % base_dir, "config:get", "--dump"]
+    try:
+        exit_code, output = command_runner(config_cmd, timeout=300, stderr=False)
+        if exit_code != 0:
+            logger.critical("Error in config fetching process: %s" % exit_code)
+        return json.loads(output)
+    except Exception as exc:
+        logger.critical("ERROR: Could not execute command [%s]: %s" % (config_cmd, exc))
+        logger.debug("Traceback:", exc_info=True)
+        return None
+
+
+# Poller detail functions ##################################################
+# Collect some information about the host this poller runs on.  This must never
+# interrupt a poller/discovery run, so anything that cannot be determined is
+# simply left out.
+
+# section/entry of `lnms about` holding each detail.  About sections are snake
+# cased in the json output, which turns "LibreNMS" into "libre_n_m_s".
+POLLER_DETAILS = (
+    ("os_version", "environment", "os"),
+    ("php_version", "environment", "php_version"),
+    ("librenms_version", "libre_n_m_s", "version"),
+)
+
+
+def get_poller_details():
+    """
+    Collect details about the environment this poller runs in.
+
+    Uses `lnms about` so the values come from the same code the web ui uses instead
+    of being reimplemented here.  Never raises.
+    :returns dict
+    """
+    details = {}
+
+    try:
+        base_dir = os.path.realpath(os.path.dirname(__file__) + "/..")
+        about_cmd = ["/usr/bin/env", "php", "%s/lnms" % base_dir, "about", "--json"]
+        exit_code, output = command_runner(about_cmd, timeout=300, stderr=False)
+        if exit_code != 0:
+            logger.debug("Command [%s] returned %s", about_cmd, exit_code)
+            return details
+
+        about = json.loads(output)
+
+        for key, section, entry in POLLER_DETAILS:
+            value = about.get(section, {}).get(entry)
+            if value:
+                details[key] = value
+    except Exception:
+        logger.debug("Could not collect poller details", exc_info=True)
+
+    return details
+
+
+def get_poller_details_json():
+    """
+    get_poller_details() encoded as json, or None if nothing could be collected.
+    :returns str | None
+    """
+    try:
+        details = get_poller_details()
+        if details:
+            return json.dumps(details)
+    except Exception:
+        logger.debug("Could not encode poller details", exc_info=True)
+
+    return None
 
 
 def normalize_wait(seconds):
     return ceil(seconds - (time() % seconds))
 
 
-def call_script(script, args=()):
+def reset_signals():
+    # https://bugs.python.org/issue38435
+    # https://bugs.python.org/issue32985
+    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+
+
+def call_script(script, args=(), log_dest=None):
     """
-    Run a LibreNMS script.  Captures all output and throws an exception if a non-zero
-    status is returned.  Blocks parent signals (like SIGINT and SIGTERM).
+    Run a LibreNMS script.  Captures all output returns exit code.
+    Blocks parent signals (like SIGINT and SIGTERM).
+    Kills script if it takes too long
     :param script: the name of the executable relative to the base directory
     :param args: a tuple of arguments to send to the command
+    :param log_dest: LogOutput enum or file path
+    :type log_dest: str | LogOutput | None
     :returns the output of the command
     """
     if script.endswith(".php"):
@@ -40,17 +267,61 @@ def call_script(script, args=()):
     else:
         base = ()
 
+    # preexec_fn=reset_signals ensures we don't receive signals from children (close_fds=True is default, but may become false in a future release)
+    kwargs = {
+        "preexec_fn": reset_signals,
+        "close_fds": True,
+        "start_new_session": True,
+        "timeout": DEFAULT_SCRIPT_TIMEOUT,
+    }
+
+    if isinstance(log_dest, str):
+        kwargs["stdout"] = log_dest
+        kwargs["stderr"] = log_dest
+    elif isinstance(log_dest, LogOutput):
+        if log_dest is LogOutput.FILE:
+            raise ValueError(
+                "For FILE mode, pass a file path string instead of LogOutput.FILE"
+            )
+
+        elif log_dest is LogOutput.NONE:
+            kwargs["stdout"] = subprocess.DEVNULL
+            kwargs["stderr"] = subprocess.DEVNULL
+
+        elif log_dest is LogOutput.PASSTHROUGH:
+            kwargs["stdout"] = sys.stdout
+            kwargs["stderr"] = sys.stderr
+
     base_dir = os.path.realpath(os.path.dirname(__file__) + "/..")
     cmd = base + ("{}/{}".format(base_dir, script),) + tuple(map(str, args))
-    debug("Running {}".format(cmd))
-    # preexec_fn=os.setsid here keeps process signals from propagating (close_fds=True is default)
-    return subprocess.check_call(
-        cmd,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT,
-        preexec_fn=os.setsid,
-        close_fds=True,
-    )
+    logger.debug("Running {}".format(cmd))
+    exit_code, output = command_runner(cmd, **kwargs)
+
+    if log_dest is LogOutput.LOGGER:
+        if output:
+            for line in output.splitlines():
+                level = infer_log_level(line)
+                logger.log(level, line)
+
+    return exit_code, output
+
+
+def infer_log_level(line):
+    """Infer log level from a log line."""
+    upper_line = line.upper()
+
+    if re.match(r"^\s*(\[)?(CRITICAL|FATAL)(]|:|\s|-)", upper_line):
+        return logging.CRITICAL
+    elif re.match(r"^\s*(\[)?(ERROR|ERR)(]|:|\s|-)", upper_line):
+        return logging.ERROR
+    elif re.match(r"^\s*(\[)?(WARN|WARNING)(]|:|\s|-)", upper_line):
+        return logging.WARNING
+    elif re.match(r"^\s*(\[)?(INFO|INFORMATION)(]|:|\s|-)", upper_line):
+        return logging.INFO
+    elif re.match(r"^\s*(\[)?(DEBUG|TRACE)(]|:|\s|-)", upper_line):
+        return logging.DEBUG
+
+    return logging.INFO
 
 
 class DB:
@@ -70,15 +341,15 @@ class DB:
             import pymysql
 
             pymysql.install_as_MySQLdb()
-            info("Using pure python SQL client")
+            logger.debug("Using pure python SQL client")
         except ImportError:
-            info("Using other SQL client")
+            logger.debug("Using other SQL client")
 
         try:
             import MySQLdb
         except ImportError:
-            critical("ERROR: missing a mysql python module")
-            critical(
+            logger.critical("ERROR: missing a mysql python module")
+            logger.critical(
                 "Install either 'PyMySQL' or 'mysqlclient' from your OS software repository or from PyPI"
             )
             raise
@@ -94,12 +365,30 @@ class DB:
             if self.config.db_socket:
                 args["unix_socket"] = self.config.db_socket
 
+            sslmode = self.config.db_sslmode.lower()
+            if sslmode == "disabled":
+                logger.debug("Using cleartext MySQL connection")
+            elif sslmode == "verify_ca":
+                logger.info(
+                    "Using TLS MySQL connection without CN/SAN check (CA validation only)"
+                )
+                args["ssl"] = {"ca": self.config.db_ssl_ca, "check_hostname": False}
+            elif sslmode == "verify_identity":
+                logger.info("Using TLS MySQL connection with full validation")
+                args["ssl"] = {"ca": self.config.db_ssl_ca}
+            else:
+                logger.critical(
+                    "Unsupported MySQL sslmode %s, dispatcher supports DISABLED, VERIFY_CA, and VERIFY_IDENTITY only",
+                    self.config.db_sslmode,
+                )
+                raise SystemExit(2)
+
             conn = MySQLdb.connect(**args)
             conn.autocommit(True)
             conn.ping(True)
             self._db[threading.get_ident()] = conn
         except Exception as e:
-            critical("ERROR: Could not connect to MySQL database! {}".format(e))
+            logger.critical("ERROR: Could not connect to MySQL database! {}".format(e))
             raise
 
     def db_conn(self):
@@ -128,7 +417,7 @@ class DB:
             cursor.close()
             return cursor
         except Exception as e:
-            critical("DB Connection exception {}".format(e))
+            logger.critical("DB Connection exception {}".format(e))
             self.close()
             raise
 
@@ -167,7 +456,7 @@ class RecurringTimer:
 
 
 class Lock:
-    """ Base lock class this is not thread safe"""
+    """Base lock class this is not thread safe"""
 
     def __init__(self):
         self._locks = {}  # store a tuple (owner, expiration)
@@ -210,7 +499,7 @@ class Lock:
         return False
 
     def print_locks(self):
-        debug(self._locks)
+        logger.debug(self._locks)
 
 
 class ThreadingLock(Lock):
@@ -248,11 +537,20 @@ class ThreadingLock(Lock):
 
 
 class RedisLock(Lock):
-    def __init__(self, namespace="lock", **redis_kwargs):
-        import redis
-        from redis.sentinel import Sentinel
+    def __init__(self, namespace="lock", sentinel_kwargs=None, **redis_kwargs):
+        import redis  # pylint: disable=import-error
+        from redis.sentinel import Sentinel  # pylint: disable=import-error
+        from redis.retry import Retry
+        from redis.exceptions import TimeoutError, ConnectionError
+        from redis.backoff import ConstantBackoff
 
         redis_kwargs["decode_responses"] = True
+        redis_kwargs["retry"] = Retry(ConstantBackoff(backoff=2), 5)
+        redis_kwargs["retry_on_error"] = [
+            ConnectionError,
+            ConnectionRefusedError,
+            TimeoutError,
+        ]
         if redis_kwargs.get("sentinel") and redis_kwargs.get("sentinel_service"):
             sentinels = [
                 tuple(l.split(":")) for l in redis_kwargs.pop("sentinel").split(",")
@@ -261,17 +559,29 @@ class RedisLock(Lock):
             kwargs = {
                 k: v
                 for k, v in redis_kwargs.items()
-                if k in ["decode_responses", "password", "db", "socket_timeout"]
+                if k
+                in [
+                    "decode_responses",
+                    "username",
+                    "password",
+                    "db",
+                    "socket_timeout",
+                    "retry",
+                    "retry_on_error",
+                ]
             }
-            self._redis = Sentinel(sentinels, **kwargs).master_for(sentinel_service)
+            self._redis = Sentinel(
+                sentinels, sentinel_kwargs=sentinel_kwargs, **kwargs
+            ).master_for(sentinel_service)
         else:
             kwargs = {k: v for k, v in redis_kwargs.items() if "sentinel" not in k}
             self._redis = redis.Redis(**kwargs)
         self._redis.ping()
         self._namespace = namespace
-        info(
+        socket_timeout = redis_kwargs.get("socket_timeout")
+        logger.debug(
             "Created redis lock manager with socket_timeout of {}s".format(
-                redis_kwargs["socket_timeout"]
+                socket_timeout if socket_timeout is not None else "default"
             )
         )
 
@@ -286,7 +596,7 @@ class RedisLock(Lock):
         :param owner: str a unique name for the locking node
         :param expiration: int in seconds, 0 expiration means forever
         """
-        import redis
+        import redis  # pylint: disable=import-error
 
         try:
             if int(expiration) < 1:
@@ -295,13 +605,18 @@ class RedisLock(Lock):
             key = self.__key(name)
             non_existing = not (allow_owner_relock and self._redis.get(key) == owner)
             return self._redis.set(key, owner, ex=int(expiration), nx=non_existing)
-        except redis.exceptions.ResponseError as e:
-            exception(
-                "Unable to obtain lock, local state: name: %s, owner: %s, expiration: %s, allow_owner_relock: %s",
+        except (
+            redis.exceptions.ResponseError,
+            redis.exceptions.TimeoutError,
+            redis.exceptions.ConnectionError,
+        ) as e:
+            logger.critical(
+                "Unable to obtain lock, local state: name: %s, owner: %s, expiration: %s, allow_owner_relock: %s. %s",
                 name,
                 owner,
                 expiration,
                 allow_owner_relock,
+                repr(e),
             )
 
     def unlock(self, name, owner):
@@ -310,14 +625,34 @@ class RedisLock(Lock):
         :param name: str the name of the lock
         :param owner: str a unique name for the locking node
         """
-        key = self.__key(name)
-        if self._redis.get(key) == owner:
-            self._redis.delete(key)
-            return True
+        import redis  # pylint: disable=import-error
+
+        try:
+            key = self.__key(name)
+            if self._redis.get(key) == owner:
+                self._redis.delete(key)
+                return True
+        except (redis.exceptions.TimeoutError, redis.exceptions.ConnectionError) as e:
+            logger.critical(
+                "Unable to release lock because of a redis timeout/connection error, local state: name: %s, owner: %s. %s",
+                name,
+                owner,
+                repr(e),
+            )
         return False
 
     def check_lock(self, name):
-        return self._redis.get(self.__key(name)) is not None
+        import redis  # pylint: disable=import-error
+
+        try:
+            return self._redis.get(self.__key(name)) is not None
+        except (redis.exceptions.TimeoutError, redis.exceptions.ConnectionError) as e:
+            logger.critical(
+                "Unable check the status of lock %s because of a redis timeout/connection error: %s",
+                name,
+                repr(e),
+            )
+            return True
 
     def print_locks(self):
         keys = self._redis.keys(self.__key("*"))
@@ -330,11 +665,20 @@ class RedisLock(Lock):
 
 
 class RedisUniqueQueue(object):
-    def __init__(self, name, namespace="queue", **redis_kwargs):
-        import redis
-        from redis.sentinel import Sentinel
+    def __init__(self, name, namespace="queue", sentinel_kwargs=None, **redis_kwargs):
+        import redis  # pylint: disable=import-error
+        from redis.sentinel import Sentinel  # pylint: disable=import-error
+        from redis.retry import Retry
+        from redis.exceptions import TimeoutError, ConnectionError
+        from redis.backoff import ConstantBackoff
 
         redis_kwargs["decode_responses"] = True
+        redis_kwargs["retry"] = Retry(ConstantBackoff(backoff=2), 5)
+        redis_kwargs["retry_on_error"] = [
+            ConnectionError,
+            ConnectionRefusedError,
+            TimeoutError,
+        ]
         if redis_kwargs.get("sentinel") and redis_kwargs.get("sentinel_service"):
             sentinels = [
                 tuple(l.split(":")) for l in redis_kwargs.pop("sentinel").split(",")
@@ -343,15 +687,26 @@ class RedisUniqueQueue(object):
             kwargs = {
                 k: v
                 for k, v in redis_kwargs.items()
-                if k in ["decode_responses", "password", "db", "socket_timeout"]
+                if k
+                in [
+                    "decode_responses",
+                    "username",
+                    "password",
+                    "db",
+                    "socket_timeout",
+                    "retry",
+                    "retry_on_error",
+                ]
             }
-            self._redis = Sentinel(sentinels, **kwargs).master_for(sentinel_service)
+            self._redis = Sentinel(
+                sentinels, sentinel_kwargs=sentinel_kwargs, **kwargs
+            ).master_for(sentinel_service)
         else:
             kwargs = {k: v for k, v in redis_kwargs.items() if "sentinel" not in k}
             self._redis = redis.Redis(**kwargs)
         self._redis.ping()
         self.key = "{}:{}".format(namespace, name)
-        info(
+        logger.debug(
             "Created redis queue with socket_timeout of {}s".format(
                 redis_kwargs["socket_timeout"]
             )
@@ -362,19 +717,56 @@ class RedisUniqueQueue(object):
             self._redis.delete(self.key)
 
     def qsize(self):
-        return self._redis.zcount(self.key, "-inf", "+inf")
+        import redis  # pylint: disable=import-error
+
+        try:
+            return self._redis.zcount(self.key, "-inf", "+inf")
+        except (redis.exceptions.TimeoutError, redis.exceptions.ConnectionError) as e:
+            logger.critical(
+                "Failed to retrieve the size of the queue because of a redis timeout/connection error: %s",
+                repr(e),
+            )
+            return 0
 
     def empty(self):
         return self.qsize() == 0
 
     def put(self, item):
-        self._redis.zadd(self.key, {item: time()}, nx=True)
+        import redis  # pylint: disable=import-error
+
+        try:
+            self._redis.zadd(self.key, {item: time()}, nx=True)
+        except (redis.exceptions.TimeoutError, redis.exceptions.ConnectionError) as e:
+            logger.critical(
+                "Failed to put item %s in queue because of a redis timeout/connection error: %s",
+                str(item),
+                repr(e),
+            )
 
     def get(self, block=True, timeout=None):
-        if block:
-            item = self._redis.bzpopmin(self.key, timeout=timeout)
-        else:
-            item = self._redis.zpopmin(self.key)
+        import redis  # pylint: disable=import-error
+
+        try:
+            if block:
+                item = self._redis.bzpopmin(self.key, timeout=timeout)
+            else:
+                item = self._redis.zpopmin(self.key)
+        except (redis.exceptions.TimeoutError, redis.exceptions.ConnectionError) as e:
+            logger.critical(
+                "Failed to get item %s from queue because of a redis timeout/connection error: %s",
+                self.key,
+                repr(e),
+            )
+            item = None
+        # Unfortunately we cannot use _redis.exceptions.ResponseError Exception here
+        # Since it would trigger another exception in queuemanager
+        except Exception as e:
+            logger.critical(
+                "BZPOPMIN/ZPOPMIN command failed: {}\nNote that redis >= 5.0 is required.".format(
+                    e
+                )
+            )
+            raise
 
         if item:
             item = item[1]

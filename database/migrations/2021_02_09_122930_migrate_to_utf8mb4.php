@@ -3,14 +3,14 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class MigrateToUtf8mb4 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         $this->migrateCharsetTo('utf8mb4', 'utf8mb4_unicode_ci');
     }
@@ -20,14 +20,14 @@ class MigrateToUtf8mb4 extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         $this->migrateCharsetTo('utf8', 'utf8_unicode_ci');
     }
 
     protected function migrateCharsetTo($charset, $collation)
     {
-        if (\LibreNMS\DB\Eloquent::getDriver() != 'mysql') {
+        if (LibreNMS\DB\Eloquent::getDriver() != 'mysql') {
             return;
         }
 
@@ -39,6 +39,7 @@ class MigrateToUtf8mb4 extends Migration
         // Get the list of all tables
         $tableNames = DB::table('information_schema.tables')
             ->where('table_schema', $databaseName)
+            ->where('TABLE_TYPE', 'BASE TABLE')
             ->pluck('TABLE_NAME');
 
         // Iterate through the list and alter each table
@@ -51,7 +52,7 @@ class MigrateToUtf8mb4 extends Migration
             ->where('table_schema', $databaseName)
             ->whereNotNull('CHARACTER_SET_NAME')
             ->whereNotNull('COLLATION_NAME')
-            ->where(function ($query) use ($charset, $collation) {
+            ->where(function ($query) use ($charset, $collation): void {
                 $query->where('CHARACTER_SET_NAME', '!=', $charset)
                       ->orWhere('COLLATION_NAME', '!=', $collation);
             })
@@ -77,4 +78,4 @@ class MigrateToUtf8mb4 extends Migration
             DB::unprepared($sql);
         }
     }
-}
+};

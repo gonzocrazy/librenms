@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PrometheusStoreTest.php
  *
@@ -18,85 +19,76 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Tests\Unit\Data;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-use LibreNMS\Config;
+use App\Data\TimeSeries\MetricIdentity;
+use App\Facades\LibrenmsConfig;
+use App\Models\Device;
+use Illuminate\Support\Facades\Http as LaravelHttp;
 use LibreNMS\Data\Store\Prometheus;
 use LibreNMS\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group datastores
- */
-class PrometheusStoreTest extends TestCase
+#[Group('datastores')]
+final class PrometheusStoreTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        Config::set('prometheus.enable', true);
-        Config::set('prometheus.url', 'http://fake:9999');
+        LibrenmsConfig::set('prometheus.enable', true);
+        LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
     }
 
-    public function testFailWrite()
+    public function testFailWrite(): void
     {
-        $stack = HandlerStack::create(new MockHandler([
-            new Response(422, [], 'Bad response'),
-            new RequestException('Exception thrown', new Request('POST', 'test')),
-        ]));
-
-        $client = new Client(['handler' => $stack]);
-        $prometheus = new Prometheus($client);
+        LaravelHttp::fakeSequence()->push('Bad response', 422);
+        $prometheus = app(Prometheus::class);
 
         \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->once()->with("Prometheus Exception: Client error: `POST http://fake:9999/metrics/job/librenms/instance/test/measurement/none` resulted in a `422 Unprocessable Entity` response:\nBad response\n");
-        \Log::shouldReceive('error')->once()->with('Prometheus Exception: Exception thrown');
-        $prometheus->put(['hostname' => 'test'], 'none', [], ['one' => 1]);
-        $prometheus->put(['hostname' => 'test'], 'none', [], ['one' => 1]);
+        \Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
+        $prometheus->write('none', ['one' => 1]);
     }
 
-    public function testSimpleWrite()
+    public function testSimpleWrite(): void
     {
-        $stack = HandlerStack::create(new MockHandler([
-            new Response(200),
-        ]));
+        LaravelHttp::fake([
+            '*' => LaravelHttp::response(),
+        ]);
 
-        $container = [];
-        $history = Middleware::history($container);
+        $prometheus = app(Prometheus::class);
 
-        $stack->push($history);
-        $client = new Client(['handler' => $stack]);
-        $prometheus = new Prometheus($client);
-
-        $device = ['hostname' => 'testhost'];
         $measurement = 'testmeasure';
         $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
         $fields = ['ifIn' => 234234, 'ifOut' => 53453];
+        $meta = ['device' => new Device(['hostname' => 'testhost'])];
 
         \Log::shouldReceive('debug');
         \Log::shouldReceive('error')->times(0);
 
-        $prometheus->put($device, $measurement, $tags, $fields);
+        $prometheus->write($measurement, $fields, $tags, $meta);
 
-        $this->assertCount(1, $container, 'Did not receive the expected number of requests');
+        LaravelHttp::assertSentCount(1);
+        LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
+            $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
+            $request->body() == "ifIn 234234\nifOut 53453\n");
+    }
 
-        /** @var Request $request */
-        $request = $container[0]['request'];
+    public function testMetricIdentityIsTheInstance(): void
+    {
+        LaravelHttp::fake([
+            '*' => LaravelHttp::response(),
+        ]);
+        \Log::shouldReceive('debug');
 
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype', $request->getUri()->getPath());
-        $this->assertEquals('fake', $request->getUri()->getHost());
-        $this->assertEquals(9999, $request->getUri()->getPort());
-        $this->assertEquals("ifIn 234234\nifOut 53453\n", (string) $request->getBody());
+        $metric = new MetricIdentity('vm.cpu', ['cluster' => 'pve-cluster', 'type' => 'qemu', 'id' => 100]);
+        app(Prometheus::class)->write($metric->measurement, ['usage' => 5], $metric->tags, ['device' => new Device(['hostname' => 'pve1']), 'metric' => $metric]);
+
+        LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->url() == 'http://fake:9999/metrics/job/librenms/instance/pve-cluster/measurement/vm.cpu/cluster/pve-cluster/type/qemu/id/100');
     }
 }

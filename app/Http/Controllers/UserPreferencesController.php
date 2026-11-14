@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserPreferencesController.php
  *
@@ -18,37 +19,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\Dashboard;
 use App\Models\Device;
 use App\Models\UserPref;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use LibreNMS\Authentication\LegacyAuth;
 use LibreNMS\Authentication\TwoFactor;
-use LibreNMS\Config;
 use LibreNMS\Util\DynamicConfig;
 use Session;
 
-class UserPreferencesController extends Controller
+class UserPreferencesController extends Controller implements HasMiddleware
 {
-    private $cachedPreferences = ['locale', 'site_style'];
+    private $cachedPreferences = ['locale', 'site_style', 'timezone'];
 
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('deny-demo');
+        return [
+            'deny-demo',
+        ];
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -57,13 +63,13 @@ class UserPreferencesController extends Controller
 
         $locales = $this->getValidLocales();
         $styles = $this->getValidStyles();
-        $default_locale = \config('app.locale');
-        $default_style = Config::get('site_style');
+        $default_locale = \config('app.default_locale'); // always the system default
+        $default_style = LibrenmsConfig::get('site_style');
 
         $data = [
             'user' => $user,
             'can_change_password' => LegacyAuth::get()->canUpdatePasswords($user->username),
-            'dashboards' => Dashboard::allAvailable($user)->with('user')->get(),
+            'dashboards' => Dashboard::hasAccess($user)->with('user')->get(),
             'default_dashboard' => UserPref::getPref($user, 'dashboard'),
             'note_to_device' => UserPref::getPref($user, 'add_schedule_note_to_device'),
             'locale' => UserPref::getPref($user, 'locale'),
@@ -72,10 +78,12 @@ class UserPreferencesController extends Controller
             'site_style' => UserPref::getPref($user, 'site_style'),
             'site_style_default' => $styles[$default_style] ?? $default_style,
             'site_styles' => $styles,
+            'timezone' => UserPref::getPref($user, 'timezone'),
+            'temp_units' => UserPref::getPref($user, 'temp_units'),
             'hide_dashboard_editor' => UserPref::getPref($user, 'hide_dashboard_editor') ?? 0,
         ];
 
-        if (Config::get('twofactor')) {
+        if (LibrenmsConfig::get('twofactor')) {
             $twofactor = UserPref::getPref($user, 'twofactor');
             if ($twofactor) {
                 $data['twofactor_uri'] = TwoFactor::generateUri($user->username, $twofactor['key'], $twofactor['counter'] !== false);
@@ -83,7 +91,7 @@ class UserPreferencesController extends Controller
             $data['twofactor'] = $twofactor;
         }
 
-        if (! $user->hasGlobalRead()) {
+        if (Gate::denies('viewAll', Device::class)) {
             $data['devices'] = Device::hasAccess($user)->get();
         }
 
@@ -93,7 +101,7 @@ class UserPreferencesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
@@ -109,7 +117,13 @@ class UserPreferencesController extends Controller
                 'required',
                 Rule::in(array_merge(['default'], array_keys($this->getValidStyles()))),
             ],
+            'timezone' => [
+                'required',
+                Rule::in(array_merge(['default'], timezone_identifiers_list())),
+            ],
+            'temp_units' => 'required|in:default,f',
             'hide_dashboard_editor' => 'required|integer',
+            'network_search_mac_format' => 'required|in:default,colon,dash,dot,bare',
         ];
 
         $this->validate($request, [
@@ -122,9 +136,23 @@ class UserPreferencesController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    public function update(Request $request, string $preference)
+    {
+        $request->validate([
+            'name' => ['required', 'string'],
+            'filters' => ['array'],
+        ]);
+
+        if ($preference == 'filters') {
+            $name = 'filters.' . $request->string('name');
+            $filters = $request->array('filters');
+            $this->updatePreference($name, $filters ? json_encode($filters) : 'default');
+        }
+    }
+
     private function getValidLocales()
     {
-        return array_reduce(glob(resource_path('lang') . '/*', GLOB_ONLYDIR), function ($locales, $locale) {
+        return array_reduce(glob(base_path('lang') . '/*', GLOB_ONLYDIR), function ($locales, $locale) {
             $locale = basename($locale);
             $lang = __('preferences.lang', [], $locale);
             $locales[$locale] = ($lang == 'preferences.lang' ? $locale : $lang);

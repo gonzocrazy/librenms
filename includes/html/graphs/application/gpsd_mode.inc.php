@@ -1,4 +1,5 @@
 <?php
+
 /*
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -30,11 +31,7 @@ $colour_area_max = 'FFCCCC';
 $graph_max = 0;
 $unit_text = 'Mode';
 
-$gpsd = Rrd::name($device['hostname'], ['app', 'gpsd', $app['app_id']]);
-if (Rrd::checkRrdExists($gpsd)) {
-    $rrd_filename = $gpsd;
-} else {
-    echo "file missing: $rrd_filename";
-}
+$gpsd = Rrd::name($device['hostname'], ['app', 'gpsd', $app->app_id]);
+$rrd_filename = $gpsd;
 
 require 'includes/html/graphs/generic_simplex.inc.php';

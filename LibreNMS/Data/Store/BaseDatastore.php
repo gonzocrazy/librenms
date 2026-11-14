@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseDatastore.php
  *
@@ -18,46 +19,77 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Data\Store;
 
-use LibreNMS\Data\Measure\Measurement;
-use LibreNMS\Data\Measure\MeasurementCollection;
+use App\Data\TimeSeries\MetricIdentity;
+use App\Facades\DeviceCache;
+use App\Models\Device;
+use App\Polling\Measure\Measurement;
+use App\Polling\Measure\MeasurementCollection;
 use LibreNMS\Interfaces\Data\Datastore as DatastoreContract;
 
 abstract class BaseDatastore implements DatastoreContract
 {
-    private $stats;
+    private readonly MeasurementCollection $stats;
 
     public function __construct()
     {
         $this->stats = new MeasurementCollection();
     }
 
-    /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
-     *
-     * @return bool
-     */
-    public function wantsRrdTags()
+    public function getStats(): MeasurementCollection
     {
-        return true;
+        return $this->stats;
     }
 
     /**
      * Record statistics for operation
-     * @param Measurement $stat
+     *
+     * @param  Measurement  $stat
      */
-    protected function recordStatistic(Measurement $stat)
+    protected function recordStatistic(Measurement $stat): void
     {
         $this->stats->record($stat);
     }
 
-    public function getStats()
+    protected function getDevice(array $meta): Device
     {
-        return $this->stats;
+        if (isset($meta['device']) && $meta['device'] instanceof Device) {
+            return $meta['device'];
+        }
+
+        return DeviceCache::getPrimary();
+    }
+
+    /**
+     * The tags that tell series apart. A metric identity carries what the series belongs to in its own tags,
+     * usually hostname, other writes belong to the device and are tagged with its hostname.
+     *
+     * @param  array<string, mixed>  $tags
+     * @param  array<string, mixed>  $meta
+     * @return array<string, mixed>
+     */
+    protected function seriesTags(array $tags, array $meta): array
+    {
+        if (($meta['metric'] ?? null) instanceof MetricIdentity) {
+            return $tags;
+        }
+
+        return ['hostname' => $this->getDevice($meta)->hostname, ...$tags];
+    }
+
+    public function __destruct()
+    {
+        $this->terminate();
+    }
+
+    public function terminate(): void
+    {
+        // do nothing
     }
 }

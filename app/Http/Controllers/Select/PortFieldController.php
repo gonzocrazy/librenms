@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PortFieldController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,49 +27,77 @@
 namespace App\Http\Controllers\Select;
 
 use App\Models\Port;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use LibreNMS\Util\Number;
+use LibreNMS\Util\Rewrite;
 
+/**
+ * @extends SelectController<Port>
+ */
 class PortFieldController extends SelectController
 {
     /**
      * Defines validation rules (will override base validation rules for select2 responses too)
-     *
-     * @return array
      */
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'field' => 'required|in:ifType',
+            'field' => 'required|in:ifType,ifSpeed,port_descr_type',
             'device' => 'nullable|int',
         ];
     }
 
     /**
-     * Defines search fields will be searched in order
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
+     * Defines fields that can be used as filters
      */
-    protected function searchFields($request)
+    protected function filterFields(Request $request): array
     {
-        return [$request->get('field')];
+        return [
+            'device_id' => 'device',
+        ];
+    }
+
+    /**
+     * Defines search fields will be searched in order
+     */
+    protected function searchFields(Request $request): array
+    {
+        return [$request->string('field')];
     }
 
     /**
      * Defines the base query for this resource
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request): Builder
     {
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Port::hasAccess($request->user())
-            ->select($request->get('field'))->distinct();
+        $this->authorize('viewAny', Port::class);
+        $this->idField = $request->string('field');
 
-        if ($device_id = $request->get('device')) {
-            $query->where('ports.device_id', $device_id);
-        }
+        return Port::hasAccess($request->user())
+            ->whereNotNull($this->idField)
+            ->select($this->idField)
+            ->distinct()
+            ->orderBy($this->idField);
+    }
 
-        return $query;
+    /**
+     * @param  Port  $model
+     * @return array{id: int|string, text: string, icon?: string}
+     */
+    public function formatItem(Model $model): array
+    {
+        $field = array_key_first($model->getAttributes());
+        $value = array_first($model->getAttributes());
+
+        return [
+            'id' => $value,
+            'text' => match ($field) {
+                'ifSpeed' => Number::formatSi($value, suffix: 'bps'),
+                'ifType' => Rewrite::normalizeIfType($value),
+                default => $value,
+            },
+        ];
     }
 }

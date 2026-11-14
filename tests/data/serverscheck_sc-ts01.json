@@ -10,11 +10,11 @@
                     "version": "2.11",
                     "hardware": "SC-TS01",
                     "features": null,
+                    "location": "<private>",
                     "os": "serverscheck",
                     "type": "environment",
                     "serial": null,
-                    "icon": "serverscheck.svg",
-                    "location": "<private>"
+                    "icon": "serverscheck.svg"
                 }
             ]
         },
@@ -32,6 +32,7 @@
                     "sensor_type": "serverscheck",
                     "sensor_descr": "X105Y013 down Humid",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 48.75,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -56,6 +58,7 @@
                     "sensor_type": "serverscheck",
                     "sensor_descr": "X108Y013 top Humid",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 45.54,
@@ -69,6 +72,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -80,6 +84,7 @@
                     "sensor_type": "serverscheck",
                     "sensor_descr": "X105Y013 back Temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 26.44,
@@ -93,6 +98,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -104,6 +110,7 @@
                     "sensor_type": "serverscheck",
                     "sensor_descr": "X105Y013 down Temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21.88,
@@ -117,6 +124,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -128,6 +136,7 @@
                     "sensor_type": "serverscheck",
                     "sensor_descr": "X108Y013 top Temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 23.63,
@@ -141,10 +150,10 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
     }

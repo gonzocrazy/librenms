@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HandleCors.php
  *
@@ -18,17 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Middleware;
 
-use Asm89\Stack\CorsService;
+use Fruitcake\Cors\CorsService;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 
-class HandleCors extends \Fruitcake\Cors\HandleCors
+class HandleCors extends \Illuminate\Http\Middleware\HandleCors
 {
     private $map = [
         'allowmethods' => 'allowed_methods',
@@ -37,12 +39,12 @@ class HandleCors extends \Fruitcake\Cors\HandleCors
         'exposeheaders' => 'exposed_headers',
     ];
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, CorsService $cors)
     {
         // load legacy config settings before booting the CorsService
-        if (\LibreNMS\Config::get('api.cors.enabled')) {
+        if (\App\Facades\LibrenmsConfig::get('api.cors.enabled')) {
             $laravel_config = $container['config']->get('cors');
-            $legacy = \LibreNMS\Config::get('api.cors');
+            $legacy = \App\Facades\LibrenmsConfig::get('api.cors');
 
             $laravel_config['paths'][] = 'api/*';
 
@@ -57,7 +59,6 @@ class HandleCors extends \Fruitcake\Cors\HandleCors
             $container['config']->set('cors', $laravel_config);
         }
 
-        $cors = $container->make(CorsService::class);
-        parent::__construct($cors, $container);
+        parent::__construct($container, $cors);
     }
 }

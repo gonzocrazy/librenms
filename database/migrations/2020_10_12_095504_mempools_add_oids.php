@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MempoolsAddOids extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('mempools', function (Blueprint $table) {
+        Schema::table('mempools', function (Blueprint $table): void {
             $table->dropColumn('hrDeviceIndex');
             $table->string('mempool_class', 32)->default('system')->after('mempool_type');
             $table->string('mempool_descr', 128)->change();
@@ -24,7 +24,7 @@ class MempoolsAddOids extends Migration
         });
 
         // rediscover mempools to fill empty columns and prevent gaps
-        DB::table('devices')->whereIn('device_id', function ($query) {
+        DB::table('devices')->whereIn('device_id', function ($query): void {
             $query->from('mempools')->distinct()->select('device_id');
         })->update(['last_discovered' => null]);
     }
@@ -34,12 +34,12 @@ class MempoolsAddOids extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('mempools', function (Blueprint $table) {
+        Schema::table('mempools', function (Blueprint $table): void {
             $table->string('mempool_descr', 64)->change();
             $table->integer('hrDeviceIndex')->nullable()->after('entPhysicalIndex');
             $table->dropColumn(['mempool_class', 'mempool_perc_oid', 'mempool_used_oid', 'mempool_free_oid', 'mempool_total_oid']);
         });
     }
-}
+};

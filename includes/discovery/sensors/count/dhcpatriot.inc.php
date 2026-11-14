@@ -7,35 +7,36 @@
  *
 */
 
+use LibreNMS\Enum\SensorType;
+
 $oids = [
     0 => [
-        'type'  => 'dhcpatriotDatabaseThreads',
+        'type' => 'dhcpatriotDatabaseThreads',
         'descr' => 'Database Threads',
-        'oid'   => '.1.3.6.1.4.1.2021.50.45',
+        'oid' => '.1.3.6.1.4.1.2021.50.45',
     ],
     1 => [
-        'type'  => 'dhcpatriotDatabaseQueriesPerSecond',
+        'type' => 'dhcpatriotDatabaseQueriesPerSecond',
         'descr' => 'Database Queries Per Second',
-        'oid'   => '.1.3.6.1.4.1.2021.50.46',
+        'oid' => '.1.3.6.1.4.1.2021.50.46',
     ],
     2 => [
-        'type'  => 'dhcpatriotDHCPv4LeasesPerSecond',
+        'type' => 'dhcpatriotDHCPv4LeasesPerSecond',
         'descr' => 'DHCPv4 Leases Per Second',
-        'oid'   => '.1.3.6.1.4.1.2021.50.70',
+        'oid' => '.1.3.6.1.4.1.2021.50.70',
     ],
     3 => [
-        'type'  => 'dhcpatriotDHCPv6LeasesPerSecond',
+        'type' => 'dhcpatriotDHCPv6LeasesPerSecond',
         'descr' => 'DHCPv6 Leases Per Second',
-        'oid'   => '.1.3.6.1.5.1.2021.50.140',
+        'oid' => '.1.3.6.1.5.1.2021.50.140',
     ],
     4 => [
-        'type'  => 'dhcpatriotLicenseExpiration',
+        'type' => 'dhcpatriotLicenseExpiration',
         'descr' => 'License Expiration Days Remaining',
-        'oid'   => '.1.3.6.1.4.1.2021.51.12.4.1.2.7.76.73.67.69.78.83.69.1',
+        'oid' => '.1.3.6.1.4.1.2021.51.12.4.1.2.7.76.73.67.69.78.83.69.1',
     ],
 ];
 
-$class = 'count';
 $divisor = 1;
 $multiplier = 1;
 $low_limit = null;
@@ -57,6 +58,9 @@ foreach ($oids as $index => $entry) {
     $type = $entry['type'];
     $descr = $entry['descr'];
 
+    if (! isset($tmp_snmp_multi[$oid])) {
+        continue;
+    }
     $current = $tmp_snmp_multi[$oid];
 
     if ($type === 'dhcpatriotLicenseExpiration' && $current !== 'FULL:0' && gettype($current) === 'string') {
@@ -66,8 +70,8 @@ foreach ($oids as $index => $entry) {
 
     if (! empty($current) && $current !== 'FULL:0') {
         discover_sensor(
-            $valid['sensor'],
-            $class,
+            null,
+            SensorType::Count,
             $device,
             $oid,
             $index,
@@ -89,4 +93,4 @@ foreach ($oids as $index => $entry) {
     }
 }
 
-unset($oids, $current_time, $class, $divisor, $multiplier, $low_limit, $low_warn_limit, $warn_limit, $high_limit, $poller_type, $entPhysicalIndex, $entPhysicalIndex_measured, $user_func, $group, $oid, $type, $descr, $current, $epoch_time);
+unset($oids, $current_time, $divisor, $multiplier, $low_limit, $low_warn_limit, $warn_limit, $high_limit, $poller_type, $entPhysicalIndex, $entPhysicalIndex_measured, $user_func, $group, $oid, $type, $descr, $current, $epoch_time);

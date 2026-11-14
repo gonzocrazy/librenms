@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateDashboardsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('dashboards', function (Blueprint $table) {
+        Schema::create('dashboards', function (Blueprint $table): void {
             $table->increments('dashboard_id');
             $table->unsignedInteger('user_id')->default(0);
             $table->string('dashboard_name');
@@ -25,8 +25,8 @@ class CreateDashboardsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('dashboards');
     }
-}
+};

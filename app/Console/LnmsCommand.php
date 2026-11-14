@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LnmsCommand.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,13 +27,19 @@
 namespace App\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Validator;
 
 abstract class LnmsCommand extends Command
 {
-    protected $developer = false;
+    protected bool $developer = false;
+
+    /** @var string[][]|callable[]|null */
+    protected $optionValues;
+    /** @var string[][]|callable[]|null */
+    protected $optionDefaults;
 
     /**
      * Create a new command instance.
@@ -44,34 +52,34 @@ abstract class LnmsCommand extends Command
         $this->setDescription(__('commands.' . $this->getName() . '.description'));
     }
 
-    public function isHidden()
+    public function isHidden(): bool
     {
         $env = $this->getLaravel() ? $this->getLaravel()->environment() : getenv('APP_ENV');
 
-        return $this->hidden || ($this->developer && $env !== 'production');
+        return $this->hidden || ($this->developer && $env === 'production');
     }
 
     /**
      * Adds an argument. If $description is null, translate commands.command-name.arguments.name
      * If you want the description to be empty, just set an empty string
      *
-     * @param string               $name        The argument name
-     * @param int|null             $mode        The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
-     * @param string               $description A description text
-     * @param string|string[]|null $default     The default value (for InputArgument::OPTIONAL mode only)
+     * @param  string  $name
+     * @param  int|null  $mode
+     * @param  string  $description
+     * @param  mixed|null  $default
+     * @param  array|\Closure  $suggestedValues
+     * @return $this
      *
      * @throws InvalidArgumentException When argument mode is not valid
-     *
-     * @return $this
      */
-    public function addArgument($name, $mode = null, $description = null, $default = null)
+    public function addArgument(string $name, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
         // use a generated translation location by default
-        if (is_null($description)) {
+        if (empty($description)) {
             $description = __('commands.' . $this->getName() . '.arguments.' . $name);
         }
 
-        parent::addArgument($name, $mode, $description, $default);
+        parent::addArgument($name, $mode, $description, $default, $suggestedValues);
 
         return $this;
     }
@@ -80,24 +88,36 @@ abstract class LnmsCommand extends Command
      * Adds an option. If $description is null, translate commands.command-name.arguments.name
      * If you want the description to be empty, just set an empty string
      *
-     * @param string                        $name        The option name
-     * @param string|array|null             $shortcut    The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param int|null                      $mode        The option mode: One of the InputOption::VALUE_* constants
-     * @param string                        $description A description text
-     * @param string|string[]|int|bool|null $default     The default value (must be null for InputOption::VALUE_NONE)
+     * @param  string  $name
+     * @param  array|string|null  $shortcut
+     * @param  int|null  $mode
+     * @param  string  $description
+     * @param  mixed|null  $default
+     * @param  array|\Closure  $suggestedValues
+     * @return $this
      *
      * @throws InvalidArgumentException If option mode is invalid or incompatible
-     *
-     * @return $this
      */
-    public function addOption($name, $shortcut = null, $mode = null, $description = null, $default = null)
+    public function addOption(string $name, array|string|null $shortcut = null, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
         // use a generated translation location by default
-        if (is_null($description)) {
+        if (empty($description)) {
             $description = __('commands.' . $this->getName() . '.options.' . $name);
         }
 
-        parent::addOption($name, $shortcut, $mode, $description, $default);
+        // inject our custom InputOption to allow callable option enums
+        $this->getDefinition()->addOption(
+            new DynamicInputOption(
+                $name,
+                $shortcut,
+                $mode,
+                $description,
+                $default,
+                $this->getCallable('Defaults', $name),
+                $this->getCallable('Values', $name),
+                $suggestedValues,
+            )
+        );
 
         return $this;
     }
@@ -105,21 +125,93 @@ abstract class LnmsCommand extends Command
     /**
      * Validate the input of this command.  Uses Laravel input validation
      * merging the arguments and options together to check.
-     *
-     * @param array $rules
-     * @param array $messages
      */
-    protected function validate($rules, $messages = [])
+    protected function validate(array $rules, array $messages = []): array
     {
-        $validator = Validator::make($this->arguments() + $this->options(), $rules, $messages);
+        // auto create option value rules if they don't exist
+        if (isset($this->optionValues)) {
+            foreach (array_keys($this->optionValues) as $option) {
+                $callable = $this->getCallable('Values', $option);
+                if (empty($rules[$option]) && $callable) {
+                    $values = call_user_func($callable);
+                    $rules[$option] = Rule::in($values);
+                    $messages[$option . '.in'] = trans('commands.lnms.validation-errors.optionValue', [
+                        'option' => $option,
+                        'values' => implode(', ', $values),
+                    ]);
+                }
+            }
+        }
+
+        $error_messages = trans('commands.' . $this->getName() . '.validation-errors');
+        $validator = Validator::make(
+            $this->arguments() + $this->options(),
+            $rules,
+            is_array($error_messages) ? array_merge($error_messages, $messages) : $messages
+        );
 
         try {
             $validator->validate();
-        } catch (ValidationException $e) {
-            collect($validator->getMessageBag()->all())->each(function ($message) {
+
+            return $validator->validated();
+        } catch (ValidationException) {
+            collect($validator->getMessageBag()->all())->each(function ($message): void {
                 $this->error($message);
             });
             exit(1);
         }
+    }
+
+    protected function validatePromptInput(string $attributeName, string|array $rules): callable
+    {
+        return function (string|array $value) use ($attributeName, $rules): ?string {
+            $validator = Validator::make([$attributeName => $value], [$attributeName => $rules]);
+
+            if ($validator->fails()) {
+                return $validator->errors()->first($attributeName);
+            }
+
+            return null;
+        };
+    }
+
+    /**
+     * Parse a comma-separated option into an array of strings.
+     *
+     * @return array<int, string>
+     */
+    protected function commaSeparatedOption(string $name, bool $filterEmpty = true, bool $unique = true): array
+    {
+        $value = $this->option($name);
+        if (! is_string($value) && ! is_array($value)) {
+            return [];
+        }
+
+        $items = is_array($value) ? $value : explode(',', $value);
+        $trimmed = array_map(trim(...), $items);
+
+        if ($filterEmpty) {
+            $trimmed = array_filter($trimmed, fn (string $item) => $item !== '');
+        }
+
+        if ($unique) {
+            $trimmed = array_unique($trimmed);
+        }
+
+        return array_values($trimmed);
+    }
+
+    private function getCallable(string $type, string $name): ?callable
+    {
+        if (empty($this->{'option' . $type}[$name])) {
+            return null;
+        }
+
+        $values = $this->{'option' . $type}[$name];
+        if (is_callable($values)) {
+            return $values;
+        }
+
+        return fn () => $values;
     }
 }

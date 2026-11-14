@@ -10,11 +10,11 @@
                     "version": "MT-32803-1.2.3-R8-GP",
                     "hardware": "OT-350 V1.0",
                     "features": "eNodeB: 1403 Physical Cell: 36 DL Modulation: 28 UL Modulation: 22 bootROM: 10.5-16886P LTE Band: 42_43",
+                    "location": "<private>",
                     "os": "zmtel",
                     "type": "network",
                     "serial": "OTIZT173501415",
-                    "icon": "greenpacket.png",
-                    "location": "<private>"
+                    "icon": "greenpacket.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1121",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1122",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1123",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -357,9 +336,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -369,15 +345,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1124",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -468,9 +440,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -480,15 +449,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1121",
                     "ifPhysAddress": "001608000003",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -575,9 +540,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -587,15 +549,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1122",
                     "ifPhysAddress": "001608000003",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -682,9 +640,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -694,15 +649,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1123",
                     "ifPhysAddress": "001608000003",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -789,9 +740,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -801,15 +749,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "icc0.1124",
                     "ifPhysAddress": "001608000003",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -890,7 +834,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 768,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.768",
                     "processor_index": "768",
@@ -1003,6 +946,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Physical Cell ID",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 36,
@@ -1016,6 +960,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1027,6 +972,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "RSRP0",
                     "group": "Reference Signal Received Power",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -95,
@@ -1040,6 +986,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1051,6 +998,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "RSRP1",
                     "group": "Reference Signal Received Power",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -94,
@@ -1064,6 +1012,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1075,6 +1024,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Reference Signal Received Quality",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -9,
@@ -1088,6 +1038,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1099,6 +1050,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Received Signal Strength Indicator",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -54,
@@ -1112,6 +1064,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1123,6 +1076,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Tx Power",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1136,6 +1090,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1147,6 +1102,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Bandwidth",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20000,
@@ -1160,6 +1116,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1171,6 +1128,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Download",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3512500,
@@ -1184,6 +1142,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1195,6 +1154,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Upload",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3512500,
@@ -1208,6 +1168,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1219,6 +1180,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Carrier to Interference 0",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 26,
@@ -1232,6 +1194,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1243,6 +1206,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Carrier to Interference 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 26,
@@ -1256,6 +1220,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1267,6 +1232,7 @@
                     "sensor_type": "zmtel",
                     "sensor_descr": "Signal to Interference",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 26,
@@ -1280,6 +1246,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1291,6 +1258,7 @@
                     "sensor_type": "dlMCS",
                     "sensor_descr": "Download",
                     "group": "Modulation Scheme",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -1304,6 +1272,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "dlMCS"
                 },
                 {
@@ -1315,6 +1284,7 @@
                     "sensor_type": "firewall",
                     "sensor_descr": "Firewall Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1328,6 +1298,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "firewall"
                 },
                 {
@@ -1339,6 +1310,7 @@
                     "sensor_type": "ulMCS",
                     "sensor_descr": "Upload",
                     "group": "Modulation Scheme",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -1352,6 +1324,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "ulMCS"
                 },
                 {
@@ -1363,6 +1336,7 @@
                     "sensor_type": "wanMode",
                     "sensor_descr": "WAN Mode",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1376,6 +1350,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanMode"
                 },
                 {
@@ -1387,6 +1362,7 @@
                     "sensor_type": "wanType",
                     "sensor_descr": "WAN type",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1400,6 +1376,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanType"
                 }
             ],
@@ -1407,469 +1384,402 @@
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs0-qpsk-tbs0",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs1-qpsk-tbs1",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs2-qpsk-tbs2",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs3-qpsk-tbs3",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs4-qpsk-tbs4",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs5-qpsk-tbs5",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs6-qpsk-tbs6",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs7-qpsk-tbs7",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs8-qpsk-tbs8",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs9-qpsk-tbs9",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs10-16qam-tbs9",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs11-16qam-tbs10",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs12-16qam-tbs11",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs13-16qam-tbs12",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs14-16qam-tbs13",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs15-16qam-tbs14",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs16-16qam-tbs15",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs17-64qam-tbs15",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs19-64qam-tbs17",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs21-64qam-tbs19",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs22-64qam-tbs20",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs23-64qam-tbs21",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs24-64qam-tbs22",
-                    "state_draw_graph": 1,
                     "state_value": 24,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs25-64qam-tbs23",
-                    "state_draw_graph": 1,
                     "state_value": 25,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs26-64qam-tbs24",
-                    "state_draw_graph": 1,
                     "state_value": 26,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs27-64qam-tbs25",
-                    "state_draw_graph": 1,
                     "state_value": 27,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs28-64qam-tbs26",
-                    "state_draw_graph": 1,
                     "state_value": 28,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs29-qpsk-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 29,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs30-16qam-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 30,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "dlMCS",
                     "state_descr": "mcs31-64qam-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 31,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "firewall",
                     "state_descr": "disabled",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "firewall",
                     "state_descr": "enabled",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs0-qpsk-tbs0",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs1-qpsk-tbs1",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs2-qpsk-tbs2",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs3-qpsk-tbs3",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs4-qpsk-tbs4",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs5-qpsk-tbs5",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs6-qpsk-tbs6",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs7-qpsk-tbs7",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs8-qpsk-tbs8",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs9-qpsk-tbs9",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs10-16qam-tbs9",
-                    "state_draw_graph": 1,
                     "state_value": 10,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs11-16qam-tbs10",
-                    "state_draw_graph": 1,
                     "state_value": 11,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs12-16qam-tbs11",
-                    "state_draw_graph": 1,
                     "state_value": 12,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs13-16qam-tbs12",
-                    "state_draw_graph": 1,
                     "state_value": 13,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs14-16qam-tbs13",
-                    "state_draw_graph": 1,
                     "state_value": 14,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs15-16qam-tbs14",
-                    "state_draw_graph": 1,
                     "state_value": 15,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs16-16qam-tbs15",
-                    "state_draw_graph": 1,
                     "state_value": 16,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs17-64qam-tbs15",
-                    "state_draw_graph": 1,
                     "state_value": 17,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs19-64qam-tbs17",
-                    "state_draw_graph": 1,
                     "state_value": 19,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs21-64qam-tbs19",
-                    "state_draw_graph": 1,
                     "state_value": 21,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs22-64qam-tbs20",
-                    "state_draw_graph": 1,
                     "state_value": 22,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs23-64qam-tbs21",
-                    "state_draw_graph": 1,
                     "state_value": 23,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs24-64qam-tbs22",
-                    "state_draw_graph": 1,
                     "state_value": 24,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs25-64qam-tbs23",
-                    "state_draw_graph": 1,
                     "state_value": 25,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs26-64qam-tbs24",
-                    "state_draw_graph": 1,
                     "state_value": 26,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs27-64qam-tbs25",
-                    "state_draw_graph": 1,
                     "state_value": 27,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs28-64qam-tbs26",
-                    "state_draw_graph": 1,
                     "state_value": 28,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs29-qpsk-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 29,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs30-16qam-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 30,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "ulMCS",
                     "state_descr": "mcs31-64qam-reserved",
-                    "state_draw_graph": 1,
                     "state_value": 31,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanMode",
                     "state_descr": "NAT",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanMode",
                     "state_descr": "Router",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanMode",
                     "state_descr": "Router",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanType",
                     "state_descr": "DHCP",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanType",
                     "state_descr": "Static",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 }
@@ -1881,86 +1791,66 @@
         "discovery": {
             "storage": [
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "31",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/rom",
                     "storage_size": 6815744,
+                    "storage_size_oid": null,
                     "storage_units": 262144,
                     "storage_used": 6815744,
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.31",
                     "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_free_oid": null,
+                    "storage_perc": 100,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "33",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/overlay",
                     "storage_size": 3866624,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 352256,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.33",
+                    "storage_free": 3514368,
+                    "storage_free_oid": null,
+                    "storage_perc": 9,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "34",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/",
                     "storage_size": 3866624,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 352256,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.34",
+                    "storage_free": 3514368,
+                    "storage_free_oid": null,
+                    "storage_perc": 9,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 }
             ]
         },
-        "poller": {
-            "storage": [
+        "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
                 {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "31",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/rom",
-                    "storage_size": 6815744,
-                    "storage_units": 262144,
-                    "storage_used": 6815744,
-                    "storage_free": 0,
-                    "storage_perc": 100,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "33",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/overlay",
-                    "storage_size": 3866624,
-                    "storage_units": 4096,
-                    "storage_used": 352256,
-                    "storage_free": 3514368,
-                    "storage_perc": 9,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "34",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/",
-                    "storage_size": 3866624,
-                    "storage_units": 4096,
-                    "storage_used": 352256,
-                    "storage_free": 3514368,
-                    "storage_perc": 9,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "ipv4_address": "10.222.2.87",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "10.222.2.0/24",
+                    "ifIndex": 5
                 }
             ]
         }

@@ -1,0 +1,160 @@
+<?php
+
+/**
+ * EditTabs.php
+ *
+ * -Description-
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @link       https://www.librenms.org
+ *
+ * @copyright  2025 Tony Murray
+ * @author     Tony Murray <murraytony@gmail.com>
+ */
+
+namespace App\View\Components\Device;
+
+use App\Facades\LibrenmsConfig;
+use App\Models\Device;
+use Illuminate\Support\Facades\Request;
+use Illuminate\View\Component;
+use LibreNMS\Enum\PollingMethodType;
+
+class EditTabs extends Component
+{
+    public array $tabs;
+    public string $tab;
+
+    public function __construct(
+        public Device $device,
+        ?string $tab = null,
+    ) {
+        $this->tab = $tab ?? Request::segment(4, 'edit');
+
+        $this->tabs = [
+            'edit' => [
+                'text' => __('Device Settings'),
+                'link' => route('device.edit', $this->device->device_id),
+            ],
+            'polling' => [
+                'text' => __('Polling'),
+                'link' => route('device.edit.polling', $this->device->device_id),
+            ],
+        ];
+
+        if ($this->device->ports()->exists()) {
+            $this->tabs['ports'] = [
+                'text' => __('Ports'),
+                'link' => route('device.edit.ports', $this->device->device_id),
+            ];
+        }
+
+        if ($device->bgppeers()->exists() || $device->vrfs()->exists()) {
+            $this->tabs['routing'] = [
+                'text' => __('Routing'),
+                'link' => route('device.edit.routing', $this->device->device_id),
+            ];
+        }
+
+        if (count(LibrenmsConfig::get("os.{$device->os}.icons", []))) {
+            $this->tabs['icon'] = [
+                'text' => __('Icon'),
+                'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=icon/'),
+            ];
+        }
+
+        if ($this->device->polling()->isEnabled(PollingMethodType::Snmp)) {
+            $this->tabs['apps'] = [
+                'text' => __('Applications'),
+                'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=apps/'),
+            ];
+        }
+
+        $this->tabs['alert-rules'] = [
+            'text' => __('Alert Rules'),
+            'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=alert-rules/'),
+        ];
+
+        $this->tabs['modules'] = [
+            'text' => __('Modules'),
+            'link' => route('device.edit.modules', $this->device->device_id),
+        ];
+
+        if (LibrenmsConfig::get('show_services')) {
+            $this->tabs['services'] = [
+                'text' => __('Services'),
+                'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=services/'),
+            ];
+        }
+
+        if ($this->device->sensors()->exists()) {
+            $this->tabs['health'] = [
+                'text' => __('Health'),
+                'link' => route('device.edit.health', $this->device->device_id),
+            ];
+        }
+
+        if ($this->device->wirelessSensors()->exists()) {
+            $this->tabs['wireless-sensors'] = [
+                'text' => __('Wireless Sensors'),
+                'link' => route('device.edit.wireless-sensors', $this->device->device_id),
+            ];
+        }
+
+        if ($this->device->storage()->exists()) {
+            $this->tabs['storage'] = [
+                'text' => __('Storage'),
+                'link' => route('device.edit.storage', $this->device->device_id),
+            ];
+        }
+
+        if ($this->device->processors()->exists()) {
+            $this->tabs['processors'] = [
+                'text' => __('Processors'),
+                'link' => route('device.edit.processors', $this->device->device_id),
+            ];
+        }
+
+        if ($this->device->mempools()->exists()) {
+            $this->tabs['mempools'] = [
+                'text' => __('Memory'),
+                'link' => route('device.edit.mempools', $this->device->device_id),
+            ];
+        }
+
+        $this->tabs['misc'] = [
+            'text' => __('Misc'),
+            'link' => route('device.edit.misc', $this->device->device_id),
+        ];
+
+        $this->tabs['component'] = [
+            'text' => __('Components'),
+            'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=component/'),
+        ];
+
+        $this->tabs['customoid'] = [
+            'text' => __('Custom OID'),
+            'link' => url('/device/device=' . $this->device->device_id . '/tab=edit/section=customoid/'),
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function render()
+    {
+        return view('components.device.edit-tabs');
+    }
+}

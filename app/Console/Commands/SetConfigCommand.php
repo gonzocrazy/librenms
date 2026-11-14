@@ -4,7 +4,13 @@ namespace App\Console\Commands;
 
 use App\Console\Commands\Traits\CompletesConfigArgument;
 use App\Console\LnmsCommand;
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
+use App\Models\Config;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use JsonSchema\Constraints\Constraint;
+use JsonSchema\Exception\ValidationException;
+use JsonSchema\Validator;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\Util\DynamicConfig;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,21 +35,33 @@ class SetConfigCommand extends LnmsCommand
         $this->addOption('ignore-checks');
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle(DynamicConfig $definition)
+    public function handle(DynamicConfig $definition): int
     {
         $setting = $this->argument('setting');
         $value = $this->argument('value');
         $force = $this->option('ignore-checks');
+        $parent = null;
 
-        if (! $force && ! $definition->isValidSetting($setting)) {
-            $this->error(trans('commands.config:set.errors.invalid'));
+        if (preg_match('/^os\.(?<os>[a-z0-9_\-]+)\.(?<setting>.*)$/', $setting, $matches)) {
+            $os = $matches['os'];
+            try {
+                if (! $force) {
+                    $this->validateOsSetting($os, $matches['setting'], $value);
+                }
+            } catch (ValidationException $e) {
+                $this->error(trans('commands.config:set.errors.invalid'));
+                $this->line($e->getMessage());
 
-            return 2;
+                return 2;
+            }
+        } elseif (! $definition->isValidSetting($setting)) {
+            $parent = $this->findParentSetting($definition, $setting);
+            // allow removing settings that are no longer defined
+            if (! $force && ! $parent && ! ($value === null && Eloquent::isConnected() && Config::query()->where('config_name', $setting)->exists())) {
+                $this->error(trans('commands.config:set.errors.invalid'));
+
+                return 2;
+            }
         }
 
         if (! Eloquent::isConnected()) {
@@ -52,19 +70,47 @@ class SetConfigCommand extends LnmsCommand
             return 1;
         }
 
-        if (! $force && ! $value) {
-            if ($this->confirm(trans('commands.config:set.confirm', ['setting' => $setting]))) {
-                Config::erase($setting);
+        if (! $force && $value === null) {
+            $message = $parent
+                ? trans('commands.config:set.forget_from', ['path' => $this->getChildPath($setting, $parent), 'parent' => $parent])
+                : trans('commands.config:set.confirm', ['setting' => $setting]);
 
-                return 0;
+            if ($this->confirm($message)) {
+                return $this->erase($setting, $parent) ? 0 : 1;
             }
 
             return 3;
         }
 
         $value = $this->juggleType($value);
+
+        // handle appending to arrays
+        if (Str::endsWith($setting, '.+')) {
+            $setting = substr($setting, 0, -2);
+            $sub_data = LibrenmsConfig::get($setting, []);
+            if (! is_array($sub_data)) {
+                $this->error(trans('commands.config:set.errors.append'));
+
+                return 2;
+            }
+
+            array_push($sub_data, $value);
+            $value = $sub_data;
+        }
+
+        // handle setting value inside multi-dimensional array
+        if ($parent && $parent !== $setting) {
+            $parent_data = LibrenmsConfig::get($parent);
+            Arr::set($parent_data, $this->getChildPath($setting, $parent), $value);
+            $value = $parent_data;
+            $setting = $parent;
+        }
+
         $configItem = $definition->get($setting);
-        if (! $force && ! $configItem->checkValue($value)) {
+        if (! $force
+            && empty($os) // if os is set, value was already validated against os config
+            && ! $configItem->checkValue($value)
+        ) {
             $message = ($configItem->type || $configItem->validate)
                 ? $configItem->getValidationMessage($value)
                 : trans('commands.config:set.errors.no-validation', ['setting' => $setting]);
@@ -73,7 +119,7 @@ class SetConfigCommand extends LnmsCommand
             return 2;
         }
 
-        if (Config::persist($setting, $value)) {
+        if (LibrenmsConfig::persist($setting, $value)) {
             return 0;
         }
 
@@ -87,10 +133,131 @@ class SetConfigCommand extends LnmsCommand
      *
      * @return mixed
      */
-    private function juggleType(string $value)
+    private function juggleType(?string $value)
     {
-        $json = json_decode($value, true);
+        $json = json_decode((string) $value, true);
 
         return json_last_error() ? $value : $json;
+    }
+
+    private function findParentSetting(DynamicConfig $definition, $setting): ?string
+    {
+        $parts = explode('.', (string) $setting);
+        array_pop($parts); // looking for parent, not this setting
+
+        while (! empty($parts)) {
+            $name = implode('.', $parts);
+            if ($definition->isValidSetting($name)) {
+                return $name;
+            }
+            array_pop($parts);
+        }
+
+        return null;
+    }
+
+    private function erase($setting, $parent = null)
+    {
+        if ($parent) {
+            $data = LibrenmsConfig::get($parent);
+
+            if (preg_match("/^$parent\.?(?<sub>.+)\\.(?<index>\\d+)\$/", (string) $setting, $matches)) {
+                // nested inside the parent setting, update just the required part
+                $sub_data = Arr::get($data, $matches['sub']);
+                $this->forgetWithIndex($sub_data, $matches['index']);
+                Arr::set($data, $matches['sub'], $sub_data);
+            } else {
+                // not nested, just forget the setting
+                $this->forgetWithIndex($data, $this->getChildPath($setting, $parent));
+            }
+
+            return LibrenmsConfig::persist($parent, $data);
+        }
+
+        return LibrenmsConfig::erase($setting);
+    }
+
+    private function getChildPath($setting, $parent = null): string
+    {
+        return ltrim(Str::after($setting, $parent), '.');
+    }
+
+    private function hasSequentialIndex($array): bool
+    {
+        if (! is_array($array) || $array === []) {
+            return false;
+        }
+
+        return array_keys($array) === range(0, count($array) - 1);
+    }
+
+    private function forgetWithIndex(&$data, $matches)
+    {
+        // detect sequentially numeric indexed array so we can re-index the array
+        if ($this->hasSequentialIndex($data)) {
+            array_splice($data, (int) $matches, 1);
+        } else {
+            Arr::forget($data, $matches);
+        }
+    }
+
+    /**
+     * @param  string  $os
+     * @param  string  $setting
+     * @param  mixed  $value
+     *
+     * @throws ValidationException
+     */
+    private function validateOsSetting(string $os, string $setting, $value)
+    {
+        // prep data to be validated
+        $os_data = LibrenmsConfig::get("os.$os");
+        if ($os_data === null) {
+            throw new ValidationException(trans('commands.config:set.errors.invalid_os', ['os' => $os]));
+        }
+        $value = $this->juggleType($value);
+
+        // append value if requested
+        if (Str::endsWith($setting, '.+')) {
+            $setting = substr($setting, 0, -2);
+            $container = Arr::get($os_data, $setting, []);
+            $container[] = $value;
+            $value = $container;
+        }
+
+        Arr::set($os_data, $setting, $value);
+        unset($os_data['definition_loaded']);
+
+        $validator = new Validator;
+        $validator->validate(
+            $os_data,
+            (object) ['$ref' => 'file://' . resource_path('definitions/schema/os_schema.json')],
+            Constraint::CHECK_MODE_TYPE_CAST
+        );
+
+        $code = 0;
+
+        $errors = collect($validator->getErrors())->filter(function ($error) use ($value, &$code) {
+            if ($error['constraint']['name'] == 'additionalProp') {
+                $code = 1;
+
+                return true;
+            }
+
+            // only check type if value is set (otherwise we are unsetting it)
+            if (! empty($value) && $error['constraint']['name'] == 'type') {
+                if ($code === 0) {
+                    $code = 2; // wrong path takes precedence over wrong type
+                }
+
+                return true;
+            }
+
+            return false;
+        });
+
+        if ($errors->isNotEmpty()) {
+            throw new ValidationException($errors->pluck('message')->implode(PHP_EOL), $code);
+        }
     }
 }

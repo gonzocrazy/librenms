@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JnxDomAlarmId.php
  *
@@ -22,6 +23,7 @@
  * descriptive string.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -30,7 +32,7 @@ namespace LibreNMS\Snmptrap\Handlers;
 
 class JnxDomAlarmId
 {
-    public static function getAlarms($currentAlarm)
+    public static function getAlarms(string $currentAlarm): string
     {
         $alarmBin = preg_split(
             '//',
@@ -71,8 +73,7 @@ class JnxDomAlarmId
             }
             $index++;
         }
-        $message = implode(', ', $descr);
 
-        return $message;
+        return implode(', ', $descr);
     }
 }

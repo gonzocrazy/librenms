@@ -1,7 +1,6 @@
 <?php
 
 $name = 'zfs';
-$app_id = $app['app_id'];
 $unit_text = 'bytes';
 $colours = 'psychedelic';
 $dostack = 0;
@@ -9,32 +8,29 @@ $printtotal = 0;
 $addarea = 1;
 $transparency = 15;
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', $name, $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', $name, $app->app_id]);
 
-$rrd_list = [];
-if (Rrd::checkRrdExists($rrd_filename)) {
-    $rrd_list[] = [
+$rrd_list = [
+    [
         'filename' => $rrd_filename,
-        'descr'    => 'ARC Size',
-        'ds'       => 'arc_size',
-    ];
-    $rrd_list[] = [
+        'descr' => 'ARC Size',
+        'ds' => 'arc_size',
+    ],
+    [
         'filename' => $rrd_filename,
-        'descr'    => 'Target Size',
-        'ds'       => 'target_size',
-    ];
-    $rrd_list[] = [
+        'descr' => 'Target Size',
+        'ds' => 'target_size',
+    ],
+    [
         'filename' => $rrd_filename,
-        'descr'    => 'Target Max',
-        'ds'       => 'target_size_max',
-    ];
-    $rrd_list[] = [
+        'descr' => 'Target Max',
+        'ds' => 'target_size_max',
+    ],
+    [
         'filename' => $rrd_filename,
-        'descr'    => 'Target Min',
-        'ds'       => 'target_size_min',
-    ];
-} else {
-    d_echo('RRD "' . $rrd_filename . '" not found');
-}
+        'descr' => 'Target Min',
+        'ds' => 'target_size_min',
+    ],
+];
 
 require 'includes/html/graphs/generic_multi_line.inc.php';

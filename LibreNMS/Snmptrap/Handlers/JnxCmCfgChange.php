@@ -1,4 +1,5 @@
 <?php
+
 /**
  * jnxCmCfgChange.php
  *
@@ -23,6 +24,7 @@
  * user is "root".
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -32,7 +34,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class JnxCmCfgChange implements SnmptrapHandler
 {
@@ -40,8 +41,8 @@ class JnxCmCfgChange implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -50,9 +51,9 @@ class JnxCmCfgChange implements SnmptrapHandler
         $user = $trap->getOidData($trap->findOid('JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventUser'));
         $changeTime = $trap->getOidData($trap->findOid('JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventDate'));
         if ($source == 'other' && $user == 'root') {
-            Log::event("Config rolled back at $changeTime", $device->device_id, 'trap', 2);
+            $trap->log("Config rolled back at $changeTime");
         } else {
-            Log::event("Config modified by $user from $source at $changeTime", $device->device_id, 'trap', 2);
+            $trap->log("Config modified by $user from $source at $changeTime");
         }
     }
 }

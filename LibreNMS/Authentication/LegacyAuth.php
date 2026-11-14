@@ -2,22 +2,22 @@
 
 namespace LibreNMS\Authentication;
 
-use Illuminate\Support\Facades\Auth;
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
+use LibreNMS\Exceptions\InvalidAuthMechanismException;
 use LibreNMS\Interfaces\Authentication\Authorizer;
 
 class LegacyAuth
 {
     protected static $_instance;
     private static $configToClassMap = [
-        'mysql' => 'LibreNMS\Authentication\MysqlAuthorizer',
-        'active_directory' => 'LibreNMS\Authentication\ActiveDirectoryAuthorizer',
-        'ldap' => 'LibreNMS\Authentication\LdapAuthorizer',
-        'radius' => 'LibreNMS\Authentication\RadiusAuthorizer',
-        'http-auth' => 'LibreNMS\Authentication\HttpAuthAuthorizer',
-        'ad-authorization' => 'LibreNMS\Authentication\ADAuthorizationAuthorizer',
-        'ldap-authorization' => 'LibreNMS\Authentication\LdapAuthorizationAuthorizer',
-        'sso' => 'LibreNMS\Authentication\SSOAuthorizer',
+        'mysql' => \LibreNMS\Authentication\MysqlAuthorizer::class,
+        'active_directory' => \LibreNMS\Authentication\ActiveDirectoryAuthorizer::class,
+        'ldap' => \LibreNMS\Authentication\LdapAuthorizer::class,
+        'radius' => \LibreNMS\Authentication\RadiusAuthorizer::class,
+        'http-auth' => \LibreNMS\Authentication\HttpAuthAuthorizer::class,
+        'ad-authorization' => \LibreNMS\Authentication\ADAuthorizationAuthorizer::class,
+        'ldap-authorization' => \LibreNMS\Authentication\LdapAuthorizationAuthorizer::class,
+        'sso' => \LibreNMS\Authentication\SSOAuthorizer::class,
     ];
 
     /**
@@ -42,23 +42,21 @@ class LegacyAuth
      */
     public static function getType()
     {
-        return Config::get('auth_mechanism');
+        return LibrenmsConfig::get('auth_mechanism');
     }
 
     /**
      * Get class for the given or current authentication type/mechanism
      *
-     * @param string $type
+     * @param  string  $type
      * @return string
      */
     public static function getClass($type = null)
     {
-        if (is_null($type)) {
-            $type = self::getType();
-        }
+        $type ??= self::getType();
 
         if (! isset(self::$configToClassMap[$type])) {
-            throw new \RuntimeException($type . ' not found as auth_mechanism');
+            throw new InvalidAuthMechanismException($type);
         }
 
         return self::$configToClassMap[$type];

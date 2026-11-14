@@ -5,34 +5,20 @@
         <div class=" col-8 offset-2">
             <div class="checks card ">
                 <div class="card-body">
-                    <div class="row bg-light check-row">
-                        <div class="col-7">
-                            PHP <small>(@lang('install.checks.php_required', ['version' => $php_required]))</small>
+                    @foreach($versions as $version)
+                        <div class="row check-row @if($loop->first) bg-light @else border-top @endif">
+                            <div class="col-7">
+                                {{ $version['name'] }} <small>({{ __('install.checks.php_required', ['version' => $version['required']]) }})</small>
+                            </div>
+                            <div class="col-5 text-right text-nowrap @if($version['ok']) text-success @else text-danger @endif">
+                                {{ $version['version'] ?: __('install.checks.not_found') }}
+                                @if($version['ok'])
+                                    <i class="fa-solid fa-lg fa-square-check text-success align-middle"></i>
+                                @else
+                                    <i class="fa-solid fa-lg fa-rectangle-xmark text-danger align-middle"></i>
+                                @endif
+                            </div>
                         </div>
-                        <div class="col-5 text-right text-nowrap @if($php_ok) text-success @else text-danger @endif">
-                            {{ $php_version }}
-                            @if($php_ok)
-                                <i class="fa fa-lg fa-check-square-o text-success align-middle"></i>
-                            @else
-                                <i class="fa fa-lg fa-times-rectangle-o text-danger align-middle"></i>
-                            @endif
-
-                        </div>
-                    </div>
-
-                    @foreach($modules as $module)
-                    <div class="row check-row border-top">
-                        <div class="col-7">
-                            {{ $module['name'] }}
-                        </div>
-                        <div class="col-5 text-right">
-                            @if($module['status'])
-                                <i class="fa fa-lg fa-check-square-o text-success align-middle"></i>
-                            @else
-                                <i class="fa fa-lg fa-times-rectangle-o text-danger align-middle"></i>
-                            @endif
-                        </div>
-                    </div>
                     @endforeach
                 </div>
             </div>
@@ -48,13 +34,16 @@
             margin-right: -20px;
             margin-left: -20px;
         }
+
         .checks .card-body {
             padding-top: 0;
             padding-bottom: 0;
         }
+
         .checks {
             font-size: 16pt;
         }
+
         small {
             font-size: 10pt;
         }

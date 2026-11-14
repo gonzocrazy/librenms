@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DevCheckCommand.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,7 +34,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 class DevCheckCommand extends LnmsCommand
 {
-    protected $developer = true;
+    protected bool $developer = true;
     protected $name = 'dev:check';
 
     /** @var CiHelper */
@@ -41,7 +43,7 @@ class DevCheckCommand extends LnmsCommand
     public function __construct()
     {
         parent::__construct();
-        $this->addArgument('check', InputArgument::OPTIONAL, __('commands.dev:check.arguments.check', ['checks' => '[unit, lint, style, dusk]']), 'all');
+        $this->addArgument('check', InputArgument::OPTIONAL, __('commands.dev:check.arguments.check', ['checks' => '[unit, lint, style, web]']), 'all');
         $this->addOption('os', 'o', InputOption::VALUE_REQUIRED);
         $this->addOption('module', 'm', InputOption::VALUE_REQUIRED);
         $this->addOption('fail-fast', 'f', InputOption::VALUE_NONE);
@@ -49,15 +51,12 @@ class DevCheckCommand extends LnmsCommand
         $this->addOption('db', null, InputOption::VALUE_NONE);
         $this->addOption('snmpsim', null, InputOption::VALUE_NONE);
         $this->addOption('full', null, InputOption::VALUE_NONE);
+        $this->addOption('os-modules-only', null, InputOption::VALUE_NONE);
+        $this->addOption('exclude-phpunit-group', null, InputOption::VALUE_REQUIRED);
         $this->addOption('commands', 'c', InputOption::VALUE_NONE);
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         $this->helper = new CiHelper();
         $this->parseInput();
@@ -73,7 +72,7 @@ class DevCheckCommand extends LnmsCommand
         return $result;
     }
 
-    private function parseInput()
+    private function parseInput(): void
     {
         $check = $this->argument('check');
         if (! in_array($check, ['all', 'lint', 'style', 'unit', 'web', 'ci'])) {
@@ -86,12 +85,25 @@ class DevCheckCommand extends LnmsCommand
         $this->helper->enable('style', $check == 'all' || $check === 'style');
         $this->helper->enable('lint', $check == 'all' || $check == 'ci' || $check === 'lint');
         $this->helper->enable('unit', $check == 'all' || $check == 'ci' || $check === 'unit');
-        $this->helper->enable('web', $check == 'ci' || $check === 'web');
+        $this->helper->enable('web', $check === 'web');
 
         if ($os = $this->option('os')) {
-            $this->helper->setFlags(['style_enable' => false, 'lint_enable' => false, 'unit_enable' => true, 'web_enable' => false]);
+            $this->helper->setFlags([
+                'style_enable' => false,
+                'lint_enable' => false,
+                'unit_enable' => true,
+                'web_enable' => false,
+            ]);
             $this->helper->setOS(explode(',', $os));
         }
+
+        if ($this->option('exclude-phpunit-group')) {
+            $this->helper->setExcludedPhpunitGroups(explode(',', $this->option('exclude-phpunit-group')));
+        }
+
+        $this->helper->setFlags([
+            'os-modules-only' => $this->option('os-modules-only'),
+        ]);
 
         if ($modules = $this->option('module')) {
             $this->helper->setFlags(['style_enable' => false, 'lint_enable' => false, 'unit_enable' => true, 'web_enable' => false]);
@@ -99,7 +111,14 @@ class DevCheckCommand extends LnmsCommand
         }
 
         if ($check == 'ci') {
-            $this->helper->setFlags(['ci' => true, 'fail-fast' => true]);
+            $this->helper->setFlags([
+                'ci' => true,
+                'fail-fast' => true,
+                // checked in lint workflow
+                'lint_skip_phpstan' => true,
+                'lint_skip_python' => true,
+                'lint_skip_bash' => true,
+            ]);
             $this->helper->duskHeadless();
             $this->helper->enableSnmpsim();
             $this->helper->enableDb();

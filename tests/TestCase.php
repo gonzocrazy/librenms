@@ -6,14 +6,18 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
     use SnmpsimHelpers;
 
-    public function __construct($name = null, $data = [], $dataName = '')
+    /**
+     * Repository root path, usable from static data providers before the app boots
+     */
+    protected static function basePath(string $subdir = ''): string
     {
-        parent::__construct($name, $data, $dataName);
-        // grab global $snmpsim from bootstrap and make it accessible
-        $this->getSnmpsim();
+        $dir = dirname(__DIR__);
+
+        return $subdir
+            ? $dir . '/' . $subdir
+            : $dir;
     }
 
     public function dbSetUp()
@@ -34,5 +38,14 @@ abstract class TestCase extends BaseTestCase
                 $this->fail("Exception when rolling back transaction.\n" . $e->getTraceAsString());
             }
         }
+    }
+
+    protected function tearDown(): void
+    {
+        $this->beforeApplicationDestroyed(function (): void {
+            $this->getConnection()->disconnect();
+        });
+
+        parent::tearDown();
     }
 }

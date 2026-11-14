@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ekinops.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  KanREN, Inc 2020
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -45,7 +47,8 @@ class Ekinops extends OS implements OSDiscovery
 
     /**
      * Parses Ekinops inventory returned in a tabular format within a single OID
-     * @param string $ekiInfo
+     *
+     * @param  string  $ekiInfo
      * @return array $inv
      */
     public static function ekinopsInfo($ekiInfo)

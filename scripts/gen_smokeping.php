@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * gen_smokeping.php
  *
@@ -19,6 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Adam Bishop
  * @author     Adam Bishop <adam@omega.org.uk>
  */
@@ -27,9 +29,9 @@ if (php_sapi_name() === 'cli') {
     require realpath(__DIR__ . '/..') . '/includes/init.php';
 
     $return = \Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
-    echo \Artisan::Output();
+    echo \Artisan::output();
 
     exit($return);
 }
 
-exit();
+exit;

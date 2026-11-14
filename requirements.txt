@@ -1,5 +1,6 @@
-PyMySQL
+PyMySQL!=1.0.0
 python-dotenv
-redis>=3.0
+redis>=4.0
 setuptools
-psutil
+psutil>=5.9.6
+command_runner>=1.3.0

@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * Page.php
+ *
+ * -Description-
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @link       https://www.librenms.org
+ *
+ * @copyright  2025 Tony Murray
+ * @author     Tony Murray <murraytony@gmail.com>
+ */
+
+namespace App\View\Components\Device;
+
+use App\Facades\DeviceCache;
+use App\Models\Device;
+use App\Models\Vminfo;
+use Closure;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\View\Component;
+use LibreNMS\Enum\DeviceStatus;
+use LibreNMS\Enum\DeviceType;
+use LibreNMS\Util\Graph;
+
+class Page extends Component
+{
+    public string $alertClass;
+    public ?int $parentDeviceId;
+    public ?string $typeIcon = null;
+    public string $typeText = '';
+    public string $pagetitle;
+    public bool $awaitingDiscovery;
+    public bool $isEditPage;
+
+    public function __construct(
+        public readonly Device $device,
+        public readonly array $dropdownLinks = [],
+        public readonly string $subtitle = '',
+    ) {
+        $device->loadCount(['ports', 'sensors', 'wirelessSensors']);
+        DeviceCache::setPrimary($device->device_id); // set primary device in case it was not set by controller
+        $this->pagetitle = $subtitle ? ($device->display . ': ' . $subtitle) : $device->display;
+        $this->alertClass = $device->disabled ? 'alert-info' : ($device->status ? '' : 'alert-danger');
+        $this->awaitingDiscovery = ! $device->disabled && $device->last_discovered === null;
+        $this->isEditPage = request()->routeIs('device.edit*') || str_replace('tab=', '', (string) request()->route('tab')) === 'edit';
+        $this->parentDeviceId = Vminfo::guessFromDevice($device)->value('device_id');
+        $this->populateTypeFields();
+    }
+
+    public function overviewGraphs(): array
+    {
+        $graph_array = [
+            'width' => 150,
+            'height' => 45,
+            'device' => $this->device->device_id,
+            'type' => 'device_bits',
+            'from' => '-1d',
+            'legend' => 'no',
+            'bg' => 'FFFFFF00',
+        ];
+
+        $graphs = [];
+        foreach (Graph::getOverviewGraphsForDevice($this->device) as $graph) {
+            $graph_array['type'] = $graph['graph'];
+            $graph_array['popup_title'] = Lang::has('sensors.' . strtolower($graph['text'] . '.long')) ? __('sensors.' . strtolower($graph['text'] . '.long')) : __($graph['text']);
+            $graphs[] = $graph_array;
+        }
+
+        return $graphs;
+    }
+
+    /**
+     * Get the view / contents that represent the component.
+     */
+    public function render(): View|Closure|string
+    {
+        return view('components.device.page');
+    }
+
+    private function populateTypeFields(): void
+    {
+        $this->typeIcon = DeviceType::icons()[$this->device->type] ?? null;
+        if ($this->typeIcon) {
+            $this->typeText = DeviceType::labelFor($this->device->type);
+        }
+    }
+
+    public function statusBorderClass(): string
+    {
+        return match ($this->device->getDeviceStatus()) {
+            DeviceStatus::Up, DeviceStatus::IgnoredUp => $this->device->isUnderMaintenance() ? 'tw:border-l-blue-500!' : 'tw:border-l-green-600!',
+            DeviceStatus::Down, DeviceStatus::IgnoredDown => $this->device->isUnderMaintenance() ? 'tw:border-l-blue-500!' : 'tw:border-l-red-600!',
+            DeviceStatus::Disabled => 'tw:border-l-black!',
+            DeviceStatus::NeverPolled => 'tw:border-l-gray-400!',
+        };
+    }
+}

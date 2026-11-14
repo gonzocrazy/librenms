@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Alert.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -31,5 +33,6 @@ abstract class AlertState
     const ACKNOWLEDGED = 2;
     const WORSE = 3;
     const BETTER = 4;
+    const CHANGED = 5;
     const RECOVERED = 0;
 }

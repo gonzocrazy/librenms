@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Airos.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,6 +29,7 @@ namespace LibreNMS\OS;
 use App\Models\Device;
 use App\Models\Location;
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\OSDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCapacityDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCcqDiscovery;
@@ -57,23 +60,26 @@ class Airos extends OS implements
 {
     public function discoverOS(Device $device): void
     {
-        $oids = ['dot11manufacturerProductName', 'dot11manufacturerProductVersion'];
-        $data = snmp_getnext_multi($this->getDeviceArray(), $oids, '-OQUs', 'IEEE802dot11-MIB');
+        $response = \SnmpQuery::next([
+            'IEEE802dot11-MIB::dot11manufacturerProductName',
+            'IEEE802dot11-MIB::dot11manufacturerProductVersion',
+        ]);
 
-        $device->hardware = $data['dot11manufacturerProductName'] ?? null;
+        $device->hardware = $response->value('IEEE802dot11-MIB::dot11manufacturerProductName') ?: null;
 
-        if (isset($data['dot11manufacturerProductVersion'])) {
-            preg_match('/\.v(.*)$/', $data['dot11manufacturerProductVersion'], $matches);
-            $device->version = $matches[1] ?? null;
-        }
+        $version = $response->value('IEEE802dot11-MIB::dot11manufacturerProductVersion');
+        preg_match('/\.v(.*)$/', (string) $version, $matches);
+        $device->version = $matches[1] ?? null;
     }
 
     public function fetchLocation(): Location
     {
         $location = parent::fetchLocation();
 
-        // fix longitude having an extra - in the middle after the decimal point
-        $location->lng = (float) preg_replace('/(-?\d+)\.-?(\d+)/', '$1.$2', $location->getAttributes()['lng']);
+        // fix having an extra - in the middle after the decimal point
+        $regex = '/(-?\d+)\.-?(\d+)/';
+        $location->lng = (float) preg_replace($regex, '$1.$2', $location->getAttributes()['lng'] ?? '');
+        $location->lat = (float) preg_replace($regex, '$1.$2', $location->getAttributes()['lat'] ?? '');
 
         return $location;
     }
@@ -89,7 +95,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.1.1.4.1'; //UBNT-AirMAX-MIB::ubntRadioFreq.1
 
         return [
-            new WirelessSensor('frequency', $this->getDeviceId(), $oid, 'airos', 1, 'Radio Frequency'),
+            new WirelessSensor(WirelessSensorType::Frequency, $this->getDeviceId(), $oid, 'airos', 1, 'Radio Frequency'),
         ];
     }
 
@@ -104,7 +110,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.6.1.4.1'; //UBNT-AirMAX-MIB::ubntAirMaxCapacity.1
 
         return [
-            new WirelessSensor('capacity', $this->getDeviceId(), $oid, 'airos', 1, 'airMAX Capacity'),
+            new WirelessSensor(WirelessSensorType::Capacity, $this->getDeviceId(), $oid, 'airos', 1, 'airMAX Capacity'),
         ];
     }
 
@@ -119,7 +125,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.7.1'; //UBNT-AirMAX-MIB::ubntWlStatCcq.1
 
         return [
-            new WirelessSensor('ccq', $this->getDeviceId(), $oid, 'airos', 1, 'CCQ'),
+            new WirelessSensor(WirelessSensorType::Ccq, $this->getDeviceId(), $oid, 'airos', 1, 'CCQ'),
         ];
     }
 
@@ -134,7 +140,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.15.1'; //UBNT-AirMAX-MIB::ubntWlStatStaCount.1
 
         return [
-            new WirelessSensor('clients', $this->getDeviceId(), $oid, 'airos', 1, 'Clients'),
+            new WirelessSensor(WirelessSensorType::Clients, $this->getDeviceId(), $oid, 'airos', 1, 'Clients'),
         ];
     }
 
@@ -149,7 +155,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.1.1.7.1'; //UBNT-AirMAX-MIB::ubntRadioDistance.1
 
         return [
-            new WirelessSensor('distance', $this->getDeviceId(), $oid, 'airos', 1, 'Distance', null, 1, 1000),
+            new WirelessSensor(WirelessSensorType::Distance, $this->getDeviceId(), $oid, 'airos', 1, 'Distance', null, 1, 1000),
         ];
     }
 
@@ -164,7 +170,7 @@ class Airos extends OS implements
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.8.1'; //UBNT-AirMAX-MIB::ubntWlStatNoiseFloor.1
 
         return [
-            new WirelessSensor('noise-floor', $this->getDeviceId(), $oid, 'airos', 1, 'Noise Floor'),
+            new WirelessSensor(WirelessSensorType::NoiseFloor, $this->getDeviceId(), $oid, 'airos', 1, 'Noise Floor'),
         ];
     }
 
@@ -180,8 +186,8 @@ class Airos extends OS implements
         $rx_oid = '.1.3.6.1.4.1.41112.1.4.5.1.5.1'; //UBNT-AirMAX-MIB::ubntWlStatSignal.1
 
         return [
-            new WirelessSensor('power', $this->getDeviceId(), $tx_oid, 'airos-tx', 1, 'Tx Power'),
-            new WirelessSensor('power', $this->getDeviceId(), $rx_oid, 'airos-rx', 1, 'Signal Level'),
+            new WirelessSensor(WirelessSensorType::Power, $this->getDeviceId(), $tx_oid, 'airos-tx', 1, 'Tx Power'),
+            new WirelessSensor(WirelessSensorType::Power, $this->getDeviceId(), $rx_oid, 'airos-rx', 1, 'Signal Level'),
         ];
     }
 
@@ -196,7 +202,7 @@ class Airos extends OS implements
         $oidAirMax = '.1.3.6.1.4.1.41112.1.4.6.1.3.1'; //OLD UBNT-AirMAX-MIB::ubntAirMaxQuality.1
 
         return [
-            new WirelessSensor('quality', $this->getDeviceId(), $oidAirMax, 'airos', 1, 'airMAX Quality'),
+            new WirelessSensor(WirelessSensorType::Quality, $this->getDeviceId(), $oidAirMax, 'airos', 1, 'airMAX Quality'),
         ];
     }
 
@@ -212,8 +218,8 @@ class Airos extends OS implements
         $rx_oid = '.1.3.6.1.4.1.41112.1.4.5.1.10.1'; //UBNT-AirMAX-MIB::ubntWlStatRxRate.1
 
         return [
-            new WirelessSensor('rate', $this->getDeviceId(), $tx_oid, 'airos-tx', 1, 'Tx Rate'),
-            new WirelessSensor('rate', $this->getDeviceId(), $rx_oid, 'airos-rx', 1, 'Rx Rate'),
+            new WirelessSensor(WirelessSensorType::Rate, $this->getDeviceId(), $tx_oid, 'airos-tx', 1, 'Tx Rate'),
+            new WirelessSensor(WirelessSensorType::Rate, $this->getDeviceId(), $rx_oid, 'airos-rx', 1, 'Rx Rate'),
         ];
     }
 
@@ -227,19 +233,19 @@ class Airos extends OS implements
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.6.1'; //UBNT-AirMAX-MIB::ubntWlStatRssi.1
         $sensors = [
-            new WirelessSensor('rssi', $this->getDeviceId(), $oid, 'airos', 0, 'Overall RSSI'),
+            new WirelessSensor(WirelessSensorType::Rssi, $this->getDeviceId(), $oid, 'airos', 0, 'Overall RSSI'),
         ];
 
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'ubntRadioRssi', [], 'UBNT-AirMAX-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'rssi',
+                WirelessSensorType::Rssi,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.41112.1.4.2.1.2.' . $index,
                 'airos',
                 $index,
                 'RSSI: Chain ' . str_replace('1.', '', $index),
-                $entry['ubntRadioRssi.1']
+                $entry['ubntRadioRssi']
             );
         }
 
@@ -251,7 +257,7 @@ class Airos extends OS implements
         $oidAirTime = '.1.3.6.1.4.1.41112.1.4.6.1.7.1'; //UBNT-AirMMAX-MIB::ubntAirMaxAirtime.1
 
         return [
-            new WirelessSensor('utilization', $this->getDeviceId(), $oidAirTime, 'airos', 1, 'Airtime', null, 1, 10),
+            new WirelessSensor(WirelessSensorType::Utilization, $this->getDeviceId(), $oidAirTime, 'airos', 1, 'Airtime', null, 1, 10),
         ];
     }
 }

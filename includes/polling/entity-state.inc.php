@@ -1,4 +1,5 @@
 <?php
+
 /**
  * entity-state.inc.php
  *
@@ -18,9 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
+
+use LibreNMS\Util\ProgressList;
+
 $entityStatesIndexes = dbFetchRows(
     'SELECT S.entity_state_id, S.entStateLastChanged, P.entPhysicalIndex FROM entityState AS S ' .
     'LEFT JOIN entPhysical AS P USING (entPhysical_id) WHERE S.device_id=?',
@@ -28,7 +33,7 @@ $entityStatesIndexes = dbFetchRows(
 );
 
 if (! empty($entityStatesIndexes)) {
-    echo "\nEntity States: ";
+    $progress = ProgressList::start('Entity States');
 
     // index by entPhysicalIndex
     $entityStatesIndexes = array_by_column($entityStatesIndexes, 'entPhysicalIndex');
@@ -36,9 +41,9 @@ if (! empty($entityStatesIndexes)) {
     $entLC = snmpwalk_group($device, 'entStateLastChanged', 'ENTITY-STATE-MIB', 0);
 
     foreach (current($entLC) as $index => $changed) {
-        if ($changed) { // skip empty entries
+        if ($changed || $changed === '0-0-0,0:0:0.0,.0:0') { // skip empty entries
             try {
-                [$date, $time, $tz] = explode(',', $changed);
+                [$date, $time, $tz] = explode(',', (string) $changed);
                 $lastChanged = new DateTime("$date $time", new DateTimeZone($tz));
                 $dbLastChanged = new DateTime($entityStatesIndexes[$index]['entStateLastChanged']);
                 if ($lastChanged != $dbLastChanged) {
@@ -88,10 +93,10 @@ if (! empty($entityStatesIndexes)) {
                 d_echo('Error: ' . $e->getMessage() . PHP_EOL);
             }
         }
-        echo '.';
+        $progress->mark('.');
     }
 
-    echo PHP_EOL;
+    $progress->end();
 }
 
 unset($entityStatesIndexes, $entLC, $lastChanged, $dbLastChanged, $new_states, $update);

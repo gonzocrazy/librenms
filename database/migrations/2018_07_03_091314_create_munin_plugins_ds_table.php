@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateMuninPluginsDsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('munin_plugins_ds', function (Blueprint $table) {
+        Schema::create('munin_plugins_ds', function (Blueprint $table): void {
             $table->unsignedInteger('mplug_id');
             $table->string('ds_name', 32);
             $table->enum('ds_type', ['COUNTER', 'ABSOLUTE', 'DERIVE', 'GAUGE'])->default('GAUGE');
@@ -40,8 +40,8 @@ class CreateMuninPluginsDsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('munin_plugins_ds');
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SyncsModels.php
  *
@@ -18,11 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\DB;
+
+use App\Models\Device;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Interfaces\Models\HasSyncProtectedAttributes;
+use LibreNMS\Interfaces\Models\Keyable;
 
 trait SyncsModels
 {
@@ -30,30 +41,131 @@ trait SyncsModels
      * Sync several models for a device's relationship
      * Model must implement \LibreNMS\Interfaces\Models\Keyable interface
      *
-     * @param \App\Models\Device $device
-     * @param string $relationship
-     * @param \Illuminate\Support\Collection $models
-     * @return \Illuminate\Support\Collection
+     * @param  \Illuminate\Database\Eloquent\Model  $parentModel
+     * @param  string  $relationship
+     * @param  \Illuminate\Support\Collection<Keyable>  $models  \LibreNMS\Interfaces\Models\Keyable
+     * @return Collection
      */
-    protected function syncModels($device, $relationship, $models)
+    protected function syncModels($parentModel, $relationship, $models, $existing = null): Collection
     {
         $models = $models->keyBy->getCompositeKey();
-        $existing = $device->$relationship->keyBy->getCompositeKey();
+        $existing = ($existing ?? $parentModel->$relationship)->groupBy->getCompositeKey();
 
-        foreach ($existing as $exist_key => $exist_value) {
+        foreach ($existing as $exist_key => $existing_rows) {
             if ($models->offsetExists($exist_key)) {
                 // update
-                $exist_value->fill($models->get($exist_key)->getAttributes())->save();
+                foreach ($existing_rows as $index => $existing_row) {
+                    if ($index == 0) {
+                        // fill attributes, ignoring mutators and fillable
+                        $merged = array_merge($existing_row->getAttributes(), $this->updatableAttributes($existing_row, $models->get($exist_key)));
+                        $existing_row->setRawAttributes($merged);
+                        $existing_row->save();
+                    } else {
+                        // delete extra rows at this key
+                        $existing_row->delete();
+                        $existing_rows->forget($index);
+                    }
+                }
             } else {
                 // delete
-                $exist_value->delete();
+                $existing_rows->each->delete();
                 $existing->forget($exist_key);
             }
         }
 
         $new = $models->diffKeys($existing);
-        $device->$relationship()->saveMany($new);
+        if (is_a($parentModel->$relationship(), HasManyThrough::class)) {
+            // if this is a distant relation, the models need the intermediate relationship set
+            // just save assuming things are correct
+            $new->each->save();
+        } else {
+            $parentModel->$relationship()->saveMany($new);
+        }
 
-        return $existing->merge($new);
+        return $existing->map->first()->merge($new);
+    }
+
+    /**
+     * Sync models of a module that walks VRF contexts.
+     * Rows of contexts that were not walked (disabled or not answering) are kept until the VRF is gone.
+     *
+     * @param  \Illuminate\Support\Collection<Keyable>  $models
+     */
+    protected function syncVrfContextModels(Device $device, string $relationship, Collection $models): Collection
+    {
+        return $this->syncModels($device, $relationship, $models, $device->$relationship->whereNotIn('context_name', $device->getSkippedVrfContexts()));
+    }
+
+    /**
+     * Sync a sub-group of models to the database
+     *
+     * @param  Collection<Keyable>  $models
+     */
+    public function syncModelsByGroup(Device $device, string $relationship, Collection $models, array $where): Collection
+    {
+        $filter = function ($models, $params) {
+            foreach ($params as $key => $value) {
+                if (is_array($value)) {
+                    $models = $models->where(...$value);
+                } else {
+                    $models = $models->where($key, '=', $value);
+                }
+            }
+
+            return $models;
+        };
+
+        return $this->syncModels($device, $relationship, $models->when($where, $filter), $device->$relationship->when($where, $filter));
+    }
+
+    /**
+     * Sync models discovered by one polling method, they replace the models of every method.
+     * Models are linked to their method by a polling_method attribute cast to PollingMethodType.
+     *
+     * @template TModel of Model&Keyable
+     *
+     * @param  Collection<int, TModel>  $models
+     */
+    protected function syncModelsFromMethod(Device $device, string $relationship, PollingMethodType $type, Collection $models): Collection
+    {
+        return $this->syncModels($device, $relationship, $models->each(fn (Model $model) => $model->setAttribute('polling_method', $type)));
+    }
+
+    /**
+     * Combine a list of existing and potentially new models
+     * If the model exists fill any new data from the new models
+     *
+     * @param  Collection  $existing  \LibreNMS\Interfaces\Models\Keyable
+     * @param  Collection  $discovered  \LibreNMS\Interfaces\Models\Keyable
+     * @return Collection
+     */
+    protected function fillNew(Collection $existing, Collection $discovered): Collection
+    {
+        $all = $existing->keyBy->getCompositeKey();
+        foreach ($discovered as $new) {
+            if ($found = $all->get($new->getCompositeKey())) {
+                $found->fill($this->updatableAttributes($found, $new));
+            } else {
+                $all->put($new->getCompositeKey(), $new);
+            }
+        }
+
+        return $all;
+    }
+
+    /**
+     * Get the attributes of a discovered model that may be applied to an existing model
+     *
+     * @return array<string, mixed>
+     */
+    private function updatableAttributes(Model $existing, Model $discovered): array
+    {
+        $attributes = $discovered->getAttributes();
+
+        if ($existing instanceof HasSyncProtectedAttributes) {
+            return Arr::except($attributes, $existing->getSyncProtectedAttributes());
+        }
+
+        return $attributes;
     }
 }

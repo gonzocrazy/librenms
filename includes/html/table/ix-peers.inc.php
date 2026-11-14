@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LibreNMS PeeringDB Integration
  *
@@ -16,12 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$asn = strip_tags($vars['asn']);
-$ixid = strip_tags($vars['ixid']);
-$status = strip_tags($vars['status']);
+$asn = strip_tags((string) $vars['asn']);
+$ixid = strip_tags((string) $vars['ixid']);
+$status = strip_tags((string) $vars['status']);
 
 $sql = ' FROM `pdb_ix_peers` AS `P` LEFT JOIN `pdb_ix` ON `P`.`ix_id` = `pdb_ix`.`ix_id` LEFT JOIN `bgpPeers` ON `P`.`remote_ipaddr4` = `bgpPeers`.`bgpPeerIdentifier` WHERE `P`.`ix_id` = ? AND `remote_ipaddr4` IS NOT NULL';
 $params = [$ixid];
@@ -56,7 +58,7 @@ if (! isset($sort) || empty($sort)) {
 $sql .= " ORDER BY $sort";
 
 if (isset($current)) {
-    $limit_low = (($current * $rowCount) - ($rowCount));
+    $limit_low = (($current * $rowCount) - $rowCount);
     $limit_high = $rowCount;
 }
 
@@ -74,18 +76,18 @@ foreach (dbFetchRows($sql, $params) as $peer) {
     }
     $peer_id = $peer['peer_id'];
     $response[] = [
-        'remote_asn'     => $peer['remote_asn'],
+        'remote_asn' => $peer['remote_asn'],
         'remote_ipaddr4' => $peer['remote_ipaddr4'],
-        'peer'           => $peer['name'],
-        'connected'      => "$connected",
-        'links'          => "<a href='https://peeringdb.com/asn/{$peer['remote_asn']}' target='_blank'><i class='fa fa-database'></i></a>",
+        'peer' => $peer['name'],
+        'connected' => "$connected",
+        'links' => "<a href='https://peeringdb.com/asn/{$peer['remote_asn']}' target='_blank'><i class='fa fa-database'></i></a>",
     ];
 }
 
 $output = [
-    'current'  => $current,
+    'current' => $current,
     'rowCount' => $rowCount,
-    'rows'     => $response,
-    'total'    => $total,
+    'rows' => $response,
+    'total' => $total,
 ];
 echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

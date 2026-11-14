@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AdvaObjectCreation.php
  *
@@ -21,6 +22,7 @@
  * Flow Creation object, and LAG Creation object.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart#kanren.net> & Neil Kahle <nkahle@kanren.net>
  */
@@ -30,7 +32,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class AdvaObjectCreation implements SnmptrapHandler
 {
@@ -38,18 +39,18 @@ class AdvaObjectCreation implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         if ($trap_oid = $trap->findOid('CM-SECURITY-MIB::cmSecurityUserName')) {
             $UserName = $trap->getOidData($trap_oid);
-            Log::event("User object $UserName created", $device->device_id, 'trap', 2);
+            $trap->log("User object $UserName created");
         } elseif ($trap_oid = $trap->findOid('F3-LAG-MIB::f3LagName')) {
             $lagID = substr($trap_oid, -1);
-            Log::event("LAG $lagID created", $device->device_id, 'trap', 2);
+            $trap->log("LAG $lagID created");
         }
     }
 }

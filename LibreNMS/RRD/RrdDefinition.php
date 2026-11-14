@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RrdDefinition.php
  *
@@ -18,20 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\RRD;
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 use LibreNMS\Exceptions\InvalidRrdTypeException;
 
-class RrdDefinition
+class RrdDefinition implements \Stringable
 {
     private static $types = ['GAUGE', 'DERIVE', 'COUNTER', 'ABSOLUTE', 'DCOUNTER', 'DDERIVE'];
     private $dataSets = [];
     private $skipNameCheck = false;
+    private ?int $step = null;
+    /** @var string[]|null */
+    private ?array $rras = null;
 
     /**
      * Make a new empty RrdDefinition
@@ -42,17 +47,54 @@ class RrdDefinition
     }
 
     /**
+     * Set the step (seconds between updates), defaults to the rrd.step setting
+     */
+    public function setStep(int $step): static
+    {
+        $this->step = $step;
+
+        return $this;
+    }
+
+    public function getStep(): int
+    {
+        return $this->step ?? (int) LibrenmsConfig::get('rrd.step', 300);
+    }
+
+    /**
+     * Set the round robin archives, defaults to the rrd_rra setting
+     *
+     * @param  string[]  $rras  RRA:CF:xff:steps:rows
+     */
+    public function setRras(array $rras): static
+    {
+        $this->rras = $rras;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRras(): array
+    {
+        return $this->rras ?? preg_split('/\s+/', trim((string) LibrenmsConfig::get('rrd_rra')), -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
      * Add a dataset to this definition.
      * See https://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html for more information.
      *
-     * @param string $name Textual name for this dataset. Must be [a-zA-Z0-9_], max length 19.
-     * @param string $type GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE.
-     * @param int $min Minimum allowed value.  null means undefined.
-     * @param int $max Maximum allowed value.  null means undefined.
-     * @param int $heartbeat Heartbeat for this dataset. Uses the global setting if null.
+     * @param  string  $name  Textual name for this dataset. Must be [a-zA-Z0-9_], max length 19.
+     * @param  string  $type  GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE.
+     * @param  int  $min  Minimum allowed value.  null means undefined.
+     * @param  int  $max  Maximum allowed value.  null means undefined.
+     * @param  int  $heartbeat  Heartbeat for this dataset. Uses the global setting if null.
+     * @param  string  $source_ds  Dataset to copy data from an existing rrd file
+     * @param  RrdPath|null  $source_file  File to copy data from (may be ommitted copy from the current file)
      * @return RrdDefinition
      */
-    public function addDataset($name, $type, $min = null, $max = null, $heartbeat = null)
+    public function addDataset($name, $type, $min = null, $max = null, $heartbeat = null, $source_ds = null, $source_file = null)
     {
         if (empty($name)) {
             d_echo('DS must be set to a non-empty string.');
@@ -60,11 +102,13 @@ class RrdDefinition
 
         $name = $this->escapeName($name);
         $this->dataSets[$name] = [
-            $name,
-            $this->checkType($type),
-            is_null($heartbeat) ? Config::get('rrd.heartbeat') : $heartbeat,
-            is_null($min) ? 'U' : $min,
-            is_null($max) ? 'U' : $max,
+            'name' => $name,
+            'type' => $this->checkType($type),
+            'hb' => $heartbeat ?? LibrenmsConfig::get('rrd.heartbeat'),
+            'min' => $min ?? 'U',
+            'max' => $max ?? 'U',
+            'source_ds' => $source_ds,
+            'source_file' => $source_file,
         ];
 
         return $this;
@@ -75,17 +119,85 @@ class RrdDefinition
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return array_reduce($this->dataSets, function ($carry, $ds) {
-            return $carry . 'DS:' . implode(':', $ds) . ' ';
-        }, '');
+        return implode(' ', $this->getArguments());
+    }
+
+    /**
+     * Get the sources and data sources as they would be passed to rrdtool create
+     *
+     * @param  bool  $withSources  copy data from source files, data sources are left empty without them
+     * @return string[]
+     */
+    public function getArguments(bool $withSources = true): array
+    {
+        // sources are referenced from data sources by 1 based index
+        $sources = [];
+        $dataSources = [];
+        foreach ($this->dataSets as $ds) {
+            $name = $ds['name'] . ($withSources ? $this->createSource($ds['source_ds'], $ds['source_file'], $sources) : '');
+            $dataSources[] = "DS:$name:{$ds['type']}:{$ds['hb']}:{$ds['min']}:{$ds['max']}";
+        }
+
+        $arguments = [];
+        foreach (array_keys($sources) as $source) {
+            array_push($arguments, '--source', $source);
+        }
+
+        return [...$arguments, ...$dataSources];
+    }
+
+    /**
+     * Check if any data is copied from source files
+     */
+    public function hasSources(): bool
+    {
+        foreach ($this->dataSets as $ds) {
+            if ($ds['source_ds'] && $ds['source_file']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Everything rrdtool create needs after the file name: step, sources, data sources and archives
+     *
+     * @param  bool  $withSources  copy data from source files, data sources are left empty without them
+     * @return string[]
+     */
+    public function getCreateArguments(bool $withSources = true): array
+    {
+        return ['--step', (string) $this->getStep(), ...$this->getArguments($withSources), ...$this->getRras()];
+    }
+
+    /**
+     * Order values to match the data sources, values for unknown data sources are dropped
+     * and missing values are unknown. With name checking disabled, values are kept in the given order.
+     *
+     * @param  array<int|string, int|float|string|null>  $fields  data source name => value
+     * @return array<int|float|string|null>
+     */
+    public function orderValues(array $fields): array
+    {
+        if ($this->skipNameCheck) {
+            return array_values($fields);
+        }
+
+        $values = [];
+        foreach ($fields as $name => $value) {
+            $values[$this->escapeName($name)] = $value;
+        }
+
+        return array_map(fn ($ds) => $values[$ds] ?? null, array_keys($this->dataSets));
     }
 
     /**
      * Check if the give dataset name is valid for this definition
      *
-     * @param string $name
+     * @param  string  $name
      * @return bool
      */
     public function isValidDataset($name)
@@ -107,10 +219,29 @@ class RrdDefinition
     }
 
     /**
+     * @param  array<string, int>  $sources  relative path => 1 based index
+     */
+    private function createSource(?string $ds, ?RrdPath $file, array &$sources): string
+    {
+        if (empty($ds)) {
+            return '';
+        }
+
+        if ($file === null) {
+            return '=' . $ds;
+        }
+
+        $index = $sources[$file->relativePath()] ??= count($sources) + 1;
+
+        return "=$ds" . "[$index]"; // rrdcreate sources are 1 based
+    }
+
+    /**
      * Check that the data set type is valid.
      *
-     * @param string $type
+     * @param  string  $type
      * @return mixed
+     *
      * @throws InvalidRrdTypeException
      */
     private function checkType($type)
@@ -126,13 +257,13 @@ class RrdDefinition
     /**
      * Remove all invalid characters from the name and truncate to 19 characters.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     private function escapeName($name)
     {
         $name = preg_replace('/[^a-zA-Z0-9_\-]/', '', $name);
 
-        return substr($name, 0, 19);
+        return substr((string) $name, 0, 19);
     }
 }

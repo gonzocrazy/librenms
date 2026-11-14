@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseApi.php
  *
@@ -18,27 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\ApiClients;
 
-use GuzzleHttp\Client;
+use LibreNMS\Util\Http;
 
 class BaseApi
 {
-    protected $base_uri;
-    private $client;
+    protected string $base_uri = '';
+    protected int $timeout = 3;
+    private ?\Illuminate\Http\Client\PendingRequest $client = null;
 
-    protected function getClient()
+    protected function getClient(): \Illuminate\Http\Client\PendingRequest
     {
-        if (is_null($this->client)) {
-            $this->client = new Client([
-                'base_uri' => $this->base_uri,
-                'timeout' => 2,
-            ]);
-        }
+        $this->client ??= Http::client()->baseUrl($this->base_uri)
+        ->timeout($this->timeout);
 
         return $this->client;
     }

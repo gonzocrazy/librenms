@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateLoadbalancerVserversTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('loadbalancer_vservers', function (Blueprint $table) {
+        Schema::create('loadbalancer_vservers', function (Blueprint $table): void {
             $table->id();
             $table->unsignedInteger('classmap_id');
             $table->string('classmap', 128);
@@ -26,8 +26,8 @@ class CreateLoadbalancerVserversTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('loadbalancer_vservers');
     }
-}
+};

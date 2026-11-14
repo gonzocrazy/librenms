@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TwoFactorPage.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,7 +48,8 @@ class TwoFactorPage extends Page
      */
     public function assert(Browser $browser)
     {
-        $browser->assertPathIs($this->url());
+        $browser->waitFor('@input')
+            ->assertPathIs($this->url());
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * QueryBuilderFilter.php
  *
@@ -18,14 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Alerting;
 
+use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Str;
-use LibreNMS\Config;
 use LibreNMS\DB\Schema;
 
 class QueryBuilderFilter implements \JsonSerializable
@@ -41,7 +43,8 @@ class QueryBuilderFilter implements \JsonSerializable
 
     /**
      * QueryBuilderFilter constructor.
-     * @param string $type alert|group
+     *
+     * @param  string  $type  alert|group
      */
     public function __construct($type = 'alert')
     {
@@ -58,17 +61,17 @@ class QueryBuilderFilter implements \JsonSerializable
 
     private function generateMacroFilter($config_location)
     {
-        $macros = Config::get($config_location, []);
+        $macros = LibrenmsConfig::get($config_location, []);
         krsort($macros);
 
         foreach ($macros as $key => $value) {
             $field = 'macros.' . $key;
 
-            if (preg_match('/^past_\d+m$/', $key)) {
+            if (preg_match('/^past_\d+m$/', (string) $key)) {
                 continue; // don't include the time based macros, they don't work like that
             }
 
-            if ((Str::endsWith($key, '_usage_perc')) || (Str::startsWith($key, 'packet_loss_'))) {
+            if (Str::endsWith($key, '_perc') || Str::endsWith($key, '_delta') || Str::startsWith($key, 'packet_loss_')) {
                 $this->filter[$field] = [
                     'id' => $field,
                     'type' => 'integer',
@@ -119,10 +122,8 @@ class QueryBuilderFilter implements \JsonSerializable
                         'type' => 'string',
                     ];
                 } elseif ($type == 'enum') {// format enums as radios
-                    $values = explode(',', substr($column_type, 4));
-                    $values = array_map(function ($val) {
-                        return trim($val, "()' ");
-                    }, $values);
+                    $values = explode(',', substr((string) $column_type, 4));
+                    $values = array_map(fn ($val) => trim($val, "()' "), $values);
 
                     $this->filter[$field] = [
                         'id' => $field,
@@ -160,11 +161,15 @@ class QueryBuilderFilter implements \JsonSerializable
 
     /**
      * Specify data which should be serialized to JSON
+     *
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource.
+     *
      * @since 5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $filter = $this->filter;
@@ -176,7 +181,7 @@ class QueryBuilderFilter implements \JsonSerializable
     /**
      * Get the filter for a specific item
      *
-     * @param string $id
+     * @param  string  $id
      * @return array|null
      */
     public function getFilter($id)

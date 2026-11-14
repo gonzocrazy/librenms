@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Config.php
  *
@@ -18,12 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
 
+use App\Observers\ConfigObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
+#[ObservedBy([ConfigObserver::class])]
 class Config extends BaseModel
 {
     public $timestamps = false;
@@ -33,15 +39,22 @@ class Config extends BaseModel
         'config_name',
         'config_value',
     ];
-    protected $casts = [
-        'config_default' => 'array',
-    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'config_default' => 'array',
+        ];
+    }
 
     // ---- Accessors/Mutators ----
 
     public function getConfigValueAttribute($value)
     {
-        return json_decode($value, true);
+        return json_decode((string) $value, true);
     }
 
     public function setConfigValueAttribute($value)

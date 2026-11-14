@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateBillHistoryTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('bill_history', function (Blueprint $table) {
+        Schema::create('bill_history', function (Blueprint $table): void {
             $table->increments('bill_hist_id');
             $table->unsignedInteger('bill_id')->index();
             $table->timestamp('updated')->useCurrent();
@@ -37,8 +37,8 @@ class CreateBillHistoryTable extends Migration
             $table->unique(['bill_id', 'bill_datefrom', 'bill_dateto']);
         });
 
-        if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
-            \DB::statement('ALTER TABLE `bill_history` CHANGE `pdf` `pdf` longblob NULL ;');
+        if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            DB::statement('ALTER TABLE `bill_history` CHANGE `pdf` `pdf` longblob NULL ;');
         }
     }
 
@@ -47,8 +47,8 @@ class CreateBillHistoryTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('bill_history');
     }
-}
+};

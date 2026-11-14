@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AuthLog.php
  *
@@ -18,17 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AuthLog extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $table = 'authlog';
-    protected $dates = ['datetime'];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'datetime' => 'datetime',
+        ];
+    }
 }

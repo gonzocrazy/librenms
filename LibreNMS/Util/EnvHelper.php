@@ -1,4 +1,5 @@
 <?php
+
 /**
  * EnvHelper.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,6 +28,7 @@ namespace LibreNMS\Util;
 
 use ErrorException;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Artisan;
 use LibreNMS\Exceptions\FileWriteFailedException;
 
 class EnvHelper
@@ -34,11 +37,12 @@ class EnvHelper
      * Set a setting in .env file.
      * Will only set non-empty unset variables
      *
-     * @param array $settings KEY => value list of settings
-     * @param array $unset Remove the given KEYS from the config
-     * @param string $file
+     * @param  array  $settings  KEY => value list of settings
+     * @param  array  $unset  Remove the given KEYS from the config
+     * @param  string  $file
      * @return string
-     * @throws \LibreNMS\Exceptions\FileWriteFailedException
+     *
+     * @throws FileWriteFailedException
      */
     public static function writeEnv($settings, $unset = [], $file = '.env')
     {
@@ -64,9 +68,9 @@ class EnvHelper
      * Set a setting in .env file content.
      * Will only set non-empty unset variables
      *
-     * @param string $content
-     * @param array $settings KEY => value list of settings
-     * @param array $unset Remove the given KEYS from the config
+     * @param  string  $content
+     * @param  array  $settings  KEY => value list of settings
+     * @param  array  $unset  Remove the given KEYS from the config
      * @return string
      */
     public static function setEnv($content, $settings, $unset = [])
@@ -90,8 +94,9 @@ class EnvHelper
 
             $value = self::escapeValue($value);
 
-            if (strpos($content, "$key=") !== false) {
-                // only replace ones that aren't already set for safety and uncomment
+            if (preg_match("/^(#$key=$|$key=)/m", $content)) {
+                // enter this block if we have commented and empty or uncommented key
+                // only replace ones that aren't already set to a value for safety and uncomment
                 // escape $ in the replacement
                 $content = preg_replace("/#?$key=\n/", addcslashes("$key=$value\n", '$'), $content);
             } else {
@@ -106,7 +111,8 @@ class EnvHelper
      * Copy the example .env file and set APP_KEY
      *
      * @return bool|string
-     * @throws \LibreNMS\Exceptions\FileWriteFailedException
+     *
+     * @throws FileWriteFailedException
      */
     public static function init()
     {
@@ -115,7 +121,17 @@ class EnvHelper
             if (! file_exists($env_file)) {
                 copy(base_path('.env.example'), $env_file);
 
-                $key = trim(exec(PHP_BINDIR . '/php ' . base_path('artisan') . ' key:generate --show'));
+                $key = null;
+                if (php_sapi_name() == 'cli') {
+                    $key = trim(exec(PHP_BINARY . ' ' . base_path('artisan') . ' key:generate --show --no-ansi'));
+                } else {
+                    if (Artisan::call('key:generate', [
+                        '--show' => 'true',
+                        '--no-ansi' => 'true',
+                    ]) == 0) {
+                        $key = trim(Artisan::output());
+                    }
+                }
 
                 self::writeEnv([
                     'APP_KEY' => $key,
@@ -124,7 +140,7 @@ class EnvHelper
 
                 try {
                     config(['app.key' => $key]);
-                } catch (BindingResolutionException $e) {
+                } catch (BindingResolutionException) {
                     // called outside of Laravel, ignore config() failure
                 }
 
@@ -140,7 +156,7 @@ class EnvHelper
     /**
      * Fix .env with # in them without a space before it
      *
-     * @param string $dotenv
+     * @param  string  $dotenv
      * @return string
      */
     private static function fixComments($dotenv)
@@ -149,7 +165,7 @@ class EnvHelper
             $parts = explode('=', $line, 2);
             if (isset($parts[1])
                 && preg_match('/(?<!\s)#/', $parts[1]) // number symbol without a space before it
-                && ! preg_match('/^(".*"|\'.*\')$/', $parts[1]) // not already quoted
+                && ! preg_match('/^(".*"|\'.*\')$/', trim($parts[1])) // not already quoted
             ) {
                 return trim($parts[0]) . '="' . trim($parts[1]) . '"';
             }
@@ -161,12 +177,12 @@ class EnvHelper
     /**
      * quote strings with spaces
      *
-     * @param string $value
+     * @param  string  $value
      * @return string
      */
     private static function escapeValue($value)
     {
-        if (strpos($value, ' ') !== false) {
+        if (str_contains($value, ' ')) {
             return "\"$value\"";
         }
 
@@ -176,9 +192,9 @@ class EnvHelper
     /**
      * Parse comma separated environment variable into an array.
      *
-     * @param string $env_name
-     * @param mixed $default
-     * @param array $except Ignore these values and return the unexploded string
+     * @param  string  $env_name
+     * @param  mixed  $default
+     * @param  array  $except  Ignore these values and return the unexploded string
      * @return array|mixed
      */
     public static function parseArray($env_name, $default = null, $except = [''])

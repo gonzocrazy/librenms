@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * Junos.php
  *
  * -Description-
@@ -17,45 +18,159 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * @package    LibreNMS
  * @link       https://www.librenms.org
- * @copyright  2020 Tony Murray
+ *
+ * @copyright  2025 Peca Nesovanovic
+ * @copyright  2025 Tony Murray
+ * @author     Peca Nesovanovic <peca.nesovanovic@sattrakt.com>
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\OS;
 
+use App\Facades\PortCache;
+use App\Models\BgpPeer;
+use App\Models\BgpPeerCbgp;
 use App\Models\Device;
+use App\Models\EntPhysical;
+use App\Models\PortVlan;
+use App\Models\Sla;
+use App\Models\Transceiver;
+use App\Models\Vlan;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Interfaces\Data\DataStorageInterface;
+use LibreNMS\Interfaces\Discovery\BgpAddressFamilyDiscovery;
+use LibreNMS\Interfaces\Discovery\SlaDiscovery;
+use LibreNMS\Interfaces\Discovery\TransceiverDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanPortDiscovery;
 use LibreNMS\Interfaces\Polling\OSPolling;
+use LibreNMS\Interfaces\Polling\SlaPolling;
+use LibreNMS\OS\Traits\EntityMib;
 use LibreNMS\RRD\RrdDefinition;
+use LibreNMS\Util\Bgp;
+use LibreNMS\Util\IP;
+use SnmpQuery;
 
-class Junos extends \LibreNMS\OS implements OSPolling
+class Junos extends \LibreNMS\OS implements BgpAddressFamilyDiscovery, SlaDiscovery, OSPolling, SlaPolling, TransceiverDiscovery, VlanDiscovery, VlanPortDiscovery
 {
+    use EntityMib {
+        EntityMib::discoverEntityPhysical as discoverBaseEntityPhysical;
+    }
+
     public function discoverOS(Device $device): void
     {
-        $data = snmp_get_multi($this->getDeviceArray(), [
+        $response = SnmpQuery::get([
             'JUNIPER-MIB::jnxBoxDescr.0',
             'JUNIPER-MIB::jnxBoxSerialNo.0',
             'JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberSWVersion.0',
+            'HOST-RESOURCES-MIB::hrSWInstalledName.1',
             'HOST-RESOURCES-MIB::hrSWInstalledName.2',
-        ], '-OQUs');
+        ]);
 
         preg_match('/Juniper Networks, Inc. (?<hardware>\S+) .* kernel JUNOS (?<version>[^, ]+)[, ]/', $device->sysDescr, $parsed);
-        if (isset($data[2]['hrSWInstalledName'])) {
-            preg_match('/\[(.+)]/', $data[2]['hrSWInstalledName'], $parsedVersion);
+        preg_match('/^JUNOS.*\[([^\]]+)]/', $response->value('HOST-RESOURCES-MIB::hrSWInstalledName.2'), $parsedVersion);
+        // deal with JSUs - checked with EVO only
+        if (preg_match('/^junos-evo.*?(\d+\.\d+.*)$/', $response->value('HOST-RESOURCES-MIB::hrSWInstalledName.1'), $evoVersion)) {
+            $parsedVersion = $evoVersion;
         }
 
-        $device->hardware = $data[0]['jnxBoxDescr'] ?? (isset($parsed['hardware']) ? 'Juniper ' . strtoupper($parsed['hardware']) : null);
-        $device->serial = $data[0]['jnxBoxSerialNo'] ?? null;
-        $device->version = $data[0]['jnxVirtualChassisMemberSWVersion'] ?? $parsedVersion[1] ?? $parsed['version'] ?? null;
+        $boxDescr = $response->value('JUNIPER-MIB::jnxBoxDescr.0') ?: null;
+        $vcVersion = $response->value('JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberSWVersion.0') ?: null;
+        $isVirtualChassis = $vcVersion !== null || str_contains(strtolower((string) $boxDescr), 'virtual chassis');
+        // Standalone switches may report one master member, so one row does not establish a Virtual Chassis.
+        $members = $isVirtualChassis ? array_filter(
+            SnmpQuery::enumStrings()->walk('JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberTable')->table(1),
+            fn ($member) => isset($member['JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberRole'])
+        ) : [];
+
+        $device->hardware = $this->parseHardware($boxDescr, $parsed['hardware'] ?? null, $members);
+        $device->features = $this->parseVirtualChassis($boxDescr, $members)
+            ?? $this->parseChassisCluster($boxDescr, $device->sysDescr);
+        $device->serial = $response->value('JUNIPER-MIB::jnxBoxSerialNo.0') ?: null;
+        $device->version = $vcVersion ?? $parsedVersion[1] ?? $parsed['version'] ?? null;
     }
 
-    public function pollOS()
+    /**
+     * The model, preferring the most specific source available. jnxBoxDescr is a free text
+     * description of the chassis, so on a Virtual Chassis it describes the stack, not a model.
+     *
+     * @param  array<int|string, array<string, string>>  $members
+     */
+    private function parseHardware(?string $boxDescr, ?string $sysDescrHardware, array $members): ?string
+    {
+        // Juniper brackets the model when the chassis part number differs, JNP10003 [MX10003]
+        foreach ([$boxDescr, $this->getDevice()->sysDescr] as $descr) {
+            if ($descr !== null && preg_match('/\[([^\]]+)]/', $descr, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        if ($sysDescrHardware !== null) {
+            return strtoupper($sysDescrHardware);
+        }
+
+        foreach ($members as $member) {
+            if (($member['JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberRole'] ?? null) == 'master' && ! empty($member['JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberModel'])) {
+                return strtoupper($member['JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberModel']);
+            }
+        }
+
+        // jnxBoxDescr comes from the chassis, so trust it over an operator configured sysDescr
+        // e.g. Juniper SRX240H Internet Router, node0 Juniper SRX5800 services gateway
+        if (preg_match('/^(?:node\d+\s+)?Juniper ([A-Za-z]+\d\S*)/i', (string) $boxDescr, $matches)) {
+            return strtoupper($matches[1]);
+        }
+
+        // a sysDescr set to something other than the JUNOS string may still lead with the model
+        if (preg_match('/^Juniper ([A-Za-z]+\d\S*)/', (string) $this->getDevice()->sysDescr, $matches)) {
+            return strtoupper($matches[1]);
+        }
+
+        return $boxDescr;
+    }
+
+    /**
+     * @param  array<int|string, array<string, string>>  $members
+     */
+    private function parseVirtualChassis(?string $boxDescr, array $members): ?string
+    {
+        if (count($members) > 1) {
+            return 'Virtual Chassis of ' . count($members) . ' members';
+        }
+
+        if (str_contains(strtolower((string) $boxDescr), 'virtual chassis')) {
+            return 'Virtual Chassis';
+        }
+
+        return null;
+    }
+
+    private function parseChassisCluster(?string $boxDescr, ?string $sysDescr): ?string
+    {
+        // sysDescr may be operator configured, so also check jnxBoxDescr for the model
+        if (! preg_match('/\bsrx\d/i', $sysDescr . ' ' . $boxDescr)) {
+            return null;
+        }
+
+        $nodeNames = SnmpQuery::walk('JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringNodeDescr')->values();
+        $nodes = array_unique(array_map(strtolower(...), array_filter($nodeNames, fn ($name) => preg_match('/^node\d+$/i', $name))));
+
+        if (count($nodes) > 1) {
+            return 'Chassis Cluster (' . count($nodes) . ' nodes)';
+        }
+
+        return preg_match('/^node[01]\b/i', (string) $boxDescr) ? 'Chassis Cluster' : null;
+    }
+
+    public function pollOS(DataStorageInterface $datastore): void
     {
         $data = snmp_get_multi($this->getDeviceArray(), 'jnxJsSPUMonitoringCurrentFlowSession.0', '-OUQs', 'JUNIPER-SRX5000-SPU-MONITORING-MIB');
 
-        if (is_numeric($data[0]['jnxJsSPUMonitoringCurrentFlowSession'])) {
-            data_update($this->getDeviceArray(), 'junos_jsrx_spu_sessions', [
+        if (is_numeric($data[0]['jnxJsSPUMonitoringCurrentFlowSession'] ?? null)) {
+            $datastore->put($this->getDeviceArray(), 'junos_jsrx_spu_sessions', [
                 'rrd_def' => RrdDefinition::make()->addDataset('spu_flow_sessions', 'GAUGE', 0),
             ], [
                 'spu_flow_sessions' => $data[0]['jnxJsSPUMonitoringCurrentFlowSession'],
@@ -63,5 +178,429 @@ class Junos extends \LibreNMS\OS implements OSPolling
 
             $this->enableGraph('junos_jsrx_spu_sessions');
         }
+    }
+
+    public function discoverSlas(): Collection
+    {
+        $slas = new Collection();
+        $sla_table = snmpwalk_group($this->getDeviceArray(), 'pingCtlTable', 'DISMAN-PING-MIB', 2, snmpFlags: '-OQUstX');
+
+        if (! empty($sla_table)) {
+            $sla_table = snmpwalk_group($this->getDeviceArray(), 'jnxPingResultsRttUs', 'JUNIPER-PING-MIB', 2, $sla_table, snmpFlags: '-OQUstX');
+        }
+
+        foreach ($sla_table as $sla_key => $sla_config) {
+            foreach ($sla_config as $test_key => $test_config) {
+                $slas->push(new Sla([
+                    'sla_nr' => hexdec(hash('crc32', $sla_key . $test_key)), // indexed by owner+test, convert to int
+                    'owner' => $sla_key,
+                    'tag' => $test_key,
+                    'rtt_type' => $this->retrieveJuniperType($test_config['pingCtlType']),
+                    'rtt' => isset($test_config['jnxPingResultsRttUs']) ? $test_config['jnxPingResultsRttUs'] / 1000 : null,
+                    'status' => ($test_config['pingCtlAdminStatus'] == 'enabled') ? 1 : 0,
+                    'opstatus' => ($test_config['pingCtlRowStatus'] == 'active') ? 0 : 2,
+                ]));
+            }
+        }
+
+        return $slas;
+    }
+
+    public function discoverEntityPhysical(): Collection
+    {
+        $entPhysical = $this->discoverBaseEntityPhysical();
+        if ($entPhysical->isNotEmpty()) {
+            return $entPhysical;
+        }
+
+        $chassisName = null;
+        $boxSerial = $this->getDevice()->serial;
+
+        $containers = SnmpQuery::hideMib()
+            ->mibs(['JUNIPER-CHASSIS-DEFINES-MIB'])
+            ->walk('JUNIPER-MIB::jnxContainersTable')
+            ->mapTable(function ($entry, $index) use (&$chassisName, $boxSerial) {
+                $modelName = $this->parseType($entry['jnxContainersType'] ?? null, $chassisName);
+                $chassisName ??= $modelName;
+                $descr = $entry['jnxContainersDescr'] ?? null;
+                $within = $entry['jnxContainersWithin'] ?? 0;
+
+                return new EntPhysical([
+                    'entPhysicalIndex' => $index,
+                    'entPhysicalClass' => $within == '0' ? 'chassis' : 'container',
+                    'entPhysicalDescr' => $descr,
+                    'entPhysicalModelName' => $modelName,
+                    'entPhysicalContainedIn' => $within,
+                    'entPhysicalSerialNum' => $within == '0' ? $boxSerial : null,
+                    'entPhysicalMfgName' => 'Juniper',
+                ]);
+            });
+
+        if ($containers->isEmpty()) {
+            return $containers;
+        }
+
+        return $containers->merge(SnmpQuery::hideMib()->enumStrings()
+            ->mibs(['JUNIPER-CHASSIS-DEFINES-MIB'])
+            ->walk('JUNIPER-MIB::jnxContentsTable')
+            // Juniper's MIB doesn't have the same objects as the Entity MIB, so some values are made up here.
+            ->mapTable(fn ($entry, $container, $indexL1, $indexL2, $indexL3) => new EntPhysical([
+                'entPhysicalIndex' => $container + $indexL1 * 1000000 + $indexL2 * 10000 + $indexL3 * 100,
+                'entPhysicalDescr' => $entry['jnxContentsDescr'] ?? null,
+                'entPhysicalContainedIn' => $container,
+                'entPhysicalClass' => $this->parseClass($entry['jnxContentsType'] ?? null),
+                'entPhysicalName' => $entry['jnxOperatingDescr'] ?? null,
+                'entPhysicalSerialNum' => $entry['jnxContentsSerialNo'] ?? null,
+                'entPhysicalModelName' => $entry['jnxContentsPartNo'] ?? null,
+                'entPhysicalMfgName' => 'Juniper',
+                'entPhysicalVendorType' => $this->parseType($entry['jnxContentsType'] ?? null, $chassisName),
+                'entPhysicalParentRelPos' => -1,
+                'entPhysicalHardwareRev' => $entry['jnxContentsRevision'] ?? null,
+                'entPhysicalIsFRU' => isset($entry['jnxContentsSerialNo']) ? ($entry['jnxContentsSerialNo'] == 'BUILTIN' ? 'false' : 'true') : null,
+            ])))->filter();
+    }
+
+    public function pollSlas($slas): void
+    {
+        $device = $this->getDeviceArray();
+
+        // Go get some data from the device.
+        $data = snmpwalk_group($device, 'pingCtlRowStatus', 'DISMAN-PING-MIB', 2);
+        $data = snmpwalk_group($device, 'jnxPingLastTestResultTable', 'JUNIPER-PING-MIB', 2, $data);
+        $data = snmpwalk_group($device, 'jnxPingResultsTable', 'JUNIPER-PING-MIB', 2, $data);
+
+        // Get the needed information
+        foreach ($slas as $sla) {
+            $sla_nr = $sla->sla_nr;
+            $rtt_type = $sla->rtt_type;
+            $owner = $sla->owner;
+            $test = $sla->tag;
+
+            // Lets process each SLA
+
+            // Use DISMAN-PING Status codes. 0=Good 2=Critical
+            $sla->opstatus = $data[$owner][$test]['pingCtlRowStatus'] == '1' ? 0 : 2;
+
+            $sla->rtt = ($data[$owner][$test]['jnxPingResultsAvgRttUs'] ?? 0) / 1000;
+            $time = Carbon::parse($data[$owner][$test]['jnxPingResultsTime'] ?? null)->toDateTimeString();
+            Log::info('SLA : ' . $rtt_type . ' ' . $owner . ' ' . $test . '... ' . $sla->rtt . 'ms at ' . $time);
+
+            $collected = ['rtt' => $sla->rtt];
+
+            // Let's gather some per-type fields.
+            switch ($rtt_type) {
+                case 'DnsQuery':
+                case 'HttpGet':
+                case 'HttpGetMetadata':
+                    break;
+                case 'IcmpEcho':
+                case 'IcmpTimeStamp':
+                    $icmp = [
+                        'MinRttUs' => ($data[$owner][$test]['jnxPingResultsMinRttUs'] ?? 0) / 1000,
+                        'MaxRttUs' => ($data[$owner][$test]['jnxPingResultsMaxRttUs'] ?? 0) / 1000,
+                        'StdDevRttUs' => ($data[$owner][$test]['jnxPingResultsStdDevRttUs'] ?? 0) / 1000,
+                        'ProbeResponses' => $data[$owner][$test]['jnxPingLastTestResultProbeResponses'] ?? null,
+                        'ProbeLoss' => (int) ($data[$owner][$test]['jnxPingLastTestResultSentProbes'] ?? 0) - (int) ($data[$owner][$test]['jnxPingLastTestResultProbeResponses'] ?? 0),
+                    ];
+                    $rrd_name = ['sla', $sla_nr, $rtt_type];
+                    $rrd_def = RrdDefinition::make()
+                        ->addDataset('MinRttUs', 'GAUGE', 0, 300000)
+                        ->addDataset('MaxRttUs', 'GAUGE', 0, 300000)
+                        ->addDataset('StdDevRttUs', 'GAUGE', 0, 300000)
+                        ->addDataset('ProbeResponses', 'GAUGE', 0, 300000)
+                        ->addDataset('ProbeLoss', 'GAUGE', 0, 300000);
+                    $tags = ['rrd_name' => $rrd_name, 'rrd_def' => $rrd_def, 'sla_nr' => $sla_nr, 'rtt_type' => $rtt_type];
+                    app('Datastore')->put($device, 'sla', $tags, $icmp);
+                    $collected = array_merge($collected, $icmp);
+                    break;
+                case 'NtpQuery':
+                case 'UdpTimestamp':
+                    break;
+            }
+
+            d_echo('The following datasources were collected for #' . $sla->sla_nr . ":\n");
+            d_echo($collected);
+        }
+    }
+
+    /**
+     * Retrieve specific Juniper PingCtlType
+     */
+    private function retrieveJuniperType($rtt_type)
+    {
+        return match ($rtt_type) {
+            'enterprises.2636.3.7.2.1' => 'IcmpTimeStamp',
+            'enterprises.2636.3.7.2.2' => 'HttpGet',
+            'enterprises.2636.3.7.2.3' => 'HttpGetMetadata',
+            'enterprises.2636.3.7.2.4' => 'DnsQuery',
+            'enterprises.2636.3.7.2.5' => 'NtpQuery',
+            'enterprises.2636.3.7.2.6' => 'UdpTimestamp',
+            'zeroDotZero' => 'twamp',
+            default => str_replace('ping', '', $rtt_type),
+        };
+    }
+
+    /**
+     * Parse type into a nicer name
+     * jnxChassisEX4300.0 > EX4300
+     * jnxEX4300SlotPower.0 > Slot Power
+     * jnxEX4300MPSlotFan.0 > MP Slot Fan
+     * jnxEX4300MPSlotFPC.0 > MP Slot FPC
+     * jnxEX4300MediaCardSpacePIC.0 > Media Card Space PIC
+     * jnxEX4300MPRE0.0 > MPRE0
+     */
+    public function parseType(?string $type, ?string $chassisName): ?string
+    {
+        if ($type === null) {
+            return $type;
+        }
+
+        if (preg_match('/jnxChassis([^.]+).*/', $type, $matches)) {
+            return $matches[1];
+        }
+
+        // $chassisName is known
+        $name = preg_replace("/jnx($chassisName)?([^.]+).*/", '$2', $type);
+        $words = preg_split('/(^[^A-Z]+|[A-Z][^A-Z0-9]+)/', (string) $name, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+
+        return implode(' ', $words);
+    }
+
+    public function parseClass($type): ?string
+    {
+        return match ($type) {
+            'jnxFan' => 'fan',
+            'jnxPower' => 'powerSupply',
+
+            default => null,
+        };
+    }
+
+    public function discoverTransceivers(): Collection
+    {
+        $entPhysical = SnmpQuery::walk('ENTITY-MIB::entityPhysical')->table(1);
+
+        $jnxDomCurrentTable = SnmpQuery::cache()->walk('JUNIPER-DOM-MIB::jnxDomCurrentTable')->mapTable(function ($data, $ifIndex) use ($entPhysical) {
+            $ent = $this->findTransceiverEntityByPortName($entPhysical, PortCache::getNameFromIfIndex($ifIndex, $this->getDevice()));
+            if (empty($ent)) {
+                return null; // no module
+            }
+
+            return new Transceiver([
+                'port_id' => (int) PortCache::getIdFromIfIndex($ifIndex, $this->getDevice()),
+                'index' => $ifIndex,
+                'type' => $ent['ENTITY-MIB::entPhysicalName'] ?? null,
+                'vendor' => $ent['ENTITY-MIB::entPhysicalMfgName'] ?? null,
+                'model' => $ent['ENTITY-MIB::entPhysicalModelName'] ?? null,
+                'revision' => $ent['ENTITY-MIB::entPhysicalHardwareRev'] ?? null,
+                'serial' => $ent['ENTITY-MIB::entPhysicalSerialNum'] ?? null,
+                'channels' => $data['JUNIPER-DOM-MIB::jnxDomCurrentModuleLaneCount'] ?? 0,
+                'entity_physical_index' => $ifIndex,
+            ]);
+        })->filter();
+
+        if ($jnxDomCurrentTable->isNotEmpty()) {
+            return $jnxDomCurrentTable;
+        }
+
+        // could use improvement by mapping JUNIPER-IFOPTICS-MIB::jnxOpticsConfigTable for a tiny bit more info
+        return SnmpQuery::cache()->walk('JUNIPER-IFOPTICS-MIB::jnxOpticsPMCurrentTable')
+            ->mapTable(fn ($data, $ifIndex) => new Transceiver([
+                'port_id' => (int) PortCache::getIdFromIfIndex($ifIndex),
+                'index' => $ifIndex,
+                'entity_physical_index' => $ifIndex,
+            ]));
+    }
+
+    private function findTransceiverEntityByPortName(array $entPhysical, ?string $ifName): array
+    {
+        if (! $ifName) {
+            return [];
+        }
+
+        // Regex to capture three digit-groups (FPC/PIC/Port) from the ifName
+        // e.g., et-0/0/0, et-0/0/0:2.0, et-1/2/3:100
+        if (! preg_match('#-(\d+)/(\d+)/(\d+)#', $ifName, $matches)) {
+            // No match; bail out.
+            return [];
+        }
+
+        // [0] is the full match, [1..3] are captures
+        [, $fpc, $pic, $port] = $matches;
+
+        // EVO result from QFX5130     - ENTITY-MIB::entPhysicalDescr[75] = QSFP56-DD-400GBASE-DR4 @ /Chassis[0]/Fpc[0]/Pic[0]/Port[0]
+        // non-EVO result from QFX5120 - ENTITY-MIB::entPhysicalDescr[287] = QSFP28-100G-AOC-3M @ 0/0/1
+        $expectedSuffixes = [
+            // Short form, e.g. " @ 0/0/1"
+            ' @ ' . $fpc . '/' . $pic . '/' . $port,
+
+            // Chassis form, e.g. " @ /Chassis[0]/Fpc[0]/Pic[0]/Port[0]"
+            ' @ /Chassis[0]/Fpc[' . $fpc . ']/Pic[' . $pic . ']/Port[' . $port . ']',
+        ];
+
+        // Check if any entity description ends with one of the expected suffixes
+        foreach ($entPhysical as $entity) {
+            if (! isset($entity['ENTITY-MIB::entPhysicalDescr'])) {
+                continue;
+            }
+
+            $descr = $entity['ENTITY-MIB::entPhysicalDescr'];
+
+            foreach ($expectedSuffixes as $suffix) {
+                if (str_ends_with($descr, $suffix)) {
+                    return $entity; // Found a match
+                }
+            }
+        }
+
+        // Nothing matched
+        return [];
+    }
+
+    public function discoverVlans(): Collection
+    {
+        if (($QBridgeMibVlans = parent::discoverVlans())->isNotEmpty()) {
+            return $QBridgeMibVlans;
+        }
+
+        $vlans = SnmpQuery::enumStrings()->walk('JUNIPER-VLAN-MIB::jnxExVlanTable')->mapTable(fn ($data, $vlanId) => new Vlan([
+            'vlan_vlan' => $data['JUNIPER-VLAN-MIB::jnxExVlanTag'],
+            'vlan_domain' => $data['JUNIPER-VLAN-MIB::jnxExVlanPortGroupInstance'],
+            'vlan_type' => $data['JUNIPER-VLAN-MIB::jnxExVlanType'],
+            'vlan_name' => $data['JUNIPER-VLAN-MIB::jnxExVlanName'],
+        ]));
+
+        if ($vlans->isNotEmpty()) {
+            return $vlans;
+        }
+
+        return SnmpQuery::enumStrings()->walk('JUNIPER-L2ALD-MIB::jnxL2aldVlanTable')
+            ->mapTable(fn ($data) => new Vlan([
+                'vlan_vlan' => $data['JUNIPER-L2ALD-MIB::jnxL2aldVlanTag'] ?? 0,
+                'vlan_domain' => 1,
+                'vlan_type' => $data['JUNIPER-L2ALD-MIB::jnxL2aldVlanType'] ?? '',
+                'vlan_name' => $data['JUNIPER-L2ALD-MIB::jnxL2aldVlanName'] ?? '',
+            ]));
+    }
+
+    public function discoverVlanPorts(Collection $vlans): Collection
+    {
+        if (($QBridgeMibPorts = parent::discoverVlanPorts($vlans))->isNotEmpty()) {
+            return $QBridgeMibPorts;
+        }
+
+        // JUNIPER-VLAN-MIB
+        $legacyPortData = SnmpQuery::walk('JUNIPER-VLAN-MIB::jnxExVlanPortGroupTable')->table(2);
+        $legacyPorts = new Collection;
+
+        if (! empty($legacyPortData)) {
+            $legacyVlanByGroup = $vlans->groupBy('vlan_domain');
+            foreach ($legacyPortData as $jnxExVlanPortGroupIndex => $groupData) {
+                foreach ($groupData as $jnxExVlanPort => $portData) {
+                    // 1. autoActive or 3. allowedActive only
+                    if (! in_array($portData['JUNIPER-VLAN-MIB::jnxExVlanPortStatus'] ?? '', ['1', '3'])) {
+                        continue;
+                    }
+
+                    foreach ($legacyVlanByGroup->get($jnxExVlanPortGroupIndex, []) as $vlan) {
+                        $legacyPorts->push(new PortVlan([
+                            'vlan' => $vlan->vlan_vlan,
+                            'baseport' => $this->bridgePortFromIfIndex($jnxExVlanPort),
+                            'untagged' => isset($portData['JUNIPER-VLAN-MIB::jnxExVlanPortTagness']) && $portData['JUNIPER-VLAN-MIB::jnxExVlanPortTagness'] == '2' ? 1 : 0,
+                            'port_id' => PortCache::getIdFromIfIndex($jnxExVlanPort, $this->getDeviceId()) ?? 0,
+                        ]));
+                    }
+                }
+            }
+        }
+
+        return $legacyPorts;  // if no legacy data, use Q-BRIDGE-MIB
+    }
+
+    /**
+     * Sessions are indexed by instance, local and remote address, and read in each VRF context.
+     * BGP4-MIB is read when the table has no sessions.
+     *
+     * @return Collection<int, BgpPeer>
+     */
+    public function discoverBgpPeers(): Collection
+    {
+        $peers = new Collection;
+
+        foreach ($this->getDevice()->getVrfContexts() as $context) {
+            $vrfId = $this->getDevice()->vrfIdForContext($context);
+            $found = collect($this->walkBgpTable($context, 'BGP4-V2-MIB-JUNIPER', [
+                'bgpPeerRemoteAs' => 'jnxBgpM2PeerRemoteAs',
+                'bgpPeerState' => 'jnxBgpM2PeerState',
+                'bgpPeerAdminStatus' => 'jnxBgpM2PeerStatus',
+                'bgpLocalAddr' => 'jnxBgpM2PeerLocalAddr',
+                'bgpPeerLastError' => 'jnxBgpM2PeerLastErrorReceived',
+                'bgpPeerLastErrorText' => 'jnxBgpM2PeerLastErrorReceivedText',
+                'bgpPeerFsmEstablishedTime' => 'jnxBgpM2PeerFsmEstablishedTime',
+                'bgpPeerInUpdateElapsedTime' => 'jnxBgpM2PeerInUpdatesElapsedTime',
+                'bgpPeerInUpdates' => 'jnxBgpM2PeerInUpdates',
+                'bgpPeerOutUpdates' => 'jnxBgpM2PeerOutUpdates',
+                'bgpPeerInTotalMessages' => 'jnxBgpM2PeerInTotalMessages',
+                'bgpPeerOutTotalMessages' => 'jnxBgpM2PeerOutTotalMessages',
+            ]))->map(function (array $row, int|string $index) use ($context, $vrfId): ?BgpPeer {
+                $address = $this->jnxBgpM2RemoteAddress((string) $index, $zone);
+
+                return $this->makeBgpPeer($address, $zone, $context, $vrfId, $row);
+            })->filter();
+
+            $peers = $peers->merge($found->isNotEmpty() ? $found : $this->discoverBgp4MibPeers($context));
+        }
+
+        return $peers->values();
+    }
+
+    public function discoverBgpLocalAs(): ?int
+    {
+        return $this->bgpLocalAsFallback(parent::discoverBgpLocalAs(), 'BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerLocalAs');
+    }
+
+    /**
+     * Prefix counts are indexed by the peer index of the session
+     *
+     * @return Collection<int, BgpPeerCbgp>
+     */
+    public function discoverBgpAddressFamilies(Collection $peers): Collection
+    {
+        $families = new Collection;
+
+        foreach ($peers->pluck('context_name')->unique() as $context) {
+            $addresses = [];
+            foreach ($this->walkBgpTable($context, 'BGP4-V2-MIB-JUNIPER', ['peer_index' => 'jnxBgpM2PeerIndex']) as $index => $row) {
+                $zone = null;
+                $addresses[$row['peer_index']] = [$this->jnxBgpM2RemoteAddress((string) $index, $zone), $zone];
+            }
+
+            $rows = $this->walkBgpTable($context, 'BGP4-V2-MIB-JUNIPER', [
+                'AcceptedPrefixes' => 'jnxBgpM2PrefixInPrefixesAccepted',
+                'DeniedPrefixes' => 'jnxBgpM2PrefixInPrefixesRejected',
+                'AdvertisedPrefixes' => 'jnxBgpM2PrefixOutPrefixes',
+            ]);
+
+            foreach ($rows as $index => $counters) {
+                [$peerIndex, $afi, $safi] = explode('.', (string) $index) + [null, null, null];
+                if (isset($addresses[$peerIndex], $afi, $safi)) {
+                    $families->push($this->makeBgpAddressFamily($addresses[$peerIndex][0], $addresses[$peerIndex][1], $context, $afi, $safi, $counters));
+                }
+            }
+        }
+
+        return $families->filter()->values();
+    }
+
+    /**
+     * The session index is the instance, then the local and remote address, which are the same family
+     */
+    private function jnxBgpM2RemoteAddress(string $index, ?int &$zone): ?IP
+    {
+        $parts = explode('.', $index);
+        array_shift($parts); // instance
+        Bgp::shiftInetAddress($parts, intdiv(count($parts), 2)); // local address
+
+        return Bgp::shiftInetAddress($parts, 0, $zone);
     }
 }

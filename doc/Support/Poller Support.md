@@ -1,170 +1,159 @@
-source: Support/Poller Support.md
-path: blob/master/doc/
+# Poller Support
 
-# poller.php
-
-This document will explain how to use poller.php to debug issues or
-manually running to process data.
+This document explains how to use `lnms device:poll`. Use this command to
+debug a problem or to process data manually.
 
 ## Command options
 
 ```bash
-    LibreNMS 2014.master Poller
+Description:
+  Poll data from device(s) as defined by discovery
 
--h <device id> | <device hostname wildcard>  Poll single device
--h odd                                       Poll odd numbered devices  (same as -i 2 -n 0)
--h even                                      Poll even numbered devices (same as -i 2 -n 1)
--h all                                       Poll all devices
+Usage:
+  device:poll [options] [--] <device spec>
 
--i <instances> -n <number>                   Poll as instance <number> of <instances>
-                                             Instances start at 0. 0-3 for -n 4
+Arguments:
+  device spec            Device spec to poll: device_id, hostname, wildcard (*), odd, even, all
 
-Debugging and testing options:
--r                                           Do not create or update RRDs
--f                                           Do not insert data into InfluxDB
--d                                           Enable debugging output
--v                                           Enable verbose debugging output
--m                                           Specify module(s) to be run. Comma separate modules, submodules may be added with /
+Options:
+  -m, --modules=MODULES  Specify single module to be run. Comma separate modules, submodules may be added with /
+  -x, --no-data          Do not update datastores (RRD, InfluxDB, etc)
+  -h, --help             Display help for the given command. When no command is given display help for the list command
+  -q, --quiet            Do not output any message
+  -V, --version          Display this application version
+      --ansi|--no-ansi   Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction   Do not ask any interactive question
+      --env[=ENV]        The environment the command should run under
+  -v|vv|vvv, --verbose   Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
 
-`-h` Use this to specify a device via either id or hostname (including
-wildcard using *). You can also specify odd and even. all will run
-poller against all devices.
+## Poller Wrapper
 
-`-i` This can be used to stagger the poller process.
+[Job Snijders](https://github.com/job) wrote the `poller-wrapper.py`
+script. This script is the current default.
 
-`-r` This option will suppress the creation or update of RRD files.
+To debug the output of `poller-wrapper.py`, add `-d` to the end of the
+command. Do NOT use this flag in cron.
 
-`-d` Enables debugging output (verbose output but with most sensitive
-data masked) so that you can see what is happening during a poller
-run. This includes things like rrd updates, SQL queries and response
-from snmp.
+## Poller config
 
-`-v` Enables verbose debugging output with all data in tact.
+These are the default poller configuration items. To disable a module
+globally, set it to `false`. To disable a module for one device, use
+the web interface at Device -> Edit -> Modules.
 
-`-m` This enables you to specify the module you want to run for poller.
-
-# Poller Wrapper
-
-We have a `poller-wrapper.py` script by [Job
-Snijders](https://github.com/job). This script is currently the
-default.
-
-If you need to debug the output of poller-wrapper.py then you can add
-`-d` to the end of the command - it is NOT recommended to do this in
-cron.
-
-# Poller config
-
-These are the default poller config items. You can globally disable a
-module by setting it to 0. If you just want to
-disable it for one device then you can do this within the WebUI Device
--> Edit -> Modules.
-
-```php
-$config['poller_modules']['unix-agent']                  = false;
-$config['poller_modules']['os']                          = true;
-$config['poller_modules']['ipmi']                        = true;
-$config['poller_modules']['sensors']                     = true;
-$config['poller_modules']['processors']                  = true;
-$config['poller_modules']['mempools']                    = true;
-$config['poller_modules']['storage']                     = true;
-$config['poller_modules']['netstats']                    = true;
-$config['poller_modules']['hr-mib']                      = true;
-$config['poller_modules']['ucd-mib']                     = true;
-$config['poller_modules']['ipSystemStats']               = true;
-$config['poller_modules']['ports']                       = true;
-$config['poller_modules']['nac']                         = false;
-$config['poller_modules']['bgp-peers']                   = true;
-$config['poller_modules']['junose-atm-vp']               = false;
-$config['poller_modules']['toner']                       = false;
-$config['poller_modules']['ucd-diskio']                  = true;
-$config['poller_modules']['wireless']                    = true;
-$config['poller_modules']['ospf']                        = true;
-$config['poller_modules']['cisco-ipsec-flow-monitor']    = false;
-$config['poller_modules']['cisco-remote-access-monitor'] = false;
-$config['poller_modules']['cisco-cef']                   = false;
-$config['poller_modules']['cisco-sla']                   = false;
-$config['poller_modules']['cisco-mac-accounting']        = false;
-$config['poller_modules']['cipsec-tunnels']              = false;
-$config['poller_modules']['cisco-ace-loadbalancer']      = false;
-$config['poller_modules']['cisco-ace-serverfarms']       = false;
-$config['poller_modules']['cisco-asa-firewall']          = false;
-$config['poller_modules']['cisco-voice']                 = false;
-$config['poller_modules']['cisco-cbqos']                 = false;
-$config['poller_modules']['cisco-otv']                   = false;
-$config['poller_modules']['cisco-vpdn']                  = false;
-$config['poller_modules']['netscaler-vsvr']              = false;
-$config['poller_modules']['aruba-controller']            = false;
-$config['poller_modules']['entity-physical']             = true;
-$config['poller_modules']['entity-state']                = false;
-$config['poller_modules']['applications']                = true;
-$config['poller_modules']['availability']                = true;
-$config['poller_modules']['stp']                         = true;
-$config['poller_modules']['ntp']                         = true;
-$config['poller_modules']['services']                    = true;
-$config['poller_modules']['loadbalancers']               = false;
-$config['poller_modules']['mef']                         = false;
-```
+!!! setting "poller/poller_modules"
+    ```bash
+    lnms config:set poller_modules.unix-agent false
+    lnms config:set poller_modules.os true
+    lnms config:set poller_modules.ipmi false
+    lnms config:set poller_modules.sensors true
+    lnms config:set poller_modules.processors true
+    lnms config:set poller_modules.mempools true
+    lnms config:set poller_modules.storage true
+    lnms config:set poller_modules.netstats true
+    lnms config:set poller_modules.hr-mib true
+    lnms config:set poller_modules.ucd-mib true
+    lnms config:set poller_modules.ipSystemStats true
+    lnms config:set poller_modules.ports true
+    lnms config:set poller_modules.nac false
+    lnms config:set poller_modules.bgp-peers true
+    lnms config:set poller_modules.junose-atm-vp false
+    lnms config:set poller_modules.printer-supplies false
+    lnms config:set poller_modules.ucd-diskio true
+    lnms config:set poller_modules.wireless true
+    lnms config:set poller_modules.ospf true
+    lnms config:set poller_modules.ospfv3 true
+    lnms config:set poller_modules.cisco-ipsec-flow-monitor false
+    lnms config:set poller_modules.cisco-remote-access-monitor false
+    lnms config:set poller_modules.cisco-cef false
+    lnms config:set poller_modules.slas false
+    lnms config:set poller_modules.mac-accounting true
+    lnms config:set poller_modules.cipsec-tunnels false
+    lnms config:set poller_modules.cisco-ace-loadbalancer false
+    lnms config:set poller_modules.cisco-ace-serverfarms false
+    lnms config:set poller_modules.cisco-cbqos false
+    lnms config:set poller_modules.cisco-otv false
+    lnms config:set poller_modules.cisco-vpdn false
+    lnms config:set poller_modules.netscaler-vsvr false
+    lnms config:set poller_modules.aruba-controller false
+    lnms config:set poller_modules.entity-physical true
+    lnms config:set poller_modules.entity-state false
+    lnms config:set poller_modules.applications true
+    lnms config:set poller_modules.availability true
+    lnms config:set poller_modules.stp true
+    lnms config:set poller_modules.vminfo false
+    lnms config:set poller_modules.ntp true
+    lnms config:set poller_modules.services true
+    lnms config:set poller_modules.loadbalancers false
+    lnms config:set poller_modules.mef false
+    lnms config:set poller_modules.mef false
+    ```
 
 ## OS based Poller config
 
-You can enable or disable modules for a specific OS by add
-corresponding line in `config.php` OS based settings have preference
-over global. Device based settings have preference over all others
+To enable or disable a module for one OS, use
+`lnms config:set os.<poller_module> false`. An OS based setting has
+preference over a global setting. A device based setting has preference
+over all other settings.
 
-Poller performance improvement can be achieved by deactivating all
-modules that are not supported by specific OS.
+A disabled module that the OS does not support gives only a small
+improvement in the poller performance.
 
-E.g. to deactivate spanning tree but activate unix-agent module for linux OS
+For example, to disable spanning tree and to enable the unix-agent
+module for the Linux OS, use these commands:
 
-```php
-$config['os']['linux']['poller_modules']['stp']  = false;
-$config['os']['linux']['poller_modules']['unix-agent'] = true;
-```
+!!! setting "poller/poller_modules"
+    ```bash
+    lnms config:set os.linux.poller_modules.stp false
+    lnms config:set os.linux.poller_modules.unix-agent true
+    ```
 
 ## Poller modules
 
-`unix-agent`: Enable the check_mk agent for external support for applications.
+`unix-agent`: it enables the check_mk agent for external application support.
 
-`system`: Provides information on some common items like uptime, sysDescr and sysContact.
+`system`: it gives information on common items such as the uptime, sysDescr, and sysContact.
 
-`os`: Os detection. This module will pick up the OS of the device.
+`os`: OS detection. This module finds the OS of the device.
 
-`ipmi`: Enables support for IPMI if login details have been provided for IPMI.
+`ipmi`: IPMI sensor polling. Enabled by the IPMI polling method.
 
-`sensors`: Sensor detection such as Temperature, Humidity, Voltages + More.
+`sensors`: sensor detection for temperature, humidity, voltage, and more.
 
-`processors`: Processor support for devices.
+`processors`: processor support for devices.
 
-`mempools`: Memory detection support for devices.
+`mempools`: memory detection support for devices.
 
-`storage`: Storage detection for hard disks
+`storage`: storage detection for hard disks.
 
-`netstats`: Statistics for IP, TCP, UDP, ICMP and SNMP.
+`netstats`: statistics for IP, TCP, UDP, ICMP, and SNMP.
 
-`hr-mib`: Host resource support.
+`hr-mib`: host resource support.
 
-`ucd-mib`: Support for CPU, Memory and Load.
+`ucd-mib`: support for CPU, memory, and load.
 
-`ipSystemStats`: IP statistics for device.
+`ipSystemStats`: IP statistics for the device.
 
-`ports`: This module will detect all ports on a device excluding ones
-configured to be ignored by config options.
+`ports`: this module detects all ports on a device. It excludes the
+ports that the configuration options ignore.
 
-`nac`: Network Access Control (NAC) or 802.1X support.
+`xdsl`: this module collects more metrics for xdsl interfaces.
+
+`nac`: Network Access Control (NAC) support, also called 802.1X.
 
 `bgp-peers`: BGP detection and support.
 
 `junose-atm-vp`: Juniper ATM support.
 
-`toner`: Toner levels support.
+`printer-supplies`: toner level support.
 
-`ucd-diskio`: Disk I/O support.
+`ucd-diskio`: disk I/O support.
 
-`wifi`: WiFi Support for those devices with support.
+`wifi`: WiFi support for the devices with this capability.
 
-`ospf`: OSPF Support.
+`ospf`: OSPF support.
+
+`ospfv3`: OSPFv3 support.
 
 `cisco-ipsec-flow-monitor`: IPSec statistics support.
 
@@ -172,70 +161,65 @@ configured to be ignored by config options.
 
 `cisco-cef`: CEF detection and support.
 
-`cisco-sla`: SLA detection and support.
+`slas`: SLA detection and support.
 
-`cisco-mac-accounting`: MAC Address account support.
+`mac-accounting`: MAC address account support.
 
 `cipsec-tunnels`: IPSec tunnel support.
 
-`cisco-ace-loadbalancer`: Cisco ACE Support.
+`cisco-ace-loadbalancer`: Cisco ACE support.
 
-`cisco-ace-serverfarms`: Cisco ACE Support.
+`cisco-ace-serverfarms`: Cisco ACE support.
 
 `netscaler-vsvr`: Netscaler support.
 
 `aruba-controller`: Aruba wireless controller support.
 
-`entity-physical`: Module to pick up the devices hardware support.
+`entity-physical`: this module finds the hardware support of the device.
 
-`applications`: Device application support.
+`applications`: device application support.
 
-`availability`: Device Availability Calculation.
+`availability`: device availability calculation.
 
-`cisco-asa-firewall`: Cisco ASA firewall support.
+## Running
 
-`mib`: Support for generic MIB parsing.
-
-# Running
-
-Here are some examples of running poller from within your install directory.
+These are examples of the poller in your install directory.
 
 ```bash
-./poller.php -h localhost
+lnms device:poll localhost
 
-./poller.php -h localhost -m ports
+lnms device:poll localhost -m ports
 ```
 
-# Debugging
+## Debugging
 
-To provide debugging output you will need to run the poller process
-with the `-d` flag. You can do this either against
-all modules, single or multiple modules:
+For debug output, run the poller with the `-vv` flag. You can run it
+against all modules, one module, or several modules:
 
 All Modules
 
 ```bash
-./poller.php -h localhost -d
+lnms device:poll localhost -vv
 ```
 
 Single Module
 
 ```bash
-./poller.php -h localhost -m ports -d
+lnms device:poll localhost -m ports -vv
 ```
 
 Multiple Modules
 
 ```bash
-./poller.php -h localhost -m ports,entity-physical -d
+lnms device:poll localhost -m ports,entity-physical -vv
 ```
 
-Using `-d` shouldn't output much sensitive information, `-v` will so
-it is then advisable to sanitise the output before pasting it
-somewhere as the debug output will contain snmp details amongst other
-items including port descriptions.
+The `-vv` flag gives little sensitive information. The `-vvv` flag
+gives much more. Sanitise the output of `-vvv` before you send it to
+another person. The debug output holds SNMP details, port descriptions,
+and other data.
 
-The output will contain:
+The output holds:
 
 DB Updates
 

@@ -1,13 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\JsonAppException;
 use LibreNMS\Exceptions\JsonAppParsingFailedException;
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'fbsd-nfs-server';
-$app_id = $app['app_id'];
-
-echo $name;
 
 try {
     $nfs = json_app_get($device, 'fbsdnfsserver');
@@ -19,21 +17,21 @@ try {
         'data' => [],
     ];
     [$nfs['data']['Getattr'], $nfs['data']['Setattr'], $nfs['data']['Lookup'], $nfs['data']['Readlink'],
-         $nfs['data']['Read'], $nfs['data']['Write'], $nfs['data']['Create'], $nfs['data']['Remove'],
-         $nfs['data']['Rename'], $nfs['data']['Link'], $nfs['data']['Symlink'], $nfs['data']['Mkdir'],
-         $nfs['data']['Rmdir'], $nfs['data']['Readdir'], $nfs['data']['RdirPlus'], $nfs['data']['Access'],
-         $nfs['data']['Mknod'], $nfs['data']['Fsstat'], $nfs['data']['Fsinfo'], $nfs['data']['PathConf'],
-         $nfs['data']['Commit'], $nfs['data']['RetFailed'], $nfs['data']['Faults'], $nfs['data']['Inprog'],
-         $nfs['data']['Idem'], $nfs['data']['Nonidem'], $nfs['data']['Misses'], $nfs['data']['WriteOps'],
-         $nfs['data']['WriteRPC'], $nfs['data']['Opsaved']] = explode("\n", $legacy);
+        $nfs['data']['Read'], $nfs['data']['Write'], $nfs['data']['Create'], $nfs['data']['Remove'],
+        $nfs['data']['Rename'], $nfs['data']['Link'], $nfs['data']['Symlink'], $nfs['data']['Mkdir'],
+        $nfs['data']['Rmdir'], $nfs['data']['Readdir'], $nfs['data']['RdirPlus'], $nfs['data']['Access'],
+        $nfs['data']['Mknod'], $nfs['data']['Fsstat'], $nfs['data']['Fsinfo'], $nfs['data']['PathConf'],
+        $nfs['data']['Commit'], $nfs['data']['RetFailed'], $nfs['data']['Faults'], $nfs['data']['Inprog'],
+        $nfs['data']['Idem'], $nfs['data']['Nonidem'], $nfs['data']['Misses'], $nfs['data']['WriteOps'],
+        $nfs['data']['WriteRPC'], $nfs['data']['Opsaved']] = explode("\n", (string) $legacy);
 } catch (JsonAppException $e) {
-    echo PHP_EOL . $name . ':' . $e->getCode() . ':' . $e->getMessage() . PHP_EOL;
+    Log::info($name . ':' . $e->getCode() . ':' . $e->getMessage());
     update_application($app, $e->getCode() . ':' . $e->getMessage(), []); // Set empty metrics and error message
 
     return;
 }
 
-$rrd_name = ['app', $name, $app_id];
+$rrd_name = ['app', $name, $app->app_id];
 $rrd_def = RrdDefinition::make()
     ->addDataset('getattr', 'DERIVE', 0)
     ->addDataset('setattr', 'DERIVE', 0)
@@ -99,6 +97,6 @@ $fields = [
     'opsaved' => $nfs['data']['Opsaved'],
 ];
 
-$tags = ['name' => $name, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $name, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 update_application($app, 'OK', $nfs['data']);

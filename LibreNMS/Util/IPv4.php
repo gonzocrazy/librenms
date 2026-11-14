@@ -1,4 +1,5 @@
 <?php
+
 /**
  * IPv4.php
  *
@@ -18,19 +19,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Util;
 
+use Generator;
 use LibreNMS\Exceptions\InvalidIpException;
 
 class IPv4 extends IP
 {
     /**
      * IPv4 constructor.
-     * @param string $ipv4
+     *
+     * @param  string  $ipv4
+     *
      * @throws InvalidIpException
      */
     public function __construct($ipv4)
@@ -45,8 +50,9 @@ class IPv4 extends IP
 
     /**
      * Check if the supplied IP is valid.
-     * @param string $ipv4
-     * @param bool $exclude_reserved Exclude reserved IP ranges.
+     *
+     * @param  string  $ipv4
+     * @param  bool  $exclude_reserved  Exclude reserved IP ranges.
      * @return bool
      */
     public static function isValid($ipv4, $exclude_reserved = false)
@@ -61,7 +67,8 @@ class IPv4 extends IP
 
     /**
      * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24
-     * @param string $netmask
+     *
+     * @param  string  $netmask
      * @return int
      */
     public static function netmask2cidr($netmask)
@@ -74,6 +81,7 @@ class IPv4 extends IP
 
     /**
      * Returns the netmask of this IP address. For example: 255.255.255.0
+     *
      * @return string
      */
     public function getNetmask()
@@ -83,6 +91,7 @@ class IPv4 extends IP
 
     /**
      * Convert an IPv4 bit mask to a long. Generally used with long2ip() or bitwise operations.
+     *
      * @return int
      */
     private function cidr2long($cidr)
@@ -92,12 +101,17 @@ class IPv4 extends IP
 
     /**
      * Check if this IP address is contained inside the network.
-     * @param string $network should be in cidr format.
+     *
+     * @param  string  $network  should be in cidr format.
      * @return mixed
      */
     public function inNetwork($network)
     {
-        [$net, $cidr] = $this->extractCidr($network);
+        try {
+            [$net, $cidr] = $this->extractCidr($network);
+        } catch (InvalidIpException) {
+            return false; // not a network of this address family
+        }
         if (! self::isValid($net)) {
             return false;
         }
@@ -109,25 +123,73 @@ class IPv4 extends IP
 
     /**
      * Get the network address of this IP
-     * @param int $cidr if not given will use the cidr stored with this IP
+     *
+     * @param  int  $cidr  if not given will use the cidr stored with this IP
      * @return string
      */
     public function getNetworkAddress($cidr = null)
     {
-        if (is_null($cidr)) {
-            $cidr = $this->cidr;
-        }
+        $cidr ??= $this->cidr;
 
         return long2ip(ip2long($this->ip) & $this->cidr2long($cidr));
     }
 
     /**
-     * Convert this IP to an snmp index hex encoded
+     * @return Generator<int, string>
+     */
+    public function getIterator(): Generator
+    {
+        $network = ip2long($this->getNetworkAddress());
+        $broadcast = $network | (~$this->cidr2long($this->cidr) & 0xFFFFFFFF);
+
+        $first = $this->cidr < 31 ? $network + 1 : $network;
+        $last = $this->cidr < 31 ? $broadcast - 1 : $broadcast;
+
+        for ($address = $first; $address <= $last; $address++) {
+            yield long2ip($address);
+        }
+    }
+
+    /**
+     * Convert this IP to an snmp index decimal encoded
      *
      * @return string
      */
     public function toSnmpIndex()
     {
         return (string) $this->ip;
+    }
+
+    /**
+     * Convert this IP to an snmp string
+     *
+     * @return string
+     */
+    public function toSnmpString()
+    {
+        return (string) $this->ip;
+    }
+
+    /**
+     * Calculate missing prefix from IPv4 according to RFC
+     *
+     * @return string
+     */
+    public static function classfullNetmaskFromRfc($ipv4 = '')
+    {
+        $prefix = '';
+        if (preg_match('/(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/', (string) $ipv4, $tmp)) {
+            if ($tmp[1] < 128) { // class A
+                $prefix = '255.0.0.0';
+            }
+            if ($tmp[1] >= 128 && $tmp[1] < 192) { // class B
+                $prefix = '255.255.0.0';
+            }
+            if ($tmp[1] >= 192 && $tmp[1] < 224) { // class C
+                $prefix = '255.255.255.0';
+            }
+        }
+
+        return $prefix;
     }
 }

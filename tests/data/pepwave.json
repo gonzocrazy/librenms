@@ -10,11 +10,11 @@
                     "version": "8.0.0s010 build 4198",
                     "hardware": "Pepwave MAX HD4",
                     "features": null,
+                    "location": "<private>",
                     "os": "pepwave",
                     "type": "network",
                     "serial": "2935-3BAB-7549",
-                    "icon": "peplink.svg",
-                    "location": "<private>"
+                    "icon": "peplink.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "LAN",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "WAN 1",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "WAN 2",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -357,9 +336,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -369,15 +345,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 1",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -464,9 +436,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -476,15 +445,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 2",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -571,9 +536,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -583,15 +545,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 3",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -678,9 +636,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -690,15 +645,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 4",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -785,9 +736,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -797,15 +745,11 @@
                     "ifType": "other",
                     "ifAlias": "conn_to_MUC-FH01 - FSH-Warp",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -896,9 +840,6 @@
                     "ifSpeed": 1000000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 1000,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -908,15 +849,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "LAN",
                     "ifPhysAddress": "001add503960",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1003,9 +940,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1015,15 +949,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "WAN 1",
                     "ifPhysAddress": "001add503961",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1110,9 +1040,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "up",
@@ -1122,15 +1049,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "WAN 2",
                     "ifPhysAddress": "001add503962",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1217,9 +1140,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1229,15 +1149,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 1",
                     "ifPhysAddress": "aef4039f2608",
-                    "ifHardType": null,
                     "ifLastChange": 29089545,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1324,9 +1240,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1336,15 +1249,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 2",
                     "ifPhysAddress": "aef4039f2608",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1431,9 +1340,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1443,15 +1349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 3",
                     "ifPhysAddress": "aef4039f2608",
-                    "ifHardType": null,
                     "ifLastChange": 5336770,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1538,9 +1440,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "down",
@@ -1550,15 +1449,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Cellular 4",
                     "ifPhysAddress": "aef4039f2608",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1645,9 +1540,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -1657,15 +1549,11 @@
                     "ifType": "other",
                     "ifAlias": "conn_to_MUC-FH01 - FSH-Warp",
                     "ifPhysAddress": "05c01fea0000",
-                    "ifHardType": null,
                     "ifLastChange": 304253,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -1746,7 +1634,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.2021.11.11.0",
                     "processor_index": "0",
@@ -1879,6 +1766,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Max. Number of Supported AP Licensed",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -1892,6 +1780,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1903,6 +1792,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of AP Profile Created",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1916,6 +1806,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1927,6 +1818,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of AP Registered",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1940,6 +1832,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1951,6 +1844,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of Associated WLAN Station",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1964,6 +1858,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1975,6 +1870,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of WLAN Network Created",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1988,6 +1884,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1999,6 +1896,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Power Consumption",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 16,
@@ -2012,6 +1910,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2023,6 +1922,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 1 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -68,
@@ -2036,6 +1936,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2047,6 +1948,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 2 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -58,
@@ -2060,6 +1962,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2071,6 +1974,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 3 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -81,
@@ -2084,6 +1988,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2095,6 +2000,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Wi-Fi WAN Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2108,6 +2014,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2119,6 +2026,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Source A",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2132,6 +2040,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2143,6 +2052,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Source B",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2156,6 +2066,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2167,6 +2078,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Term- Block",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2180,6 +2092,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2191,6 +2104,7 @@
                     "sensor_type": "devicePSUStatus",
                     "sensor_descr": "PSU Status",
                     "group": "Power Consumption",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2204,6 +2118,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePSUStatus"
                 },
                 {
@@ -2215,6 +2130,7 @@
                     "sensor_type": "pepVpnStatusConnectionState",
                     "sensor_descr": "conn_to_MUC-FH01",
                     "group": "VPN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4,
@@ -2228,6 +2144,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pepVpnStatusConnectionState"
                 },
                 {
@@ -2239,6 +2156,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "WAN 1",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -2252,6 +2170,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2263,6 +2182,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "WAN 2",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -2276,6 +2196,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2287,6 +2208,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 3 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2300,6 +2222,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2311,6 +2234,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 1",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2324,6 +2248,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2335,6 +2260,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 2",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2348,6 +2274,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2359,6 +2286,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 3",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2372,6 +2300,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2383,6 +2312,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 4",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -2396,6 +2326,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2407,6 +2338,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "USB",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -2420,6 +2352,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2431,6 +2364,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Wi-Fi WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2444,6 +2378,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2455,6 +2390,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 1 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2468,6 +2404,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2479,6 +2416,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 2 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2492,6 +2430,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -2503,6 +2442,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "System Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1000,
                     "sensor_multiplier": 1,
                     "sensor_current": 51,
@@ -2516,6 +2456,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -2523,119 +2464,102 @@
                 {
                     "state_name": "devicePowerSourceStatus",
                     "state_descr": "noCableDetected",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "devicePowerSourceStatus",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "devicePSUStatus",
                     "state_descr": "error",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "devicePSUStatus",
                     "state_descr": "on",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "start",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "authen",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "tunnel",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "route",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disconnected",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "standby",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "activating",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "helt-check-fail",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disconnected-manually",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 }
@@ -2652,6 +2576,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Max. Number of Supported AP Licensed",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 30,
@@ -2665,6 +2590,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2676,6 +2602,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of AP Profile Created",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2689,6 +2616,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2700,6 +2628,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of AP Registered",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2713,6 +2642,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2724,6 +2654,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of Associated WLAN Station",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2737,6 +2668,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2748,6 +2680,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Number of WLAN Network Created",
                     "group": "WLC",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2761,6 +2694,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2772,6 +2706,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Power Consumption",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 15,
@@ -2785,6 +2720,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 16,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2796,6 +2732,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 1 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -68,
@@ -2809,6 +2746,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2820,6 +2758,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 2 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -58,
@@ -2833,6 +2772,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2844,6 +2784,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Cellular 3 Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": -81,
@@ -2857,6 +2798,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2868,6 +2810,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "Wi-Fi WAN Signal",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2881,6 +2824,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2892,6 +2836,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Source A",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2905,6 +2850,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2916,6 +2862,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Source B",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2929,6 +2876,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2940,6 +2888,7 @@
                     "sensor_type": "devicePowerSourceStatus",
                     "sensor_descr": "DC Term- Block",
                     "group": "Power Source",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2953,6 +2902,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePowerSourceStatus"
                 },
                 {
@@ -2964,6 +2914,7 @@
                     "sensor_type": "devicePSUStatus",
                     "sensor_descr": "PSU Status",
                     "group": "Power Consumption",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2977,6 +2928,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "devicePSUStatus"
                 },
                 {
@@ -2988,6 +2940,7 @@
                     "sensor_type": "pepVpnStatusConnectionState",
                     "sensor_descr": "conn_to_MUC-FH01",
                     "group": "VPN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4,
@@ -3001,6 +2954,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pepVpnStatusConnectionState"
                 },
                 {
@@ -3012,6 +2966,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "WAN 1",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -3025,6 +2980,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3036,6 +2992,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "WAN 2",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -3049,6 +3006,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3060,6 +3018,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 3 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -3073,6 +3032,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3084,6 +3044,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 1",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -3097,6 +3058,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3108,6 +3070,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 2",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -3121,6 +3084,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3132,6 +3096,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 3",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -3145,6 +3110,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3156,6 +3122,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Cellular 4",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -3169,6 +3136,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3180,6 +3148,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "USB",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -3193,6 +3162,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3204,6 +3174,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "Wi-Fi WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -3217,6 +3188,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3228,6 +3200,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 1 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -3241,6 +3214,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3252,6 +3226,7 @@
                     "sensor_type": "wanState",
                     "sensor_descr": "LAN 2 as WAN",
                     "group": "WAN",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -3265,6 +3240,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "wanState"
                 },
                 {
@@ -3276,6 +3252,7 @@
                     "sensor_type": "pepwave",
                     "sensor_descr": "System Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1000,
                     "sensor_multiplier": 1,
                     "sensor_current": 51,
@@ -3289,6 +3266,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -3296,119 +3274,102 @@
                 {
                     "state_name": "devicePowerSourceStatus",
                     "state_descr": "noCableDetected",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "devicePowerSourceStatus",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "devicePSUStatus",
                     "state_descr": "error",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "devicePSUStatus",
                     "state_descr": "on",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "start",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "authen",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "tunnel",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "route",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pepVpnStatusConnectionState",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disconnected",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "standby",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "activating",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "helt-check-fail",
-                    "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "wanState",
                     "state_descr": "disconnected-manually",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 }
@@ -3419,193 +3380,120 @@
         "discovery": {
             "storage": [
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "31",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/",
                     "storage_size": 133561344,
+                    "storage_size_oid": null,
                     "storage_units": 1024,
                     "storage_used": 121714688,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.31",
+                    "storage_free": 11846656,
+                    "storage_free_oid": null,
+                    "storage_perc": 91,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "37",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/tmp",
                     "storage_size": 62914560,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 9826304,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.37",
+                    "storage_free": 53088256,
+                    "storage_free_oid": null,
+                    "storage_perc": 16,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "38",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/tmp/var/log",
                     "storage_size": 8388608,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 1347584,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.38",
+                    "storage_free": 7041024,
+                    "storage_free_oid": null,
+                    "storage_perc": 16,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "39",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/tmp/session",
                     "storage_size": 1048576,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 327680,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.39",
+                    "storage_free": 720896,
+                    "storage_free_oid": null,
+                    "storage_perc": 31,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "40",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/tmp/etc/blacklists_bin",
                     "storage_size": 1061625856,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 0,
-                    "storage_free": 0,
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.40",
+                    "storage_free": 1061625856,
+                    "storage_free_oid": null,
                     "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "41",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/usr/local/manga/conf",
                     "storage_size": 62914560,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 9826304,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.41",
+                    "storage_free": 53088256,
+                    "storage_free_oid": null,
+                    "storage_perc": 16,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "42",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/tmp/session_ctrl",
                     "storage_size": 5242880,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 4096,
-                    "storage_free": 0,
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.42",
+                    "storage_free": 5238784,
+                    "storage_free_oid": null,
                     "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 }
             ]
         },
-        "poller": {
-            "storage": [
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "31",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/",
-                    "storage_size": 133561344,
-                    "storage_units": 1024,
-                    "storage_used": 121714688,
-                    "storage_free": 11846656,
-                    "storage_perc": 91,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "37",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/tmp",
-                    "storage_size": 62914560,
-                    "storage_units": 4096,
-                    "storage_used": 9826304,
-                    "storage_free": 53088256,
-                    "storage_perc": 16,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "38",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/tmp/var/log",
-                    "storage_size": 8388608,
-                    "storage_units": 4096,
-                    "storage_used": 1347584,
-                    "storage_free": 7041024,
-                    "storage_perc": 16,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "39",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/tmp/session",
-                    "storage_size": 1048576,
-                    "storage_units": 4096,
-                    "storage_used": 327680,
-                    "storage_free": 720896,
-                    "storage_perc": 31,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "40",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/tmp/etc/blacklists_bin",
-                    "storage_size": 1061625856,
-                    "storage_units": 4096,
-                    "storage_used": 0,
-                    "storage_free": 1061625856,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "41",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/usr/local/manga/conf",
-                    "storage_size": 62914560,
-                    "storage_units": 4096,
-                    "storage_used": 9826304,
-                    "storage_free": 53088256,
-                    "storage_perc": 16,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "42",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/tmp/session_ctrl",
-                    "storage_size": 5242880,
-                    "storage_units": 4096,
-                    "storage_used": 4096,
-                    "storage_free": 5238784,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                }
-            ]
-        }
+        "poller": "matches discovery"
     },
     "wireless": {
         "discovery": {
@@ -3629,49 +3517,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.27662.4.1.1.7.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "sinr",
-                    "sensor_index": "cellularSignalSinr1",
-                    "sensor_type": "pepwave",
-                    "sensor_descr": "Celullar 2",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 28,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.1\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "sinr",
-                    "sensor_index": "cellularSignalSinr2",
-                    "sensor_type": "pepwave",
-                    "sensor_descr": "Celullar 3",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 0,
-                    "sensor_prev": null,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.27662.4.1.1.7.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3692,7 +3539,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3713,7 +3561,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.2\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3734,7 +3583,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3755,7 +3605,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.2\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3776,7 +3627,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3797,7 +3649,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3818,7 +3671,52 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.2\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "sinr",
+                    "sensor_index": "cellularSignalSinr1",
+                    "sensor_type": "pepwave",
+                    "sensor_descr": "Celullar 2",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 28,
+                    "sensor_prev": null,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.1\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "sinr",
+                    "sensor_index": "cellularSignalSinr2",
+                    "sensor_type": "pepwave",
+                    "sensor_descr": "Celullar 3",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 0,
+                    "sensor_prev": null,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.2\"]",
+                    "rrd_type": "GAUGE"
                 }
             ]
         },
@@ -3843,49 +3741,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.27662.4.1.1.7.0\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "sinr",
-                    "sensor_index": "cellularSignalSinr1",
-                    "sensor_type": "pepwave",
-                    "sensor_descr": "Celullar 2",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 28,
-                    "sensor_prev": 28,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.1\"]"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "sinr",
-                    "sensor_index": "cellularSignalSinr2",
-                    "sensor_type": "pepwave",
-                    "sensor_descr": "Celullar 3",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_aggregator": "sum",
-                    "sensor_current": 0,
-                    "sensor_prev": 0,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.27662.4.1.1.7.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3906,7 +3763,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3927,7 +3785,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.7.2\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3948,7 +3807,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3969,7 +3829,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.8.2\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -3990,7 +3851,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.0\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.0\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -4011,7 +3873,8 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.1\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.1\"]",
+                    "rrd_type": "GAUGE"
                 },
                 {
                     "sensor_deleted": 0,
@@ -4032,7 +3895,52 @@
                     "sensor_custom": "No",
                     "entPhysicalIndex": null,
                     "entPhysicalIndex_measured": null,
-                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.2\"]"
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.3.2\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "sinr",
+                    "sensor_index": "cellularSignalSinr1",
+                    "sensor_type": "pepwave",
+                    "sensor_descr": "Celullar 2",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 28,
+                    "sensor_prev": 28,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.1\"]",
+                    "rrd_type": "GAUGE"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "sinr",
+                    "sensor_index": "cellularSignalSinr2",
+                    "sensor_type": "pepwave",
+                    "sensor_descr": "Celullar 3",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_aggregator": "sum",
+                    "sensor_current": 0,
+                    "sensor_prev": 0,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_oids": "[\".1.3.6.1.4.1.23695.200.1.12.1.1.1.5.2\"]",
+                    "rrd_type": "GAUGE"
                 }
             ]
         }

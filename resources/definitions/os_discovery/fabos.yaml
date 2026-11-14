@@ -1,0 +1,178 @@
+modules:
+    os:
+        hardware: ENTITY-MIB::entPhysicalDescr.1
+        version:
+            - SW-MIB::swFirmwareVersion.0
+            - ENTITY-MIB::entPhysicalSoftwareRev.1
+        serial:
+            - ENTITY-MIB::entPhysicalSerialNum.1
+            - SW-MIB::swSsn.0
+    mempools:
+        data:
+            -
+                percent_used: SW-MIB::swMemUsage
+    processors:
+        data:
+            -
+                oid: SW-MIB::swCpuUsage
+                num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.26.1.{{ $index }}'
+                index: 1
+    sensors:
+        additional_oids:
+            data:
+                -
+                    oid:
+                        - SW-MIB::swFCPortName
+        temperature:
+            data:
+                -
+                    oid: SW-MIB::swSensorTable
+                    value: SW-MIB::swSensorValue
+                    num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.4.{{ $index }}'
+                    descr: SW-MIB::swSensorInfo
+                    skip_values:
+                        -
+                            oid: SW-MIB::swSensorValue
+                            op: '='
+                            value: -2147483648
+                        -
+                            oid: SW-MIB::swSensorType
+                            op: '!='
+                            value: 1
+
+                -
+                    oid: FA-EXT-MIB::swSfpTemperature
+                    value: FA-EXT-MIB::swSfpTemperature
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.1.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} Temp"
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpTemperature.{{ $subindex16 }}"
+
+        fanspeed:
+            data:
+                -
+                    oid: SW-MIB::swSensorTable
+                    value: SW-MIB::swSensorValue
+                    num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.4.{{ $index }}'
+                    descr: SW-MIB::swSensorInfo
+                    skip_values:
+                        -
+                            oid: SW-MIB::swSensorValue
+                            op: '='
+                            value: -2147483648
+                        -
+                            oid: SW-MIB::swSensorType
+                            op: '!='
+                            value: 2
+        voltage:
+            data:
+                -
+                    oid: FA-EXT-MIB::swSfpVoltage
+                    value: FA-EXT-MIB::swSfpVoltage
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.2.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} Voltage"
+                    divisor: 1000
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpVoltage.{{ $subindex16 }}"
+        current:
+            data:
+                -
+                    oid: FA-EXT-MIB::swSfpCurrent
+                    value: FA-EXT-MIB::swSfpCurrent
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.3.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} Bias"
+                    divisor: 1000
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpCurrent.{{ $subindex16 }}"
+        count:
+            data:
+                -
+                    oid: FA-EXT-MIB::swSfpPoweronHrs
+                    value: FA-EXT-MIB::swSfpPoweronHrs
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.6.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} Power-on Hours"
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpPoweronHrs.{{ $subindex16 }}"
+                    skip_values: 0
+        dbm:
+            data:
+                -
+                    oid: FA-EXT-MIB::swSfpRxPower
+                    value: FA-EXT-MIB::swSfpRxPower
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.4.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} RX"
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpRxPower.{{ $subindex16 }}"
+                    low_warn_limit: -5
+                    warn_limit: 1
+                -
+                    oid: FA-EXT-MIB::swSfpTxPower
+                    value: FA-EXT-MIB::swSfpTxPower
+                    num_oid: ".1.3.6.1.4.1.1588.2.1.1.1.28.1.1.5.{{ $index }}"
+                    descr: "{{ SW-MIB::swFCPortName:16 }} TX"
+                    entPhysicalIndex: "200000{{ $subindex16 }}"
+                    group: 'transceiver'
+                    index: "swSfpTxPower.{{ $subindex16 }}"
+                    low_warn_limit: -5
+                    warn_limit: 1
+        state:
+            data:
+                -
+                    oid: FCMGMT-MIB::connUnitTable
+                    value: FCMGMT-MIB::connUnitStatus
+                    num_oid: '.1.3.6.1.3.94.1.6.1.6.{{ $index }}'
+                    descr: '{{ FCMGMT-MIB::connUnitName }} Status'
+                    index: 'connUnitStatus.{{ $index }}'
+                    state_name: FCMGMT-MIB::connUnitStatus
+                    states:
+                        - { value: 1, generic: 3, descr: Unknown }
+                        - { value: 2, generic: 3, descr: Unused }
+                        - { value: 3, generic: 0, descr: Ok }
+                        - { value: 4, generic: 1, descr: Warning }
+                        - { value: 5, generic: 2, descr: Failed }
+                -
+                    oid: SW-MIB::swOperStatus
+                    value: SW-MIB::swOperStatus
+                    num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.1.7.{{ $index }}'
+                    descr: 'Operational Status'
+                    index: 'swOperStatus.{{ $index }}'
+                    state_name: SW-MIB::swOperStatus
+                    states:
+                        - { value: 1, generic: 0, descr: Online }
+                        - { value: 2, generic: 2, descr: Offline }
+                        - { value: 3, generic: 1, descr: Testing }
+                        - { value: 4, generic: 2, descr: Faulty }
+                -
+                    oid: SW-MIB::swDiagResult
+                    value: SW-MIB::swDiagResult
+                    num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.1.20.{{ $index }}'
+                    descr: 'POST Diagnostics'
+                    index: 'swDiagResult.{{ $index }}'
+                    state_name: SW-MIB::swDiagResult
+                    states:
+                        - { value: 1, generic: 0, descr: Ok }
+                        - { value: 2, generic: 2, descr: Faulty }
+                        - { value: 3, generic: 2, descr: 'Embedded Port Fault' }
+                -
+                    oid: SW-MIB::swSensorTable
+                    value: SW-MIB::swSensorStatus
+                    num_oid: '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.3.{{ $index }}'
+                    descr: SW-MIB::swSensorInfo
+                    state_name: swSensorStatus
+                    states:
+                        - { value: 1, generic: 3, descr: 'unknown' }
+                        - { value: 2, generic: 2, descr: 'faulty' }
+                        - { value: 3, generic: 1, descr: 'below-min' }
+                        - { value: 4, generic: 0, descr: 'nominal' }
+                        - { value: 5, generic: 1, descr: 'above-max' }
+                        - { value: 6, generic: 1, descr: 'absent' }
+                    skip_values:
+                        -
+                            oid: SW-MIB::swSensorValue
+                            op: '='
+                            value: -2147483648

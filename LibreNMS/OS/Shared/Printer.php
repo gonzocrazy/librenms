@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Printer.php
  *
@@ -26,6 +27,7 @@
 namespace LibreNMS\OS\Shared;
 
 use App\Models\Device;
+use Illuminate\Support\Str;
 
 class Printer extends \LibreNMS\OS
 {
@@ -44,7 +46,11 @@ class Printer extends \LibreNMS\OS
     protected function parseDeviceId($data)
     {
         $vars = [];
-        foreach (explode(';', $data) as $pair) {
+        foreach (explode(';', (string) $data) as $pair) {
+            if (! Str::contains($pair, ':')) {
+                continue;
+            }
+
             [$key, $value] = explode(':', $pair);
             $vars[trim($key)] = $value;
         }

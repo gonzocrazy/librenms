@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RRDRecursiveFilterIterator.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016
  * @author
  */
@@ -32,7 +34,7 @@ namespace LibreNMS;
  **/
 class RRDRecursiveFilterIterator extends \RecursiveFilterIterator
 {
-    public function accept()
+    public function accept(): bool
     {
         $filename = $this->current()->getFilename();
         if ($filename[0] === '.') {
@@ -43,8 +45,9 @@ class RRDRecursiveFilterIterator extends \RecursiveFilterIterator
             // We want to search into directories
             return true;
         }
+
         // Matches files with .rrd in the filename.
         // We are only searching rrd folder, but there could be other files and we don't want to cause a stink.
-        return strpos($filename, '.rrd') !== false;
+        return str_contains((string) $filename, '.rrd');
     }
 }

@@ -3,7 +3,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.738.10.111.3.1.1.0",
                     "processor_index": "0",
@@ -28,11 +27,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "binox",
                     "type": "network",
                     "serial": null,
-                    "icon": "telco-systems.png",
-                    "location": "<private>"
+                    "icon": "telco-systems.png"
                 }
             ]
         },

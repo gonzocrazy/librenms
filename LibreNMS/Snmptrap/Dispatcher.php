@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dispatcher.php
  *
@@ -18,14 +19,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Snmptrap;
 
+use App\Facades\LibrenmsConfig;
+use App\Models\Eventlog;
 use LibreNMS\Alert\AlertRules;
-use LibreNMS\Config;
 use LibreNMS\Snmptrap\Handlers\Fallback;
 use Log;
 
@@ -34,10 +37,10 @@ class Dispatcher
     /**
      * Instantiate the correct handler for this trap and call it's handle method
      */
-    public static function handle(Trap $trap)
+    public static function handle(Trap $trap): bool
     {
         if (empty($trap->getDevice())) {
-            Log::warning('Could not find device for trap', ['trap_text' => $trap->getRaw()]);
+            Log::warning('Could not find device for trap', ['trap_text' => $trap->raw]);
 
             return false;
         }
@@ -46,7 +49,7 @@ class Dispatcher
             // Even the TrapOid is not properly converted to text, so snmptrapd is probably not
             // configured with any MIBs (-M and/or -m).
             // LibreNMS snmptraps code cannot process received data. Let's inform the user.
-            Log::event('Misconfigured MIBS or MIBDIRS for snmptrapd, check https://docs.librenms.org/Extensions/SNMP-Trap-Handler/ : ' . $trap->getRaw(), $trap->getDevice(), 'system');
+            Eventlog::log('Misconfigured MIBS or MIBDIRS for snmptrapd, check https://docs.librenms.org/Extensions/SNMP-Trap-Handler/ : ' . $trap->raw, $trap->getDevice(), 'system');
 
             return false;
         }
@@ -58,13 +61,14 @@ class Dispatcher
 
         // log an event if appropriate
         $fallback = $handler instanceof Fallback;
-        $logging = Config::get('snmptraps.eventlog', 'unhandled');
-        $detailed = Config::get('snmptraps.eventlog_detailed', false);
+        $logging = LibrenmsConfig::get('snmptraps.eventlog', 'unhandled');
+        $detailed = LibrenmsConfig::get('snmptraps.eventlog_detailed', false);
         if ($logging == 'all' || ($fallback && $logging == 'unhandled')) {
-            Log::event($trap->toString($detailed), $trap->getDevice(), 'trap');
-        } else {
-            $rules = new AlertRules;
-            $rules->runRules($trap->getDevice()->device_id);
+            $trap->log($trap->toString($detailed));
+        }
+        if ($logging != 'none' || ! $fallback) {
+            $rules = new AlertRules($trap->getDevice());
+            $rules->run();
         }
 
         return ! $fallback;

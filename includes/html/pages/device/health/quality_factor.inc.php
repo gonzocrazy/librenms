@@ -1,7 +1,5 @@
 <?php
 
-$class = 'quality_factor';
-$unit = 'dB';
-$graph_type = 'sensor_quality_factor';
+$class = \LibreNMS\Enum\SensorType::QualityFactor;
 
 require 'sensors.inc.php';

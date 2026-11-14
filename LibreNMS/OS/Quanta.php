@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quanta.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,5 +32,5 @@ use LibreNMS\OS;
 
 class Quanta extends OS implements ProcessorDiscovery, ProcessorPolling
 {
-    use OS\Traits\VxworksProcessorUsage;
+    use Traits\VxworksProcessorUsage;
 }

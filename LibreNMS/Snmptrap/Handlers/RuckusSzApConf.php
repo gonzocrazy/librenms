@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RuckusSzApConf.php
  *
@@ -22,6 +23,7 @@
  * number string.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -31,7 +33,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class RuckusSzApConf implements SnmptrapHandler
 {
@@ -39,8 +40,8 @@ class RuckusSzApConf implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -48,6 +49,6 @@ class RuckusSzApConf implements SnmptrapHandler
         $location = $trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPLocation'));
         $configId = $trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZAPConfigID'));
         $severity = RuckusSzSeverity::getSeverity($trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZEventSeverity')));
-        Log::event("AP at location $location configuration updated with config-id $configId", $device->device_id, 'trap', $severity);
+        $trap->log("AP at location $location configuration updated with config-id $configId", $severity);
     }
 }

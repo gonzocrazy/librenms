@@ -3,7 +3,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.89.1.7.0",
                     "processor_index": "0",
@@ -21,18 +20,18 @@
         "discovery": {
             "devices": [
                 {
-                    "sysName": "",
+                    "sysName": null,
                     "sysObjectID": ".1.3.6.1.4.1.674.10895.3031",
                     "sysDescr": "48G Ethernet Switch",
                     "sysContact": null,
                     "version": null,
                     "hardware": "48G",
                     "features": null,
+                    "location": null,
                     "os": "powerconnect",
                     "type": "network",
                     "serial": null,
-                    "icon": "dell.svg",
-                    "location": null
+                    "icon": "dell.svg"
                 }
             ]
         },
@@ -50,6 +49,7 @@
                     "sensor_type": "powerconnect",
                     "sensor_descr": "Internal Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -63,10 +63,10 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
     }

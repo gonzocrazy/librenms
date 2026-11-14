@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -7,6 +8,7 @@
  * the source code distribution for details.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 LibreNMS
  * @author     Pavle Obradovic <pobradovic08@gmail.com>
  */
@@ -46,15 +48,7 @@ if (isset($vars['id'])) {
         /*
          * Build title with breadcrumbs for module's main subpage
          */
-        $link_array = [
-            'page' => 'device',
-            'device' => $device['device_id'],
-            'tab' => 'health',
-        ];
-        $title = generate_device_link($device);
-        $title .= ' :: ' . generate_link('QFP', $link_array, ['metric' => 'qfp']);
-        $title .= ' :: ' . $components['name'];
-
+        $title = ' :: QFP :: ' . $components['name'];
         $auth = true;
     }
 }

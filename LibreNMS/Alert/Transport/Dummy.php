@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2014 Daniel Preussker <f0o@devilcode.org>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@
 
 /**
  * Dummy Transport
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
@@ -23,22 +25,16 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Dummy extends Transport
 {
-    public function deliverAlert($obj, $opts)
+    public function deliverAlert(array $alert_data): bool
     {
-        var_dump($obj);
-
-        return true;
+        throw new AlertTransportDeliveryException($alert_data, 0, 'Dummy transport always fails', $alert_data['msg']);
     }
 
-    public function contactDummy()
-    {
-        return true;
-    }
-
-    public static function configTemplate()
+    public static function configTemplate(): array
     {
         return [
             'validation' => [],

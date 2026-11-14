@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class LocationAddFixedCoordinatesFlag extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('locations', function (Blueprint $table) {
+        Schema::table('locations', function (Blueprint $table): void {
             $table->boolean('fixed_coordinates')->default(0);
         });
     }
@@ -23,10 +23,10 @@ class LocationAddFixedCoordinatesFlag extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('locations', function (Blueprint $table) {
+        Schema::table('locations', function (Blueprint $table): void {
             $table->dropColumn('fixed_coordinates');
         });
     }
-}
+};

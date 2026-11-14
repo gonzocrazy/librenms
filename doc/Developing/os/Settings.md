@@ -1,17 +1,14 @@
-source: os/Settings.md
-path: blob/master/doc/
-
 # Optional OS Settings
 
-This page documents settings that can be set in the os yaml files or
-in config.php. All settings listed here are optional. If they are not
-set, the global default will be used.
+This page describes the settings of the OS YAML files and of
+`config.php`. All these settings are optional. Without a setting,
+LibreNMS uses the global default.
 
 ### User override in config.php
 
-Users can override these settings in their config.php.
+A user can override these settings in `config.php`.
 
-For example, to set an alternate icon for ios:
+For example, this line sets a different icon for ios:
 
 ```php
 $config['os']['ios']['icon'] = 'fuzzybunny';
@@ -19,7 +16,7 @@ $config['os']['ios']['icon'] = 'fuzzybunny';
 
 ### Ignoring Sensors
 
-It is possible to filter some sensors from the configuration:
+The configuration can filter out some sensors:
 
 - Filter all 'current' sensors for Operating System 'vrp'.
 
@@ -31,6 +28,12 @@ $config['os']['vrp']['disabled_sensors']['current'] = true;
 
 ```php
 $config['os']['iosxe']['disabled_sensors_regex'][] = '/PEM Iout/';
+```
+
+- Filter all 'power' sensors with description matching regexp ```'/ Power [TR]x /'``` for Operating System iosxr.
+
+```php
+$config['os']['iosxr']['disabled_sensors_regex']['power'][] = '/ Power [TR]x /';
 ```
 
 - Ignore all temperature sensors
@@ -49,8 +52,8 @@ $config['disabled_sensors_regex'][] = '/PEM Iout/';
 
 See also: [Global Ignoring Interfaces Config](../../Support/Configuration.md#interfaces-to-be-ignored)
 
-> These settings are merged with the global settings, so you can only
-> undo global ones with good_if
+> LibreNMS combines these settings with the global settings. Only
+> `good_if` cancels a global setting.
 
 ```yaml
 empty_ifdescr: false # allow empty ifDescr
@@ -72,10 +75,10 @@ bad_ifoperstatus # IfOperStatus (substring, case insensitive)
 
 ### Controlling interface labels
 
-By default we use ifDescr to label ports/interfaces.
-Setting either `ifname` or `ifalias` will override that.  Only set one
-of these.  ifAlias is user supplied. `ifindex` will append the ifindex
-to the port label.
+By default, LibreNMS uses ifDescr as the label of a port. `ifname` and
+`ifalias` override this default. Set only one of the two. The user
+supplies ifAlias. `ifindex` adds the ifIndex to the end of the port
+label.
 
 ```yaml
 ifname: true
@@ -86,12 +89,15 @@ ifindex: true
 
 ### Poller and Discovery Modules
 
-The various discovery and poller modules can be enabled or disabled
-per OS.  The defaults are usually reasonable, so likely you won't want
-to change more than a few. These modules can be enabled or disabled
-per-device in the webui and per os or globally in config.php. Usually,
-a poller module will not work if it's corresponding discovery module
-is not enabled.
+You can enable and disable each discovery module and poller module for
+one OS. The defaults are usually correct, so few changes are necessary.
+You can enable and disable a module for one device in the web
+interface. You can also do this for one OS or globally in `config.php`.
+A poller module usually needs its discovery module.
+
+Do not set these values to false in an OS definition, unless the module
+makes the polling much worse. A module in the definition reduces the
+control of the user.
 
 ```yaml
 poller_modules:
@@ -104,18 +110,35 @@ discovery_modules:
 
 #### Disable snmpbulkwalk
 
-Some devices have buggy snmp implementations and don't respond well to
-the more efficient snmpbulkwalk. To disable snmpbulkwalk and only use
-snmpwalk for an os set the following.
+Some devices have a bad SNMP implementation. They answer the faster
+snmpbulkwalk poorly. This setting disables snmpbulkwalk. LibreNMS then
+uses only snmpwalk for that OS.
 
 ```yaml
-nobulk: true
+snmp_bulk: false
+```
+
+If only some OIDs fail with snmpbulkwalk, disable those OIDs. The value
+must match the OID of the LibreNMS walk exactly. We prefer the
+`MIB::oid` form, because it prevents a name collision.
+
+```yaml
+oids:
+    no_bulk:
+        - UCD-SNMP-MIB::laLoadInt
 ```
 
 #### Limit the oids per snmpget
 
 ```yaml
 snmp_max_oid: 8
+```
+#### Define SNMP repeater value by OS
+
+Example ios:
+
+```
+lnms config:set ios.snmp.max_repeaters: 30
 ```
 
 ### Storage Settings

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FgTrapIpsAnomaly.php
  *
@@ -20,6 +21,7 @@
  * Fortigate DDoS Policy tripped.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -27,9 +29,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class FgTrapIpsAnomaly implements SnmptrapHandler
 {
@@ -37,14 +39,14 @@ class FgTrapIpsAnomaly implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         $srcIp = $trap->getOidData($trap->findOid('FORTINET-FORTIGATE-MIB::fgIpsTrapSrcIp'));
         $proto = $trap->getOidData($trap->findOid('FORTINET-FORTIGATE-MIB::fgIpsTrapSigMsg'));
-        Log::event("DDoS prevention triggered. Source: $srcIp Protocol: $proto", $device->device_id, 'trap', 4);
+        $trap->log("DDoS prevention triggered. Source: $srcIp Protocol: $proto", Severity::Warning);
     }
 }

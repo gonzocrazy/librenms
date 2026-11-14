@@ -1,0 +1,154 @@
+<?php
+
+/**
+ * Aos7.php
+ *
+ * -Description-
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @link       https://www.librenms.org
+ *
+ * @copyright  2025 Peca Nesovanovic
+ * @copyright  2025 Tony Murray
+ * @author     Peca Nesovanovic <peca.nesovanovic@sattrakt.com>
+ * @author     Tony Murray <murraytony@gmail.com>
+ */
+
+namespace LibreNMS\OS;
+
+use App\Facades\PortCache;
+use App\Models\BgpPeer;
+use App\Models\BgpPeerCbgp;
+use App\Models\PortVlan;
+use App\Models\Vlan;
+use Illuminate\Support\Collection;
+use LibreNMS\Discovery\Neighbors\NeighborParser;
+use LibreNMS\Interfaces\Discovery\BgpAddressFamilyDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanPortDiscovery;
+use LibreNMS\OS;
+use LibreNMS\OS\Traits\AlcatelMacAddressMib;
+use LibreNMS\Util\Bgp;
+use SnmpQuery;
+
+class Aos7 extends OS implements BgpAddressFamilyDiscovery, VlanDiscovery, VlanPortDiscovery
+{
+    use AlcatelMacAddressMib;
+
+    public function discoverVlans(): Collection
+    {
+        if (($QBridgeMibVlans = parent::discoverVlans())->isNotEmpty()) {
+            return $QBridgeMibVlans;
+        }
+
+        return SnmpQuery::mibDir('nokia/aos7')->walk('ALCATEL-IND1-VLAN-MGR-MIB::vlanDescription')
+            ->mapTable(fn ($vlans, $vlan_id) => new Vlan([
+                'vlan_vlan' => $vlan_id,
+                'vlan_name' => $vlans['ALCATEL-IND1-VLAN-MGR-MIB::vlanDescription'] ?? null,
+                'vlan_domain' => 1,
+                'vlan_type' => null,
+            ]));
+    }
+
+    public function discoverVlanPorts(Collection $vlans): Collection
+    {
+        if (($QBridgeMibPorts = parent::discoverVlanPorts($vlans))->isNotEmpty()) {
+            return $QBridgeMibPorts;
+        }
+
+        return SnmpQuery::mibDir('nokia/aos7')->walk('ALCATEL-IND1-VLAN-MGR-MIB::vpaType')
+            ->mapTable(function ($data, $vpaVlanNumber, $vpaIfIndex) {
+                $baseport = $this->bridgePortFromIfIndex($vpaIfIndex);
+                if (! $baseport) {
+                    return null;
+                }
+
+                return new Portvlan([
+                    'vlan' => $vpaVlanNumber,
+                    'baseport' => $baseport,
+                    'untagged' => $data['ALCATEL-IND1-VLAN-MGR-MIB::vpaType'] === '1' ? 1 : 0,
+                    'port_id' => PortCache::getIdFromIfIndex($vpaIfIndex, $this->getDeviceId()) ?? 0, // ifIndex from device
+                ]);
+            })->filter();
+    }
+
+    /**
+     * AOS7 numbers LLDP ports with its own scheme, map them by description instead
+     */
+    protected function lldpLocalPortId(int $lldpPortNum): ?int
+    {
+        $descr = NeighborParser::parseText($this->lldpLocPortTable()[$lldpPortNum]['lldpLocPortDesc'] ?? '');
+
+        return $this->lldpLocalPorts()->byDescr($descr)?->port_id;
+    }
+
+    /**
+     * Sessions are read from BGP4-MIB, ALCATEL-IND1-BGP-MIB adds their name
+     *
+     * @return Collection<int, BgpPeer>
+     */
+    public function discoverBgpPeers(): Collection
+    {
+        $peers = new Collection;
+
+        foreach ($this->getDevice()->getVrfContexts() as $context) {
+            $names = [];
+            foreach ($this->walkBgpTable($context, 'ALCATEL-IND1-BGP-MIB', ['bgpPeerDescr' => 'alaBgpPeerName']) as $index => $row) {
+                $parts = explode('.', (string) $index);
+                $names[(string) Bgp::shiftIp($parts)?->compressed()] = $row['bgpPeerDescr'];
+            }
+
+            $peers = $peers->merge($this->discoverBgp4MibPeers($context)->each(function (BgpPeer $peer) use ($names): void {
+                $peer->bgpPeerDescr = $names[$peer->bgpPeerIdentifier] ?? $peer->bgpPeerDescr;
+            }));
+        }
+
+        return $peers->values();
+    }
+
+    /**
+     * Only received IPv4 unicast prefixes are reported
+     *
+     * @return Collection<int, BgpPeerCbgp>
+     */
+    public function discoverBgpAddressFamilies(Collection $peers): Collection
+    {
+        $families = new Collection;
+
+        foreach ($peers->pluck('context_name')->unique() as $context) {
+            foreach ($this->walkBgpTable($context, 'ALCATEL-IND1-BGP-MIB', ['AcceptedPrefixes' => 'alaBgpPeerRcvdPrefixes']) as $index => $counters) {
+                $parts = explode('.', (string) $index);
+                $families->push($this->makeBgpAddressFamily(Bgp::shiftIp($parts), null, $context, 'ipv4', 'unicast', $counters));
+            }
+        }
+
+        return $families->filter()->values();
+    }
+
+    public function discoverFdbTable(): Collection
+    {
+        $fdb = SnmpQuery::walk('ALCATEL-IND1-MAC-ADDRESS-MIB::slMacAddressGblManagement')
+            ->mapTable(fn ($data, $domain, $locale, $bridgePort, $vlan, $subId, $mac) => $subId == 0
+                ? $this->alcatelFdbEntry($vlan, $mac, (int) $bridgePort, $this->bridgePortIfIndexes())
+                : null)
+            ->filter();
+
+        if ($fdb->isEmpty()) {
+            $fdb = $this->alcatelDispositionFdb();
+        }
+
+        return $fdb->isNotEmpty() ? $fdb : parent::discoverFdbTable();
+    }
+}

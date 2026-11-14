@@ -1,4 +1,5 @@
 <?php
+
 /**
  * transport-groups.inc.php
  *
@@ -18,12 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Vivia Nguyen-Tran
  * @author     Vivia Nguyen-Tran <vivia@ualberta.ca>
  */
+
+use App\Models\AlertTransportGroup;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+
 header('Content-type: application/json');
 
-if (! Auth::user()->hasGlobalAdmin()) {
+if (Gate::denies('alert-transport.update')) {
     exit(json_encode([
         'status' => 'error',
         'message' => 'You need to be admin',
@@ -34,25 +41,23 @@ $status = 'ok';
 $message = '';
 
 $group_id = $vars['group_id'];
-$name = $vars['name'];
+$name = strip_tags((string) $vars['name']);
 
 $target_members = [];
-foreach ((array) $vars['members'] as $target) {
+foreach ((array) ($vars['members'] ?? []) as $target) {
     $target_members[] = (int) $target;
 }
 
 if (empty($name)) {
     $status = 'error';
     $message = 'No transport group name provided';
-} elseif (sizeof($target_members) < 1) {
+} elseif (count($target_members) < 1) {
     // Not enough members for a group; requires 1 at least
     $status = 'error';
     $message = 'Not enough group members';
 } else {
     if (is_numeric($group_id) && $group_id > 0) {
-        dbUpdate([
-            'transport_group_name' => $name,
-        ], 'alert_transport_groups', '`transport_group_id`=?', [$group_id]);
+        AlertTransportGroup::where('transport_group_id', $group_id)->update(['transport_group_name' => $name]);
     } else {
         // Insert into db
         $group_id = dbInsert([
@@ -61,8 +66,10 @@ if (empty($name)) {
     }
 
     if (is_numeric($group_id) && $group_id > 0) {
-        $sql = 'SELECT `transport_id` FROM `transport_group_transport` WHERE `transport_group_id`=?';
-        $db_members = dbFetchColumn($sql, [$group_id]);
+        $db_members = AlertTransportGroup::find($group_id)
+            ->transports()
+            ->pluck('alert_transports.transport_id')
+            ->all();
 
         // Compare arrays to get added and removed transports
         $add = array_diff($target_members, $db_members);
@@ -77,12 +84,12 @@ if (empty($name)) {
             ];
         }
         if (! empty($insert)) {
-            dbBulkInsert($insert, 'transport_group_transport');
+            DB::table('transport_group_transport')->insert($insert);
         }
 
         // Remove old transport group members
         if (! empty($remove)) {
-            dbDelete('transport_group_transport', 'transport_group_id=? AND `transport_id` IN ' . dbGenPlaceholders(count($remove)), array_merge([$group_id], $remove));
+            \App\Models\TransportGroupTransport::where('transport_group_id', $group_id)->whereIn('transport_id', $remove)->delete();
         }
         $message = 'Updated alert transport group';
     } else {
@@ -92,6 +99,6 @@ if (empty($name)) {
 }
 
 exit(json_encode([
-    'status'       => $status,
-    'message'      => $message,
+    'status' => $status,
+    'message' => $message,
 ]));

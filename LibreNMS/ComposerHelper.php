@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ComposerHelper.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,10 +29,11 @@ namespace LibreNMS;
 use Composer\Script\Event;
 use LibreNMS\Exceptions\FileWriteFailedException;
 use LibreNMS\Util\EnvHelper;
+use Minishlink\WebPush\VAPID;
 
 class ComposerHelper
 {
-    public static function postRootPackageInstall(Event $event)
+    public static function postRootPackageInstall(Event $event): void
     {
         if (! file_exists('.env')) {
             self::setPermissions();
@@ -38,7 +41,7 @@ class ComposerHelper
         }
     }
 
-    public static function postInstall(Event $event)
+    public static function postInstall(Event $event): void
     {
         if (! file_exists('.env')) {
             self::setPermissions();
@@ -47,7 +50,7 @@ class ComposerHelper
         self::populateEnv();
     }
 
-    public static function preUpdate(Event $event)
+    public static function preUpdate(Event $event): void
     {
         if (! getenv('FORCE')) {
             echo "Running composer update is not advisable.  Please run composer install to update instead.\n";
@@ -59,23 +62,56 @@ class ComposerHelper
 
     public static function preInstall(Event $event)
     {
-        $vendor_dir = $event->getComposer()->getConfig()->get('vendor-dir');
+    }
 
-        if (! is_file("$vendor_dir/autoload.php")) {
-            // checkout vendor from 1.36
-            $cmds = [
-                "git checkout 609676a9f8d72da081c61f82967e1d16defc0c4e -- $vendor_dir",
-                "git reset HEAD $vendor_dir",  // don't add vendor directory to the index
-            ];
+    public static function addPlugin(string $package, ?string $version = null): int
+    {
+        return self::execComposerCommand(
+            ['require', '--no-update', $package . ($version ? ":$version" : '')],
+            ['COMPOSER' => 'composer.plugins.json'],
+        );
+    }
 
-            self::exec($cmds);
-        }
+    public static function addPackage(string $package, ?string $version = null): int
+    {
+        return self::execComposerCommand(
+            ['require', '--update-no-dev', $package . ($version ? ":$version" : '')],
+            ['FORCE' => 1],
+        );
+    }
+
+    public static function removePlugin(string $package): int
+    {
+        return self::execComposerCommand(
+            ['remove', '--no-update', $package],
+            ['COMPOSER' => 'composer.plugins.json'],
+        );
+    }
+
+    public static function removePackage(string $package): int
+    {
+        return self::execComposerCommand(
+            ['remove', '--update-no-dev', $package],
+            ['FORCE' => 1],
+        );
+    }
+
+    public static function getPlugins(): array
+    {
+        // Not cwd-relative: also reached from the web UI, where cwd is the
+        // document root. Not base_path(): this class runs as a composer script.
+        $file = realpath(__DIR__ . '/..') . '/composer.plugins.json';
+
+        $plugins = is_file($file) && is_readable($file) ?
+            json_decode((string) file_get_contents($file), true) : [];
+
+        return $plugins['require'] ?? [];
     }
 
     /**
      * Initially populate .env file
      */
-    private static function populateEnv()
+    private static function populateEnv(): void
     {
         $config = [
             'db_host' => '',
@@ -89,10 +125,15 @@ class ComposerHelper
             'group' => '',
         ];
 
-        @include 'config.php';
+        $config_file = realpath('config.php');
+        if ($config_file !== false) {
+            @include $config_file;
+        }
 
         try {
             EnvHelper::init();
+            $vapid = VAPID::createVapidKeys();
+
             EnvHelper::writeEnv([
                 'NODE_ID' => uniqid(),
                 'DB_HOST' => $config['db_host'],
@@ -104,30 +145,53 @@ class ComposerHelper
                 'APP_URL' => $config['base_url'],
                 'LIBRENMS_USER' => $config['user'],
                 'LIBRENMS_GROUP' => $config['group'],
+                'VAPID_PUBLIC_KEY' => $vapid['publicKey'],
+                'VAPID_PRIVATE_KEY' => $vapid['privateKey'],
             ]);
         } catch (FileWriteFailedException $exception) {
             echo $exception->getMessage() . PHP_EOL;
         }
     }
 
-    private static function setPermissions()
+    private static function setPermissions(): void
     {
-        $permissions_cmds = [
+        self::exec([
+            'cd ' . realpath(__DIR__ . '/../..'),
             'setfacl -R -m g::rwx rrd/ logs/ storage/ bootstrap/cache/',
             'setfacl -d -m g::rwx rrd/ logs/ storage/ bootstrap/cache/',
-        ];
-
-        self::exec($permissions_cmds);
+        ]);
     }
 
     /**
      * Run a command or array of commands and echo the command and output
      *
-     * @param string|array $cmds
+     * @param  string[]  $cmds
      */
-    private static function exec($cmds)
+    private static function exec(array $cmds): int
     {
-        $cmd = "set -v\n" . implode(PHP_EOL, (array) $cmds);
-        passthru($cmd);
+        $cmd = "set -v\n" . implode(PHP_EOL, $cmds);
+        passthru($cmd, $result_code);
+
+        return $result_code;
+    }
+
+    /**
+     * @param  string[]  $command
+     * @param  array<string, string|int|float>  $env
+     * @return int
+     */
+    private static function execComposerCommand(array $command, array $env = []): int
+    {
+        $cli = [];
+        foreach ($env as $key => $value) {
+            $cli[] = "$key=$value";
+        }
+        $cli[] = PHP_BINARY;
+        $cli[] = realpath(__DIR__ . '/../scripts/composer_wrapper.php');
+        foreach ($command as $word) {
+            $cli[] = escapeshellarg($word);
+        }
+
+        return self::exec([implode(' ', $cli)]);
     }
 }

@@ -2,52 +2,36 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/** @extends Factory<\App\Models\User> */
 class UserFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = User::class;
-
-    /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
-        static $password;
-
         return [
             'auth_type' => 'mysql',
-            'username' => $this->faker->unique()->userName,
-            'realname' => $this->faker->name,
-            'email' => $this->faker->safeEmail,
-            'password' => $password ?: $password = bcrypt('secret'),
-            'level' => 1,
+            'username' => $this->faker->unique()->userName(),
+            'realname' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         ];
     }
 
-    public function admin()
+    public function admin(): UserFactory
     {
-        return $this->state(function () {
-            return [
-                'level' => '10',
-            ];
+        return $this->afterCreating(function ($user): void {
+            $user->assignRole('admin');
         });
     }
 
-    public function read()
+    public function read(): UserFactory
     {
-        return $this->state(function () {
-            return [
-                'level' => '5',
-            ];
+        return $this->afterCreating(function ($user): void {
+            $user->assignRole('global-read');
         });
     }
 }

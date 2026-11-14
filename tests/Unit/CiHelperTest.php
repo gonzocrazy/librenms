@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CiHelperTest.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,17 +29,13 @@ namespace LibreNMS\Tests\Unit;
 use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\CiHelper;
 
-class CiHelperTest extends TestCase
+final class CiHelperTest extends TestCase
 {
-    public function testSetFlags()
+    public function testSetFlags(): void
     {
         $helper = new CiHelper();
-        $allFalse = array_map(function ($flag) {
-            return false;
-        }, $this->getDefaultFlags());
-        $allTrue = array_map(function ($flag) {
-            return false;
-        }, $this->getDefaultFlags());
+        $allFalse = array_map(fn ($flag) => false, $this->getDefaultFlags());
+        $allTrue = array_map(fn ($flag) => true, $this->getDefaultFlags());
 
         $helper->setFlags($allFalse);
         $this->assertEquals($allFalse, $helper->getFlags());
@@ -54,13 +52,13 @@ class CiHelperTest extends TestCase
         $this->assertEquals($testOne, $helper->getFlags());
     }
 
-    public function testDefaults()
+    public function testDefaults(): void
     {
         $helper = new CiHelper();
         $this->assertEquals($this->getDefaultFlags(), $helper->getFlags());
     }
 
-    public function testNoFiles()
+    public function testNoFiles(): void
     {
         putenv('FILES=none');
         $helper = new CiHelper();
@@ -71,12 +69,13 @@ class CiHelperTest extends TestCase
             'unit_skip' => true,
             'web_skip' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
     }
 
-    public function testSetOs()
+    public function testSetOs(): void
     {
         $helper = new CiHelper();
         $helper->setOS(['netonix', 'e3meter']);
@@ -94,11 +93,12 @@ class CiHelperTest extends TestCase
             'web_skip' => true,
             'unit_os' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
 
-        putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
+        putenv('FILES=resources/definitions/os_detection/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
@@ -107,12 +107,13 @@ class CiHelperTest extends TestCase
             'web_skip' => true,
             'unit_os' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
     }
 
-    public function testSetModules()
+    public function testSetModules(): void
     {
         $helper = new CiHelper();
         $helper->setModules(['sensors', 'processors']);
@@ -130,6 +131,7 @@ class CiHelperTest extends TestCase
             'web_skip' => true,
             'unit_modules' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
@@ -146,11 +148,12 @@ class CiHelperTest extends TestCase
             'unit_os' => true,
             'unit_modules' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
 
-        putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
+        putenv('FILES=resources/definitions/os_detection/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
@@ -159,11 +162,12 @@ class CiHelperTest extends TestCase
             'web_skip' => true,
             'unit_os' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
 
-        putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
+        putenv('FILES=resources/definitions/os_detection/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
@@ -172,12 +176,13 @@ class CiHelperTest extends TestCase
             'web_skip' => true,
             'unit_os' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
         ]);
     }
 
-    public function testFileCategorization()
+    public function testFileCategorization(): void
     {
         putenv('FILES=LibreNMS/Alert/Transport/Sensu.php includes/services.inc.php');
         $helper = new CiHelper();
@@ -203,6 +208,7 @@ class CiHelperTest extends TestCase
             'unit_skip' => true,
             'web_skip' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
         ]);
 
         putenv('FILES=includes/polling/sensors/ios.inc.php');
@@ -222,6 +228,7 @@ class CiHelperTest extends TestCase
             'style_skip' => true,
             'web_skip' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
             'unit_svg' => true,
@@ -235,6 +242,7 @@ class CiHelperTest extends TestCase
             'style_skip' => true,
             'web_skip' => true,
             'lint_skip_php' => true,
+            'lint_skip_phpstan' => true,
             'lint_skip_python' => true,
             'lint_skip_bash' => true,
             'unit_svg' => true,
@@ -271,6 +279,7 @@ class CiHelperTest extends TestCase
             'unit_skip' => false,
             'web_skip' => false,
             'lint_skip_php' => false,
+            'lint_skip_phpstan' => false,
             'lint_skip_python' => false,
             'lint_skip_bash' => false,
             'unit_os' => false,
@@ -283,6 +292,7 @@ class CiHelperTest extends TestCase
             'fail-fast' => false,
             'full' => false,
             'quiet' => false,
+            'os-modules-only' => false,
         ];
     }
 }

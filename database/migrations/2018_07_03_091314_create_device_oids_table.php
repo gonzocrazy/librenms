@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateDeviceOidsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('device_oids', function (Blueprint $table) {
+        Schema::create('device_oids', function (Blueprint $table): void {
             $table->unsignedInteger('device_id');
             $table->string('oid');
             $table->string('module');
@@ -20,7 +20,7 @@ class CreateDeviceOidsTable extends Migration
             $table->string('object_type');
             $table->string('value')->nullable();
             $table->bigInteger('numvalue')->nullable();
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('last_modified')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('last_modified')->useCurrent();
@@ -34,8 +34,8 @@ class CreateDeviceOidsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('device_oids');
     }
-}
+};

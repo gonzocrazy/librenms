@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePollerGroupsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('poller_groups', function (Blueprint $table) {
+        Schema::create('poller_groups', function (Blueprint $table): void {
             $table->increments('id');
             $table->string('group_name');
             $table->string('descr');
@@ -24,8 +24,8 @@ class CreatePollerGroupsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('poller_groups');
     }
-}
+};

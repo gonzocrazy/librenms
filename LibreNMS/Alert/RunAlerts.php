@@ -1,4 +1,5 @@
 <?php
+
 /*
  * RunAlerts.php
  *
@@ -30,19 +31,34 @@
 
 namespace LibreNMS\Alert;
 
-use App\Models\DevicePerf;
-use LibreNMS\Config;
-use LibreNMS\Enum\Alert;
+use App\Facades\DeviceCache;
+use App\Facades\LibrenmsConfig;
+use App\Models\AlertFault;
+use App\Models\AlertLog;
+use App\Models\AlertRule;
+use App\Models\AlertTransport;
+use App\Models\ApplicationMetric;
+use App\Models\Eventlog;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\AlertRuleOperationPhase;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\MaintenanceStatus;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Enum\Severity;
+use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Time;
-use Log;
 
 class RunAlerts
 {
+    /** @var array<int, array<int, true>> rule validity cache, keyed by device_id then rule_id */
+    private array $rulescache = [];
+
     /**
      * Populate variables
-     * @param string  $txt  Text with variables
-     * @param bool $wrap Wrap variable for text-usage (default: true)
+     *
+     * @param  string  $txt  Text with variables
+     * @param  bool  $wrap  Wrap variable for text-usage (default: true)
      * @return string
      */
     public function populate($txt, $wrap = true)
@@ -76,102 +92,146 @@ class RunAlerts
 
     /**
      * Describe Alert
-     * @param array $alert Alert-Result from DB
+     *
+     * @param  array  $alert  Alert-Result from DB
      * @return array|bool|string
      */
     public function describeAlert($alert)
     {
         $obj = [];
         $i = 0;
-        $device = dbFetchRow('SELECT hostname, sysName, sysDescr, sysContact, os, type, ip, hardware, version, serial, features, purpose, notes, uptime, status, status_reason, locations.location FROM devices LEFT JOIN locations ON locations.id = devices.location_id WHERE device_id = ?', [$alert['device_id']]);
-        $attribs = get_dev_attribs($alert['device_id']);
+        $device = DeviceCache::get($alert['device_id']);
 
-        $obj['hostname'] = $device['hostname'];
-        $obj['sysName'] = $device['sysName'];
-        $obj['sysDescr'] = $device['sysDescr'];
-        $obj['sysContact'] = $device['sysContact'];
-        $obj['os'] = $device['os'];
-        $obj['type'] = $device['type'];
-        $obj['ip'] = inet6_ntop($device['ip']);
-        $obj['hardware'] = $device['hardware'];
-        $obj['version'] = $device['version'];
-        $obj['serial'] = $device['serial'];
-        $obj['features'] = $device['features'];
-        $obj['location'] = $device['location'];
-        $obj['uptime'] = $device['uptime'];
-        $obj['uptime_short'] = Time::formatInterval($device['uptime'], 'short');
-        $obj['uptime_long'] = Time::formatInterval($device['uptime']);
-        $obj['description'] = $device['purpose'];
-        $obj['notes'] = $device['notes'];
+        $obj['hostname'] = $device->hostname;
+        $obj['sysName'] = $device->sysName;
+        $obj['display'] = $device->display;
+        $obj['sysDescr'] = $device->sysDescr;
+        $obj['sysContact'] = $device->sysContact;
+        $obj['os'] = $device->os;
+        $obj['type'] = $device->type;
+        $obj['ip'] = $device->ip;
+        $obj['device_groups'] = $device->groups->pluck('name', 'id')->all();
+        $obj['hardware'] = $device->hardware;
+        $obj['version'] = $device->version;
+        $obj['serial'] = $device->serial;
+        $obj['features'] = $device->features;
+        $obj['location'] = (string) $device->location;
+        $obj['uptime'] = $device->uptime;
+        $obj['uptime_short'] = Time::formatInterval($device->uptime, true);
+        $obj['uptime_long'] = Time::formatInterval($device->uptime);
+        $obj['description'] = $device->purpose;
+        $obj['notes'] = $device->notes;
         $obj['alert_notes'] = $alert['note'];
-        $obj['device_id'] = $alert['device_id'];
+        $obj['device_id'] = $device->device_id;
         $obj['rule_id'] = $alert['rule_id'];
         $obj['id'] = $alert['id'];
         $obj['proc'] = $alert['proc'];
-        $obj['status'] = $device['status'];
-        $obj['status_reason'] = $device['status_reason'];
-        if (can_ping_device($attribs)) {
-            $ping_stats = DevicePerf::where('device_id', $alert['device_id'])->latest('timestamp')->first();
-            $obj['ping_timestamp'] = $ping_stats->timestamp;
-            $obj['ping_loss'] = $ping_stats->loss;
-            $obj['ping_min'] = $ping_stats->min;
-            $obj['ping_max'] = $ping_stats->max;
-            $obj['ping_avg'] = $ping_stats->avg;
-            $obj['debug'] = json_decode($ping_stats->debug, true);
+        $obj['status'] = $device->status;
+        $obj['status_reason'] = $device->status_reason;
+
+        if ($device->polling()->isEnabled(PollingMethodType::Icmp)) {
+            if ($device->stats) {
+                $obj['ping_timestamp'] = $device->stats->ping_last_timestamp;
+                $obj['ping_loss'] = $device->stats->ping_loss_last;
+                $obj['ping_min'] = '';
+                $obj['ping_max'] = '';
+                $obj['ping_avg'] = $device->stats->ping_rtt_last;
+                $obj['debug'] = 'unsupported';
+            } else {
+                Log::info("No last ping stats for device {$device->hostname}");
+            }
         }
-        $extra = $alert['details'];
+        $extra = is_array($alert['details'] ?? null) ? $alert['details'] : [];
+
+        $obj['applications'] = $device->applications->groupBy('app_type');
+        $obj['applications_metrics'] = [];
+        foreach ($obj['applications'] as $app_name => $app_instances) {
+            $obj['applications_metrics'][$app_name] = [];
+            foreach ($app_instances as $app) {
+                $app_metrics = ApplicationMetric::where(['app_id' => $app->app_id])->get();
+                $rendered_app_metrics = [];
+                foreach ($app_metrics as $metric) {
+                    $rendered_app_metrics[$metric['metric']] = [
+                        'value' => $metric['value'],
+                        'value_prev' => $metric['value_prev'],
+                    ];
+                }
+                $obj['applications_metrics'][$app_name][] = $rendered_app_metrics;
+            }
+        }
 
         $tpl = new Template;
         $template = $tpl->getTemplate($obj);
 
         if ($alert['state'] >= AlertState::ACTIVE) {
-            $obj['title'] = $template->title ?: 'Alert for device ' . $device['hostname'] . ' - ' . ($alert['name'] ? $alert['name'] : $alert['rule']);
-            if ($alert['state'] == AlertState::ACKNOWLEDGED) {
-                $obj['title'] .= ' got acknowledged';
-            } elseif ($alert['state'] == AlertState::WORSE) {
-                $obj['title'] .= ' got worse';
-            } elseif ($alert['state'] == AlertState::BETTER) {
-                $obj['title'] .= ' got better';
-            }
-
-            foreach ($extra['rule'] as $incident) {
+            foreach ($extra['rule'] ?? [] as $incident) {
+                if (! is_array($incident)) {
+                    continue;
+                }
                 $i++;
                 $obj['faults'][$i] = $incident;
                 $obj['faults'][$i]['string'] = null;
                 foreach ($incident as $k => $v) {
-                    if (! empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
+                    if (! empty($v) && $k != 'device_id' && (stristr((string) $k, 'id') || stristr((string) $k, 'desc') || stristr((string) $k, 'msg')) && substr_count((string) $k, '_') <= 1) {
                         $obj['faults'][$i]['string'] .= $k . ' = ' . $v . '; ';
                     }
                 }
             }
-            $obj['elapsed'] = $this->timeFormat(time() - strtotime($alert['time_logged']));
+            $obj['elapsed'] = Time::formatInterval(time() - strtotime((string) $alert['time_logged']), true) ?: 'none';
             if (! empty($extra['diff'])) {
                 $obj['diff'] = $extra['diff'];
             }
         } elseif ($alert['state'] == AlertState::RECOVERED) {
-            // Alert is now cleared
-            $id = dbFetchRow('SELECT alert_log.id,alert_log.time_logged,alert_log.details FROM alert_log WHERE alert_log.state != ? && alert_log.state != ? && alert_log.rule_id = ? && alert_log.device_id = ? && alert_log.id < ? ORDER BY id DESC LIMIT 1', [AlertState::ACKNOWLEDGED, AlertState::RECOVERED, $alert['rule_id'], $alert['device_id'], $alert['id']]);
-            if (empty($id['id'])) {
+            // Alert is now cleared. Scope to the same problem when notifying per entity.
+            $previousLogQuery = AlertLog::query()
+                ->whereNotIn('state', [AlertState::ACKNOWLEDGED, AlertState::RECOVERED])
+                ->where('rule_id', $alert['rule_id'])
+                ->where('device_id', $alert['device_id'])
+                ->where('id', '<', $alert['id']);
+
+            if (! empty($alert['fault_id'])) {
+                $previousLogQuery->where('fault_id', $alert['fault_id']);
+            }
+
+            $previousLog = $previousLogQuery->orderByDesc('id')->first();
+            if ($previousLog === null) {
                 return false;
             }
 
-            $extra = [];
-            if (! empty($id['details'])) {
-                $extra = json_decode(gzuncompress($id['details']), true);
+            $extra = $previousLog->details;
+            // Prefer the recovered fault's own rows when they were already selected
+            // (partial recovery). Full recovery has the same set as the previous log.
+            if (! empty($alert['details']['rule'])) {
+                $extra['rule'] = $alert['details']['rule'];
+            }
+            if (! empty($alert['details']['contacts'])) {
+                $extra['contacts'] = $alert['details']['contacts'];
+            }
+            $extra['count'] = 0;
+
+            // Reset count on the recovery log only. After a partial recovery the newest
+            // rule/device row is BETTER/CHANGED and still holds the remaining problem's
+            // escalation count; writing 0 there would restart that timer.
+            $currentLog = AlertLog::query()->find($alert['id']);
+            if ($currentLog instanceof AlertLog) {
+                $logState = $currentLog->state instanceof \BackedEnum ? $currentLog->state->value : (int) $currentLog->state;
+                if (! in_array($logState, [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED], true)) {
+                    $currentDetails = $currentLog->details;
+                    $currentDetails['count'] = 0;
+                    $currentLog->details = $currentDetails;
+                    $currentLog->save();
+                }
             }
 
-            // Reset count to 0 so alerts will continue
-            $extra['count'] = 0;
-            dbUpdate(['details' => gzcompress(json_encode($id['details']), 9)], 'alert_log', 'id = ?', [$alert['id']]);
-
-            $obj['title'] = $template->title_rec ?: 'Device ' . $device['hostname'] . ' recovered from ' . ($alert['name'] ? $alert['name'] : $alert['rule']);
-            $obj['elapsed'] = $this->timeFormat(strtotime($alert['time_logged']) - strtotime($id['time_logged']));
-            $obj['id'] = $id['id'];
-            foreach ($extra['rule'] as $incident) {
+            $obj['title'] = ($template?->title_rec ?: 'Device ' . $obj['display'] . ' recovered from ' . ($alert['name'] ?: $alert['rule']));
+            $obj['elapsed'] = Time::formatInterval(strtotime((string) $alert['time_logged']) - strtotime((string) $previousLog->time_logged), true) ?: 'none';
+            $obj['id'] = $previousLog->id;
+            foreach ($extra['rule'] ?? [] as $incident) {
                 $i++;
                 $obj['faults'][$i] = $incident;
+                $obj['faults'][$i]['string'] = '';
                 foreach ($incident as $k => $v) {
-                    if (! empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
+                    if (! empty($v) && $k != 'device_id' && (stristr((string) $k, 'id') || stristr((string) $k, 'desc') || stristr((string) $k, 'msg')) && substr_count((string) $k, '_') <= 1) {
                         $obj['faults'][$i]['string'] .= $k . ' => ' . $v . '; ';
                     }
                 }
@@ -183,7 +243,7 @@ class RunAlerts
         $obj['uid'] = $alert['id'];
         $obj['alert_id'] = $alert['alert_id'];
         $obj['severity'] = $alert['severity'];
-        $obj['rule'] = $alert['rule'];
+        $obj['rule'] = $alert['builder']; //Backwards compatibility for old rule
         $obj['name'] = $alert['name'];
         $obj['timestamp'] = $alert['time_logged'];
         $obj['contacts'] = $extra['contacts'];
@@ -191,36 +251,17 @@ class RunAlerts
         $obj['alerted'] = $alert['alerted'];
         $obj['template'] = $template;
 
+        $obj['operation_phase'] = AlertUtil::mapAlertStateToOperationPhase((int) $alert['state']);
+        $detailCount = (int) ($extra['count'] ?? 0);
+        $obj['escalation_step'] = max(1, $detailCount);
+        // Acknowledgements (and non-problem phases) should hit the same transports as the
+        // first problem step, not a stale extra.count that no longer matches any segment.
+        if ($obj['operation_phase'] !== AlertRuleOperationPhase::PROBLEM
+            || (int) $alert['state'] === AlertState::ACKNOWLEDGED) {
+            $obj['escalation_step'] = 1;
+        }
+
         return $obj;
-    }
-
-    /**
-     * Format Elapsed Time
-     * @param int $secs Seconds elapsed
-     * @return string
-     */
-    public function timeFormat($secs)
-    {
-        $bit = [
-            'y' => $secs / 31556926 % 12,
-            'w' => $secs / 604800 % 52,
-            'd' => $secs / 86400 % 7,
-            'h' => $secs / 3600 % 24,
-            'm' => $secs / 60 % 60,
-            's' => $secs % 60,
-        ];
-        $ret = [];
-        foreach ($bit as $k => $v) {
-            if ($v > 0) {
-                $ret[] = $v . $k;
-            }
-        }
-
-        if (empty($ret)) {
-            return 'none';
-        }
-
-        return join(' ', $ret);
     }
 
     public function clearStaleAlerts()
@@ -228,7 +269,7 @@ class RunAlerts
         $sql = 'SELECT `alerts`.`id` AS `alert_id`, `devices`.`hostname` AS `hostname` FROM `alerts` LEFT JOIN `devices` ON `alerts`.`device_id`=`devices`.`device_id`  RIGHT JOIN `alert_rules` ON `alerts`.`rule_id`=`alert_rules`.`id` WHERE `alerts`.`state`!=' . AlertState::CLEAR . ' AND `devices`.`hostname` IS NULL';
         foreach (dbFetchRows($sql) as $alert) {
             if (empty($alert['hostname']) && isset($alert['alert_id'])) {
-                dbDelete('alerts', '`id` = ?', [$alert['alert_id']]);
+                \App\Models\Alert::where('id', $alert['alert_id'])->delete();
                 echo "Stale-alert: #{$alert['alert_id']}" . PHP_EOL;
             }
         }
@@ -236,20 +277,20 @@ class RunAlerts
 
     /**
      * Re-Validate Rule-Mappings
-     * @param int $device_id Device-ID
-     * @param int $rule   Rule-ID
+     *
+     * @param  int  $device_id  Device-ID
+     * @param  int  $rule  Rule-ID
      * @return bool
      */
     public function isRuleValid($device_id, $rule)
     {
-        global $rulescache;
-        if (empty($rulescache[$device_id]) || ! isset($rulescache[$device_id])) {
-            foreach (AlertUtil::getRules($device_id) as $chk) {
-                $rulescache[$device_id][$chk['id']] = true;
+        if (empty($this->rulescache[$device_id])) {
+            foreach (AlertRule::enabled()->forDevice(DeviceCache::get($device_id))->get() as $chk) {
+                $this->rulescache[$device_id][$chk->id] = true;
             }
         }
 
-        if ($rulescache[$device_id][$rule] === true) {
+        if (($this->rulescache[$device_id][$rule] ?? false) === true) {
             return true;
         }
 
@@ -257,27 +298,175 @@ class RunAlerts
     }
 
     /**
-     * Issue Alert-Object
-     * @param array $alert
+     * @param  array  $alert
+     * @param  array<int, array<string, mixed>>|null  $transportOverride  explicit transports to deliver to (per-segment scheduling); null uses the default lookup
      * @return bool
      */
-    public function issueAlert($alert)
+    public function issueAlert($alert, ?array $transportOverride = null)
     {
-        if (Config::get('alert.fixed-contacts') == false) {
-            if (empty($alert['query'])) {
-                $alert['query'] = AlertDB::genSQL($alert['rule'], $alert['builder']);
-            }
-            $sql = $alert['query'];
-            $qry = dbFetchRows($sql, [$alert['device_id']]);
-            $alert['details']['contacts'] = AlertUtil::getContacts($qry);
+        $rule = AlertRule::query()->find($alert['rule_id']);
+
+        $recovering = (int) $alert['state'] === AlertState::RECOVERED;
+        $faults = AlertFault::query()
+            ->where('rule_id', $alert['rule_id'])
+            ->where('device_id', $alert['device_id'])
+            ->where('open', 1)
+            ->where('state', $recovering ? '=' : '!=', AlertState::RECOVERED)
+            ->orderBy('id')
+            ->get();
+        if ($recovering) {
+            $faults = $faults->filter(fn (AlertFault $fault) => (int) $fault->alerted !== 0)->values();
         }
 
-        $obj = $this->describeAlert($alert);
-        if (is_array($obj)) {
-            echo 'Issuing Alert-UID #' . $alert['id'] . '/' . $alert['state'] . ':' . PHP_EOL;
-            $this->extTransports($obj);
+        $perEntity = $rule !== null && AlertUtil::shouldNotifyPerEntity($rule, $faults->count());
 
-            echo "\r\n";
+        // Build the set of notifications to send: one per fault (per-entity) or one aggregate (grouped).
+        $units = [];
+        if ((int) $alert['state'] === AlertState::ACKNOWLEDGED) {
+            // Acknowledgement alerts are one notification per rule/device (runAcks), not per fault.
+            if ($faults->isNotEmpty()) {
+                $rows = [];
+                foreach ($faults as $fault) {
+                    foreach (($fault->details['rule'] ?? []) as $row) {
+                        $rows[] = $row;
+                    }
+                }
+                $alert['details']['rule'] = $rows;
+                if (LibrenmsConfig::get('alert.fixed-contacts') == false) {
+                    $alert['details']['contacts'] = AlertUtil::getContacts($rows);
+                }
+            }
+            $units[] = $alert;
+        } elseif ($faults->isEmpty()) {
+            if ($recovering) {
+                return true;
+            }
+            $units[] = $alert; // legacy fallback (e.g. data with no fault rows yet)
+        } elseif ($perEntity) {
+            foreach ($faults as $fault) {
+                $faultState = (int) $fault->state;
+                if ($faultState === AlertState::ACKNOWLEDGED
+                    && (int) $fault->alerted === AlertState::ACKNOWLEDGED) {
+                    continue;
+                }
+                $unit = $alert;
+                $unit['state'] = $faultState;
+                $unit['fault_id'] = $fault->id;
+                $unit['details']['rule'] = $fault->details['rule'] ?? [];
+                $unit['details']['contacts'] = $fault->details['contacts'] ?? ($alert['details']['contacts'] ?? []);
+                $latestLogId = AlertLog::query()->where('fault_id', $fault->id)->max('id');
+                if ($latestLogId) {
+                    $unit['id'] = $latestLogId;
+                }
+                $unit['time_logged'] = (string) ($fault->last_seen ?? $fault->timestamp);
+                $units[] = $unit;
+            }
+        } else {
+            $rows = [];
+            foreach ($faults as $fault) {
+                if (! $recovering && (int) $fault->state === AlertState::ACKNOWLEDGED) {
+                    continue;
+                }
+                foreach (($fault->details['rule'] ?? []) as $row) {
+                    $rows[] = $row;
+                }
+            }
+            if ($rows !== [] || $recovering) {
+                $alert['details']['rule'] = $rows;
+                if (LibrenmsConfig::get('alert.fixed-contacts') == false) {
+                    $alert['details']['contacts'] = AlertUtil::getContacts($rows);
+                }
+                if ($recovering) {
+                    $recoveryLog = AlertLog::query()
+                        ->whereIn('fault_id', $faults->pluck('id'))
+                        ->orderByDesc('id')
+                        ->first();
+                    if ($recoveryLog) {
+                        $alert['id'] = $recoveryLog->id;
+                        $alert['fault_id'] = $recoveryLog->fault_id;
+                        $alert['time_logged'] = (string) $recoveryLog->time_logged;
+                    }
+                }
+                $units[] = $alert;
+            }
+        }
+
+        $problemState = in_array((int) $alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED], true);
+        if ($units !== []) {
+            if ($problemState) {
+                $notifiedIds = $perEntity
+                    ? array_values(array_filter(array_map(
+                        static fn ($unit) => (int) ($unit['state'] ?? 0) === AlertState::ACKNOWLEDGED ? 0 : (int) ($unit['fault_id'] ?? 0),
+                        $units
+                    )))
+                    : $faults->filter(fn (AlertFault $fault) => (int) $fault->state !== AlertState::ACKNOWLEDGED)
+                        ->pluck('id')->map(static fn ($id) => (int) $id)->all();
+                if ($notifiedIds !== []) {
+                    AlertFault::query()->whereIn('id', $notifiedIds)->update(['alerted' => (int) $alert['state']]);
+                }
+            }
+            // runAcks sends one acknowledgement for the rule/device. Mark its entities
+            // too, so a later per-entity problem does not send their acknowledgements again.
+            $ackIds = (int) $alert['state'] === AlertState::ACKNOWLEDGED && $perEntity
+                ? $faults->where('state', AlertState::ACKNOWLEDGED)
+                    ->where('alerted', '!=', AlertState::ACKNOWLEDGED)->pluck('id')->all()
+                : array_values(array_filter(array_map(
+                    static fn ($unit) => (int) ($unit['state'] ?? 0) === AlertState::ACKNOWLEDGED ? (int) ($unit['fault_id'] ?? 0) : 0,
+                    $units
+                )));
+            if ($ackIds !== []) {
+                AlertFault::query()->whereIn('id', $ackIds)->where('state', AlertState::ACKNOWLEDGED)
+                    ->update(['alerted' => AlertState::ACKNOWLEDGED]);
+            }
+        }
+
+        foreach ($units as $unit) {
+            $obj = $this->describeAlert($unit);
+            if (is_array($obj)) {
+                echo 'Issuing Alert-UID #' . $unit['id'] . '/' . $unit['state'] . ':' . PHP_EOL;
+                if ((int) $unit['state'] !== AlertState::ACKNOWLEDGED || LibrenmsConfig::get('alert.acknowledged')) {
+                    $this->extTransports($obj, $transportOverride);
+                }
+                echo "\r\n";
+            }
+        }
+
+        if (! $recovering) {
+            $recovered = AlertFault::query()
+                ->where('rule_id', $alert['rule_id'])
+                ->where('device_id', $alert['device_id'])
+                ->where('open', 1)
+                ->where('state', AlertState::RECOVERED)
+                ->orderBy('id')
+                ->get();
+            $notifiedRecovered = $recovered->filter(fn (AlertFault $fault) => (int) $fault->alerted !== 0);
+
+            // Per-entity rules notify each recovered entity as it clears. Grouped rules
+            // send a single recovery when the aggregate alert is RECOVERED.
+            if ($perEntity && $notifiedRecovered->isNotEmpty() && AlertUtil::shouldSendRecovery((int) $alert['rule_id'], (int) $alert['device_id'])) {
+                foreach ($notifiedRecovered as $fault) {
+                    $unit = $alert;
+                    $unit['state'] = AlertState::RECOVERED;
+                    $unit['fault_id'] = $fault->id;
+                    $unit['details']['rule'] = $fault->details['rule'] ?? [];
+                    $unit['details']['contacts'] = $fault->details['contacts'] ?? ($alert['details']['contacts'] ?? []);
+                    $recoveryLog = AlertLog::query()->where('fault_id', $fault->id)->orderByDesc('id')->first();
+                    if ($recoveryLog) {
+                        $unit['id'] = $recoveryLog->id;
+                        $unit['time_logged'] = (string) $recoveryLog->time_logged;
+                    }
+                    $obj = $this->describeAlert($unit);
+                    if (is_array($obj)) {
+                        echo 'Issuing Alert-UID #' . $unit['id'] . '/' . $unit['state'] . ':' . PHP_EOL;
+                        $this->extTransports($obj);
+                        echo "\r\n";
+                    }
+                }
+            }
+
+            if ($recovered->isNotEmpty()) {
+                AlertFault::query()->whereIn('id', $recovered->pluck('id'))->update(['open' => 0]);
+            }
         }
 
         return true;
@@ -285,93 +474,62 @@ class RunAlerts
 
     /**
      * Issue ACK notification
+     *
      * @return void
      */
     public function runAcks()
     {
-        foreach ($this->loadAlerts('alerts.state = ' . AlertState::ACKNOWLEDGED . ' && alerts.open = ' . AlertState::ACTIVE) as $alert) {
-            $this->issueAlert($alert);
-            dbUpdate(['open' => AlertState::CLEAR], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
-        }
-    }
-
-    /**
-     * Run Follow-Up alerts
-     * @return void
-     */
-    public function runFollowUp()
-    {
-        foreach ($this->loadAlerts('alerts.state > ' . AlertState::CLEAR . ' && alerts.open = 0') as $alert) {
-            if ($alert['state'] != AlertState::ACKNOWLEDGED || ($alert['info']['until_clear'] === false)) {
-                $rextra = json_decode($alert['extra'], true);
-                if ($rextra['invert']) {
-                    continue;
-                }
-
-                if (empty($alert['query'])) {
-                    $alert['query'] = AlertDB::genSQL($alert['rule'], $alert['builder']);
-                }
-                $chk = dbFetchRows($alert['query'], [$alert['device_id']]);
-                //make sure we can json_encode all the datas later
-                $cnt = count($chk);
-                for ($i = 0; $i < $cnt; $i++) {
-                    if (isset($chk[$i]['ip'])) {
-                        $chk[$i]['ip'] = inet6_ntop($chk[$i]['ip']);
-                    }
-                }
-                $o = sizeof($alert['details']['rule']);
-                $n = sizeof($chk);
-                $ret = 'Alert #' . $alert['id'];
-                $state = AlertState::CLEAR;
-                if ($n > $o) {
-                    $ret .= ' Worsens';
-                    $state = AlertState::WORSE;
-                    $alert['details']['diff'] = array_diff($chk, $alert['details']['rule']);
-                } elseif ($n < $o) {
-                    $ret .= ' Betters';
-                    $state = AlertState::BETTER;
-                    $alert['details']['diff'] = array_diff($alert['details']['rule'], $chk);
-                }
-
-                if ($state > AlertState::CLEAR && $n > 0) {
-                    $alert['details']['rule'] = $chk;
-                    if (dbInsert([
-                        'state' => $state,
-                        'device_id' => $alert['device_id'],
-                        'rule_id' => $alert['rule_id'],
-                        'details' => gzcompress(json_encode($alert['details']), 9),
-                    ], 'alert_log')) {
-                        dbUpdate(['state' => $state, 'open' => 1, 'alerted' => 1], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
-                    }
-
-                    echo $ret . ' (' . $o . '/' . $n . ")\r\n";
-                }
+        foreach ($this->loadAlerts('alerts.state = ' . AlertState::ACKNOWLEDGED . ' AND alerts.open = 1') as $alert) {
+            if ((int) $alert['alerted'] === AlertState::ACKNOWLEDGED) {
+                $this->dispatchOpenRecoveries($alert);
+                continue;
             }
+
+            $rextra = json_decode((string) $alert['extra'], true);
+            $rextra['acknowledgement'] ??= true;
+
+            if ($rextra['acknowledgement']) {
+                $this->issueAlert($alert);
+            }
+
+            $this->closeRecoveredFaults((int) $alert['rule_id'], (int) $alert['device_id']);
+
+            \App\Models\Alert::query()
+                ->where('rule_id', $alert['rule_id'])
+                ->where('device_id', $alert['device_id'])
+                ->update([
+                    'open' => 0,
+                    'alerted' => AlertState::ACKNOWLEDGED,
+                ]);
         }
     }
 
     public function loadAlerts($where)
     {
+        $this->rulescache = []; // rule mappings may change between passes
         $alerts = [];
         foreach (dbFetchRows("SELECT alerts.id, alerts.alerted, alerts.device_id, alerts.rule_id, alerts.state, alerts.note, alerts.info FROM alerts WHERE $where") as $alert_status) {
             $alert = dbFetchRow(
-                'SELECT alert_log.id,alert_log.rule_id,alert_log.device_id,alert_log.state,alert_log.details,alert_log.time_logged,alert_rules.rule,alert_rules.severity,alert_rules.extra,alert_rules.name,alert_rules.query,alert_rules.builder,alert_rules.proc FROM alert_log,alert_rules WHERE alert_log.rule_id = alert_rules.id && alert_log.device_id = ? && alert_log.rule_id = ? && alert_rules.disabled = 0 ORDER BY alert_log.id DESC LIMIT 1',
+                'SELECT alert_log.id,alert_log.rule_id,alert_log.device_id,alert_log.state,alert_log.details,alert_log.time_logged,alert_rules.severity,alert_rules.extra,alert_rules.name,alert_rules.query,alert_rules.builder,alert_rules.proc FROM alert_log,alert_rules WHERE alert_log.rule_id = alert_rules.id AND alert_log.device_id = ? AND alert_log.rule_id = ? AND alert_rules.disabled = 0 ORDER BY alert_log.id DESC LIMIT 1',
                 [$alert_status['device_id'], $alert_status['rule_id']]
             );
+
+            $alert['alert_id'] = $alert_status['id'];
 
             if (empty($alert['rule_id']) || ! $this->isRuleValid($alert_status['device_id'], $alert_status['rule_id'])) {
                 echo 'Stale-Rule: #' . $alert_status['rule_id'] . '/' . $alert_status['device_id'] . "\r\n";
                 // Alert-Rule does not exist anymore, let's remove the alert-state.
-                dbDelete('alerts', 'rule_id = ? && device_id = ?', [$alert_status['rule_id'], $alert_status['device_id']]);
+                \App\Models\Alert::where('rule_id', $alert_status['rule_id'])->where('device_id', $alert_status['device_id'])->delete();
             } else {
-                $alert['alert_id'] = $alert_status['id'];
                 $alert['state'] = $alert_status['state'];
                 $alert['alerted'] = $alert_status['alerted'];
                 $alert['note'] = $alert_status['note'];
                 if (! empty($alert['details'])) {
                     $alert['details'] = json_decode(gzuncompress($alert['details']), true);
+                } else {
+                    $alert['details'] = [];
                 }
-                $alert['info'] = json_decode($alert_status['info'], true);
+                $alert['info'] = json_decode((string) $alert_status['info'], true);
                 $alerts[] = $alert;
             }
         }
@@ -381,31 +539,119 @@ class RunAlerts
 
     /**
      * Run all alerts
+     *
      * @return void
      */
     public function runAlerts()
     {
-        foreach ($this->loadAlerts('alerts.state != ' . AlertState::ACKNOWLEDGED . ' && alerts.open = 1') as $alert) {
+        $parentDownLogged = [];
+
+        foreach ($this->loadAlerts('alerts.state != ' . AlertState::ACKNOWLEDGED . ' AND alerts.open = 1') as $alert) {
             $noiss = false;
             $noacc = false;
             $updet = false;
-            $rextra = json_decode($alert['extra'], true);
-            if (! isset($rextra['recovery'])) {
-                // backwards compatibility check
-                $rextra['recovery'] = true;
+            $rextra = json_decode((string) $alert['extra'], true);
+            $rextra['recovery'] ??= true;
+
+            $alert['details']['count'] ??= 0;
+
+            $status_check = DB::table('devices')
+                ->where('device_id', $alert['device_id'])
+                ->first(['ignore', 'disabled']);
+
+            if ($status_check === null) {
+                Log::warning("Alert #{$alert['id']} references non-existent device {$alert['device_id']}, cleaning up");
+                AlertLog::query()->where('id', $alert['id'])->delete();
+                $this->closeRecoveredFaults((int) $alert['rule_id'], (int) $alert['device_id']);
+
+                continue;
             }
 
-            $chk = dbFetchRow('SELECT alerts.alerted,devices.ignore,devices.disabled FROM alerts,devices WHERE alerts.device_id = ? && devices.device_id = alerts.device_id && alerts.rule_id = ?', [$alert['device_id'], $alert['rule_id']]);
-
-            if ($chk['alerted'] == $alert['state']) {
+            if ($alert['alerted'] == $alert['state']) {
                 $noiss = true;
+                if ((int) $alert['state'] === AlertState::RECOVERED) {
+                    $pendingNotifiedRecovery = AlertFault::query()
+                        ->where('rule_id', $alert['rule_id'])
+                        ->where('device_id', $alert['device_id'])
+                        ->where('open', 1)
+                        ->where('state', AlertState::RECOVERED)
+                        ->where('alerted', '!=', 0)
+                        ->exists();
+                    if ($pendingNotifiedRecovery) {
+                        $noiss = false;
+                    }
+                }
             }
 
-            $tolerence_window = Config::get('alert.tolerance_window');
-            if (! empty($rextra['count']) && empty($rextra['interval'])) {
+            $tolerence_window = LibrenmsConfig::get('alert.tolerance_window');
+            $activeState = in_array($alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED], true);
+            $dueTransports = [];
+
+            $hasUnacknowledgedFaults = $activeState && AlertFault::query()
+                ->where('rule_id', $alert['rule_id'])
+                ->where('device_id', $alert['device_id'])
+                ->where('open', 1)
+                ->where('state', AlertState::ACTIVE)
+                ->exists();
+
+            // Faults can be ack'd while the aggregate alerts row is still ACTIVE.
+            if ($activeState && ! $hasUnacknowledgedFaults) {
+                $remainingAcked = AlertFault::query()
+                    ->where('rule_id', $alert['rule_id'])
+                    ->where('device_id', $alert['device_id'])
+                    ->where('open', 1)
+                    ->where('state', AlertState::ACKNOWLEDGED)
+                    ->exists();
+                $sentAck = false;
+                if ($remainingAcked && (int) $alert['alerted'] !== AlertState::ACKNOWLEDGED) {
+                    $rextra['acknowledgement'] ??= true;
+                    if ($rextra['acknowledgement']) {
+                        $ackAlert = $alert;
+                        $ackAlert['state'] = AlertState::ACKNOWLEDGED;
+                        $this->issueAlert($ackAlert);
+                    }
+                    $sentAck = true;
+                }
+
+                $this->dispatchOpenRecoveries($alert);
+                $rule = AlertRule::query()->find($alert['rule_id']);
+                if ($rule !== null) {
+                    new AlertRules($alert['device_id'])->syncAlertState($rule);
+                }
+
+                if ($sentAck) {
+                    \App\Models\Alert::query()
+                        ->where('rule_id', $alert['rule_id'])
+                        ->where('device_id', $alert['device_id'])
+                        ->update([
+                            'open' => 0,
+                            'alerted' => AlertState::ACKNOWLEDGED,
+                        ]);
+                }
+
+                continue;
+            }
+
+            if ($activeState && AlertUtil::ruleHasAlertOperations((int) $alert['rule_id'])) {
+                if (AlertUtil::operationNotificationsSuppressed((int) $alert['rule_id'])) {
+                    $rextra['mute'] = true;
+                } else {
+                    $dueSegments = AlertUtil::dueProblemSegments((int) $alert['rule_id'], $alert['details']);
+                    $updet = true;
+                    $noacc = true;
+                    if (! empty($dueSegments)) {
+                        $dueTransports = AlertUtil::segmentTransports($dueSegments);
+                        $noiss = empty($dueTransports);
+                    } else {
+                        $noiss = true;
+                    }
+                }
+            } elseif ($activeState) {
+                $rextra['mute'] = true;
+            } elseif (! empty($rextra['count']) && empty($rextra['interval'])) {
                 // This check below is for compat-reasons
                 if (! empty($rextra['delay']) && $alert['state'] != AlertState::RECOVERED) {
-                    if ((time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] || (! empty($alert['details']['delay']) && (time() - $alert['details']['delay'] + $tolerence_window) < $rextra['delay'])) {
+                    if ((time() - strtotime((string) $alert['time_logged']) + $tolerence_window) < $rextra['delay'] || (! empty($alert['details']['delay']) && (time() - $alert['details']['delay'] + $tolerence_window) < $rextra['delay'])) {
                         continue;
                     } else {
                         $alert['details']['delay'] = time();
@@ -414,7 +660,8 @@ class RunAlerts
                 }
 
                 if ($alert['state'] == AlertState::ACTIVE && ! empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
-                    if ($alert['details']['count'] < $rextra['count']) {
+                    // We don't want -1 alert rule count alarms to get muted because of the current alert count
+                    if ($alert['details']['count'] < $rextra['count'] || $rextra['count'] == -1) {
                         $noacc = true;
                     }
 
@@ -423,7 +670,7 @@ class RunAlerts
                 }
             } else {
                 // This is the new way
-                if (! empty($rextra['delay']) && (time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] && $alert['state'] != AlertState::RECOVERED) {
+                if (! empty($rextra['delay']) && (time() - strtotime((string) $alert['time_logged']) + $tolerence_window) < $rextra['delay'] && $alert['state'] != AlertState::RECOVERED) {
                     continue;
                 }
 
@@ -436,8 +683,9 @@ class RunAlerts
                     }
                 }
 
-                if (in_array($alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER]) && ! empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
-                    if ($alert['details']['count'] < $rextra['count']) {
+                if (in_array($alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED]) && ! empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
+                    // We don't want -1 alert rule count alarms to get muted because of the current alert count
+                    if ($alert['details']['count'] < $rextra['count'] || $rextra['count'] == -1) {
                         $noacc = true;
                     }
 
@@ -445,15 +693,49 @@ class RunAlerts
                     $noiss = false;
                 }
             }
-            if ($chk['ignore'] == 1 || $chk['disabled'] == 1) {
+            if ($status_check->ignore || $status_check->disabled) {
                 $noiss = true;
                 $updet = false;
                 $noacc = false;
             }
 
-            if (AlertUtil::isMaintenance($alert['device_id'])) {
+            $maintenance_status = DeviceCache::get($alert['device_id'])->getMaintenanceStatus();
+            // Do not send alert notifications for these types of scheduled maintenance
+            if ($maintenance_status == MaintenanceStatus::MuteAlerts) {
+                $noiss = true;
+            }
+
+            // If alert rule checks are to be skipped, ensure that this alert is
+            // not to be handled again by this method again (by changing open to 0 later)
+            if ($maintenance_status == MaintenanceStatus::SkipAlerts) {
                 $noiss = true;
                 $noacc = true;
+            }
+
+            $info = is_array($alert['info']) ? $alert['info'] : [];
+            if ($this->isParentDown($alert['device_id'])) {
+                $noiss = true;
+                $updet = false;
+                if (empty($info['parent_down_logged'])) {
+                    $deviceId = (int) $alert['device_id'];
+                    if (! isset($parentDownLogged[$deviceId])) {
+                        Eventlog::log('Skipped alerts because all parent devices are down', $deviceId, 'alert', Severity::Ok);
+                        $parentDownLogged[$deviceId] = true;
+                    }
+                    $info['parent_down_logged'] = 1;
+                    $alert['info'] = $info;
+                    \App\Models\Alert::query()
+                        ->where('rule_id', $alert['rule_id'])
+                        ->where('device_id', $alert['device_id'])
+                        ->update(['info' => $info]);
+                }
+            } elseif (! empty($info['parent_down_logged'])) {
+                unset($info['parent_down_logged']);
+                $alert['info'] = $info;
+                \App\Models\Alert::query()
+                    ->where('rule_id', $alert['rule_id'])
+                    ->where('device_id', $alert['device_id'])
+                    ->update(['info' => $info]);
             }
 
             if ($updet) {
@@ -465,78 +747,145 @@ class RunAlerts
                 $noiss = true;
             }
 
-            if ($this->isParentDown($alert['device_id'])) {
+            if ($alert['state'] == AlertState::RECOVERED && ! AlertUtil::shouldSendRecovery((int) $alert['rule_id'], (int) $alert['device_id'])) {
                 $noiss = true;
-                Log::event('Skipped alerts because all parent devices are down', $alert['device_id'], 'alert', 1);
-            }
-
-            if ($alert['state'] == AlertState::RECOVERED && $rextra['recovery'] == false) {
-                // Rule is set to not send a recovery alert
-                $noiss = true;
-            }
-
-            if (! $noiss) {
-                $this->issueAlert($alert);
-                dbUpdate(['alerted' => $alert['state']], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
             }
 
             if (! $noacc) {
-                dbUpdate(['open' => 0], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
+                dbUpdate(['open' => 0], 'alerts', 'rule_id = ? AND device_id = ? AND state = 0', [$alert['rule_id'], $alert['device_id']]);
             }
+
+            if (! $noiss) {
+                $issue = $alert;
+                $state = (int) $alert['state'];
+                // BETTER/WORSE/CHANGED is a one-shot transition notice. Later repeats for the
+                // same incident go out as a normal ACTIVE alert until the count changes again.
+                if ((int) $alert['alerted'] === $state
+                    && in_array($state, [AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED], true)) {
+                    $issue['state'] = AlertState::ACTIVE;
+                }
+                dbUpdate(['alerted' => $alert['state']], 'alerts', 'rule_id = ? AND device_id = ?', [$alert['rule_id'], $alert['device_id']]);
+                $this->issueAlert($issue, ! empty($dueTransports) ? $dueTransports : null);
+            }
+
+            // Recovered faults are dispatched inside issueAlert() for BETTER/CHANGED/ACK.
+            // When this pass does not issue (mute, parent-down, no due segment, ...), still
+            // close them so they are not retried by a second dispatcher.
+            $this->closeRecoveredFaults((int) $alert['rule_id'], (int) $alert['device_id']);
         }
     }
 
     /**
+     * Send recoveries for open recovered faults (via issueAlert) and close them.
+     * Used when the main/ack loop would otherwise `continue` before issueAlert.
+     */
+    private function dispatchOpenRecoveries(array $alert): void
+    {
+        $recovered = AlertFault::query()
+            ->where('rule_id', $alert['rule_id'])
+            ->where('device_id', $alert['device_id'])
+            ->where('open', 1)
+            ->where('state', AlertState::RECOVERED);
+
+        if ($recovered->exists() && AlertUtil::shouldSendRecovery((int) $alert['rule_id'], (int) $alert['device_id'])) {
+            $rule = AlertRule::query()->find($alert['rule_id']);
+            $remaining = AlertFault::query()
+                ->where('rule_id', $alert['rule_id'])
+                ->where('device_id', $alert['device_id'])
+                ->where('open', 1)
+                ->where('state', '!=', AlertState::RECOVERED)
+                ->count();
+            $entityCount = $remaining + $recovered->count();
+            if ($rule !== null && (AlertUtil::shouldNotifyPerEntity($rule, $entityCount) || ($remaining === 0 && $this->deviceCanNotify((int) $alert['device_id'])))) {
+                $recoveryAlert = $alert;
+                $recoveryAlert['state'] = AlertState::RECOVERED;
+                $this->issueAlert($recoveryAlert);
+            }
+        }
+
+        $this->closeRecoveredFaults((int) $alert['rule_id'], (int) $alert['device_id']);
+    }
+
+    private function closeRecoveredFaults(int $ruleId, int $deviceId): void
+    {
+        AlertFault::query()
+            ->where('rule_id', $ruleId)
+            ->where('device_id', $deviceId)
+            ->where('open', 1)
+            ->where('state', AlertState::RECOVERED)
+            ->update(['open' => 0]);
+    }
+
+    private function deviceCanNotify(int $deviceId): bool
+    {
+        $device = DB::table('devices')->where('device_id', $deviceId)->first(['ignore', 'disabled']);
+
+        return $device !== null && ! $device->ignore && ! $device->disabled && ! $this->isParentDown($deviceId);
+    }
+
+    /**
      * Run external transports
-     * @param array $obj Alert-Array
+     *
+     * @param  array  $obj  Alert-Array
      * @return void
      */
-    public function extTransports($obj)
+    public function extTransports($obj, ?array $transportOverride = null)
     {
         $type = new Template;
 
-        // If alert transport mapping exists, override the default transports
-        $transport_maps = AlertUtil::getAlertTransports($obj['alert_id']);
+        // Per-segment scheduling supplies an explicit transport list; otherwise use the default lookup.
+        $transport_maps = $transportOverride ?? AlertUtil::getAlertTransports(
+            $obj['alert_id'],
+            $obj['operation_phase'] ?? null,
+            (int) ($obj['escalation_step'] ?? 1)
+        );
 
-        if (! $transport_maps) {
-            $transport_maps = AlertUtil::getDefaultAlertTransports();
+        $ruleId = (int) ($obj['rule_id'] ?? 0);
+        if (! $transport_maps || count($transport_maps) === 0) {
+            $reason = 'No mapped transport for this operation';
+            if ($ruleId > 0 && ! AlertUtil::ruleHasAlertOperations($ruleId)) {
+                $reason = 'No operations configured for this rule';
+            }
+
+            Eventlog::log($reason . ' (notification skipped)', $obj['device_id'], 'alert', Severity::Notice);
+            c_echo(" :: Skipped => $reason");
+
+            return;
         }
 
         // alerting for default contacts, etc
-        if (Config::get('alert.transports.mail') === true && ! empty($obj['contacts'])) {
+        if (LibrenmsConfig::get('alert.transports.mail') === true && ! empty($obj['contacts'])) {
             $transport_maps[] = [
                 'transport_id' => null,
                 'transport_type' => 'mail',
-                'opts' => $obj,
+                'transport_name' => 'Default Mail',
             ];
         }
 
         foreach ($transport_maps as $item) {
-            $class = 'LibreNMS\\Alert\\Transport\\' . ucfirst($item['transport_type']);
+            $class = Transport::getClass($item['transport_type']);
             if (class_exists($class)) {
                 //FIXME remove Deprecated transport
                 $transport_title = "Transport {$item['transport_type']}";
                 $obj['transport'] = $item['transport_type'];
                 $obj['transport_name'] = $item['transport_name'];
-                $obj['alert'] = new AlertData($obj);
                 $obj['title'] = $type->getTitle($obj);
-                $obj['alert']['title'] = $obj['title'];
+                $obj['alert'] = new AlertData($obj);
                 $obj['msg'] = $type->getBody($obj);
                 c_echo(" :: $transport_title => ");
                 try {
-                    $instance = new $class($item['transport_id']);
-                    $tmp = $instance->deliverAlert($obj, $item['opts']);
+                    $instance = new $class(AlertTransport::find($item['transport_id']));
+                    $tmp = $instance->deliverAlert($obj);
                     $this->alertLog($tmp, $obj, $obj['transport']);
+                } catch (AlertTransportDeliveryException $e) {
+                    Log::warning("Alert transport '{$obj['transport']}' delivery failed for device {$obj['device_id']}: {$e->getMessage()}", ['exception' => $e]);
+                    $this->alertLog($e->getMessage(), $obj, $obj['transport']);
                 } catch (\Exception $e) {
                     $this->alertLog($e, $obj, $obj['transport']);
                 }
                 unset($instance);
                 echo PHP_EOL;
             }
-        }
-
-        if (count($transport_maps) === 0) {
-            echo 'No configured transports';
         }
     }
 
@@ -547,36 +896,35 @@ class RunAlerts
             AlertState::RECOVERED => 'recovery',
             AlertState::ACTIVE => $obj['severity'] . ' alert',
             AlertState::ACKNOWLEDGED => 'acknowledgment',
+            AlertState::WORSE => 'worsened',
+            AlertState::BETTER => 'improved',
+            AlertState::CHANGED => 'changed',
         ];
-        $prefix[3] = &$prefix[0];
-        $prefix[4] = &$prefix[0];
 
-        if ($obj['state'] == AlertState::RECOVERED) {
-            $severity = Alert::OK;
-        } elseif ($obj['state'] == AlertState::ACTIVE) {
-            $severity = Alert::SEVERITIES[$obj['severity']] ?? Alert::UNKNOWN;
-        } elseif ($obj['state'] == AlertState::ACKNOWLEDGED) {
-            $severity = Alert::NOTICE;
-        } else {
-            $severity = Alert::UNKNOWN;
-        }
+        $severity = match ($obj['state']) {
+            AlertState::RECOVERED => Severity::Ok,
+            AlertState::ACTIVE => Severity::fromAlertRule($obj['severity'] ?? null),
+            AlertState::ACKNOWLEDGED => Severity::Notice,
+            default => Severity::Unknown,
+        };
 
         if ($result === true) {
             echo 'OK';
-            Log::event('Issued ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], 'alert', $severity);
+            Eventlog::log('Issued ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], 'alert', $severity);
         } elseif ($result === false) {
             echo 'ERROR';
-            Log::event('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], null, Alert::ERROR);
+            Eventlog::log('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], null, Severity::Error);
         } else {
             echo "ERROR: $result\r\n";
-            Log::event('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "' Error: " . $result, $obj['device_id'], 'error', Alert::ERROR);
+            Eventlog::log('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "' Error: " . $result, $obj['device_id'], 'error', Severity::Error);
         }
     }
 
     /**
      * Check if a device's all parent are down
      * Returns true if all parents are down
-     * @param int $device Device-ID
+     *
+     * @param  int  $device  Device-ID
      * @return bool
      */
     public function isParentDown($device)
@@ -586,7 +934,7 @@ class RunAlerts
             return false;
         }
 
-        $down_parent_count = dbFetchCell("SELECT count(*) from devices as d LEFT JOIN devices_attribs as a ON d.device_id=a.device_id LEFT JOIN device_relationships as r ON d.device_id=r.parent_device_id WHERE d.status=0 AND d.ignore=0 AND d.disabled=0 AND r.child_device_id=? AND (d.status_reason='icmp' OR (a.attrib_type='override_icmp_disable' AND a.attrib_value=true))", [$device]);
+        $down_parent_count = dbFetchCell('SELECT count(*) from devices as d LEFT JOIN device_relationships as r ON d.device_id=r.parent_device_id WHERE d.status=0 AND d.ignore=0 AND d.disabled=0 AND r.child_device_id=?', [$device]);
         if ($down_parent_count == $parent_count) {
             return true;
         }

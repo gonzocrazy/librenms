@@ -32,7 +32,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
                 <div class='row'>
                         <div class='panel panel-default panel-condensed'>
                             <div class='panel-heading'>
-                                <strong>Pool: <?php echo $array['label']; ?></strong></div>
+                                <strong>Pool: <?php echo e($array['label']); ?></strong></div>
                             <table class="table table-hover table-condensed table-striped">
                                 <tr>
                                     <td>Minimum Active Servers:</td>
@@ -48,7 +48,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
                                 </tr>
                                 <tr>
                                     <td>Pool Monitor:</td>
-                                    <td><?php echo $array['monitor']; ?></td>
+                                    <td><?php echo e($array['monitor']); ?></td>
                                 </tr>
                             </table>
                         </div>
@@ -75,7 +75,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
                                     if ($comp['type'] != 'f5-ltm-poolmember') {
                                         continue;
                                     }
-                                    if (! strstr($comp['UID'], $parent)) {
+                                    if (! strstr((string) $comp['UID'], (string) $parent)) {
                                         continue;
                                     }
 
@@ -88,9 +88,9 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
                                         $error = '';
                                     } ?>
                                     <tr <?php echo $error; ?>>
-                                        <td><?php echo $comp['label']; ?></td>
-                                        <td><?php echo $string; ?></td>
-                                        <td><?php echo $status; ?></td>
+                                        <td><?php echo e($comp['label']); ?></td>
+                                        <td><?php echo e($string); ?></td>
+                                        <td><?php echo e($status); ?></td>
                                     </tr>
                                     <?php
                                 } ?>
@@ -104,6 +104,24 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
         <div class="col-md-12">
             <div class="container-fluid">
                 <div class='row'>
+                    <div class="panel panel-default" id="currconnections">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Current Connections</h3>
+                        </div>
+                        <div class="panel-body">
+                            <?php
+                            $graph_array = [];
+    $graph_array['device'] = $device['device_id'];
+    $graph_array['height'] = '100';
+    $graph_array['width'] = '215';
+    $graph_array['legend'] = 'no';
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
+    $graph_array['type'] = 'device_bigip_ltm_allpm_currconns';
+    $graph_array['id'] = $vars['poolid'];
+    require 'includes/html/print-graphrow.inc.php'; ?>
+                        </div>
+            </div>
+
                     <div class="panel panel-default" id="connections">
                         <div class="panel-heading">
                             <h3 class="panel-title">Connections</h3>
@@ -115,7 +133,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
     $graph_array['legend'] = 'no';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['type'] = 'device_bigip_ltm_allpm_conns';
     $graph_array['id'] = $vars['poolid'];
     require 'includes/html/print-graphrow.inc.php'; ?>
@@ -133,7 +151,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
     $graph_array['legend'] = 'no';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['type'] = 'device_bigip_ltm_allpm_bytesin';
     $graph_array['id'] = $vars['poolid'];
     require 'includes/html/print-graphrow.inc.php'; ?>
@@ -151,7 +169,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
     $graph_array['legend'] = 'no';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['type'] = 'device_bigip_ltm_allpm_bytesout';
     $graph_array['id'] = $vars['poolid'];
     require 'includes/html/print-graphrow.inc.php'; ?>
@@ -169,7 +187,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
     $graph_array['legend'] = 'no';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['type'] = 'device_bigip_ltm_allpm_pktsin';
     $graph_array['id'] = $vars['poolid'];
     require 'includes/html/print-graphrow.inc.php'; ?>
@@ -187,7 +205,7 @@ if ($components[$vars['poolid']]['type'] == 'f5-ltm-pool') {
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
     $graph_array['legend'] = 'no';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['type'] = 'device_bigip_ltm_allpm_pktsout';
     $graph_array['id'] = $vars['poolid'];
     require 'includes/html/print-graphrow.inc.php'; ?>

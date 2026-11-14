@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ptp250.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs<pdheinrichs@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessNoiseFloorDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessPowerDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRateDiscovery;
@@ -50,7 +53,7 @@ class Ptp250 extends OS implements
 
         return [
             new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
                 $transmit,
                 'ptp250-tx',
@@ -61,7 +64,7 @@ class Ptp250 extends OS implements
                 10
             ),
             new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
                 $receive,
                 'ptp250-rx',
@@ -86,7 +89,7 @@ class Ptp250 extends OS implements
 
         return [
             new WirelessSensor(
-                'noise-floor',
+                WirelessSensorType::NoiseFloor,
                 $this->getDeviceId(),
                 $noise_floor,
                 'ptp250',
@@ -113,7 +116,7 @@ class Ptp250 extends OS implements
 
         return [
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $receive,
                 'ptp250-rx-rate',
@@ -124,7 +127,7 @@ class Ptp250 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $transmit,
                 'ptp250-tx-rate',
@@ -135,7 +138,7 @@ class Ptp250 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $aggregate,
                 'ptp250-ag-rate',
@@ -146,7 +149,7 @@ class Ptp250 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $txModulation,
                 'ptp250-tx-mod',
@@ -155,7 +158,7 @@ class Ptp250 extends OS implements
                 null
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $rxModulation,
                 'ptp250-rx-mod',
@@ -178,7 +181,7 @@ class Ptp250 extends OS implements
 
         return [
             new WirelessSensor(
-                'ssr',
+                WirelessSensorType::Ssr,
                 $this->getDeviceId(),
                 $ssr,
                 'ptp250',

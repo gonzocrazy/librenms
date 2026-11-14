@@ -1,4 +1,5 @@
 <?php
+
 /*
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,7 +28,7 @@ $colours = 'mixed';
 $unit_text = 'DOP';
 $nototal = 1;
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'gpsd', $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'gpsd', $app->app_id]);
 $array = [
     'hdop' => ['descr' => 'Horizontal'],
     'vdop' => ['descr' => 'Vertical'],
@@ -40,11 +41,11 @@ if (Rrd::checkRrdExists($rrd_filename)) {
         $rrd_list[$i]['filename'] = $rrd_filename;
         $rrd_list[$i]['descr'] = $var['descr'];
         $rrd_list[$i]['ds'] = $ds;
-        $rrd_list[$i]['colour'] = \LibreNMS\Config::get("graph_colours.$colours" . ($i + 2));
+        $rrd_list[$i]['colour'] = \App\Facades\LibrenmsConfig::get("graph_colours.$colours" . ($i + 2));
         $i++;
     }
 } else {
-    echo "file missing: $file";
+    throw new \LibreNMS\Exceptions\RrdGraphException("No Data file $rrd_filename");
 }
 
 require 'includes/html/graphs/generic_multi_line.inc.php';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppsController.php
  *
@@ -18,20 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Device\Tabs;
 
+use App\Models\Application;
 use App\Models\Device;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class AppsController implements DeviceTab
 {
     public function visible(Device $device): bool
     {
-        return $device->applications()->exists();
+        return Gate::allows('viewAny', Application::class) && $device->applications()->exists();
     }
 
     public function slug(): string
@@ -49,7 +54,7 @@ class AppsController implements DeviceTab
         return __('Apps');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
         return [];
     }

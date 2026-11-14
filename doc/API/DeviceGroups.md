@@ -1,6 +1,3 @@
-source: API/DeviceGroups.md
-path: blob/master/doc/
-
 ### `get_devicegroups`
 
 List all device groups.
@@ -14,7 +11,7 @@ Input (JSON):
 Examples:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/devicegroups
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/devicegroups
 ```
 
 Output:
@@ -47,25 +44,29 @@ Route: `/api/v0/devicegroups`
 Input (JSON):
 
 - `name`: *required* - The name of the device group
-- `type`: *required* - should be `static` or `dynamic`. Setting this to static
-  requires that the devices input be provided
+- `type`: *required* - `static` or `dynamic`. The value static
+  needs the devices input
 - `desc`: *optional* - Description of the device group
-- `rules`: *required if type == dynamic* - A set of rules to determine which
-  devices should be included in this device group
-- `devices`: *required if type == static* - A list of devices that should be
-  included in this group. This is a static list of devices
+- `rules`: *required if type == dynamic* - a set of rules. These rules
+  select the devices of this device group
+- `devices`: *present if type == static* - a static list of the devices
+  in this group
 
 Examples:
 
 Dynamic Example:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' \
-  -d '{"name": "New Device Group", \
-       "desc": "A very fancy dynamic group", \
-       "type": "dynamic",
-       "rules": "{\"condition\":\"AND\",\"rules\":[{\"id\":\"access_points.name\",\"field\":\"access_points.name\",\"type\":\"string\",\"input\":\"text\",\"operator\":\"equal\",\"value\":\"accesspoint1\"}],\"valid\":true}"}' \
-  https://librenms.org/api/v0/devicegroups
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X POST https://foo.example/api/v0/devicegroups \
+  --data-raw '
+{
+ "name": "New Device Group", 
+ "desc": "A very fancy dynamic group",
+ "type": "dynamic", 
+ "rules": "{\"condition\":\"AND\",\"rules\":[{\"id\":\"access_points.name\",\"field\":\"access_points.name\",\"type\":\"string\",\"input\":\"text\",\"operator\":\"equal\",\"value\":\"accesspoint1\"}],\"valid\":true}"
+}
+'
 ```
 
 Output:
@@ -81,10 +82,9 @@ Output:
 Static Example:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' \
-  -X POST \
-  -d '{"name":"New Device Group","type":"static","devices":[261,271]}' \
-  https://librenms.org/api/v0/devicegroups
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X POST https://foo.example/api/v0/devicegroups \
+  -d '{"name":"New Device Group","type":"static","devices":[261,271]}'
 ```
 
 Output:
@@ -97,6 +97,70 @@ Output:
 }
 ```
 
+### `update_devicegroup`
+
+Updates a device group.
+
+Route: `/api/v0/devicegroups/:name`
+
+- name Is the name of the device group which can be obtained using
+  [`get_devicegroups`](#get_devicegroups). Urlencode the name where
+  necessary. For example, `Linux Servers` needs urlencoding.
+
+Input (JSON):
+
+- `name`: *optional* - The name of the device group
+- `type`: *optional* - `static` or `dynamic`. The value static
+  needs the devices input
+- `desc`: *optional* - Description of the device group
+- `rules`: *required if type == dynamic* - a set of rules. These rules
+  select the devices of this device group
+- `devices`: *required if type == static* - a static list of the
+  devices in this group
+
+Examples:
+
+```curl
+curl -X PATCH -d '{"name": "NewLinuxServers"}' -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/devicegroups/LinuxServers
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Device group LinuxServers updated"
+}
+```
+
+### `delete_devicegroup`
+
+Deletes a device group.
+
+Route: `/api/v0/devicegroups/:name`
+
+- name Is the name of the device group which can be obtained using
+  [`get_devicegroups`](#get_devicegroups). Urlencode the name where
+  necessary. For example, `Linux Servers` needs urlencoding.
+
+Input:
+
+-
+
+Examples:
+
+```curl
+curl -X DELETE -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/devicegroups/LinuxServers
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Device group LinuxServers deleted"
+}
+```
 
 ### `get_devices_by_group`
 
@@ -105,9 +169,8 @@ List all devices matching the group provided.
 Route: `/api/v0/devicegroups/:name`
 
 - name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#function-get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+  [`get_devicegroups`](#get_devicegroups). Urlencode the name where
+  necessary. For example, `Linux Servers` needs urlencoding.
 
 Input (JSON):
 
@@ -116,7 +179,7 @@ Input (JSON):
 Examples:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/devicegroups/LinuxServers
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/devicegroups/LinuxServers
 ```
 
 Output:
@@ -140,4 +203,132 @@ Output:
          ]
      }
 ]
+```
+
+### `maintenance_devicegroup`
+
+Set a device group into maintenance mode.
+
+Route: `/api/v0/devicegroups/:name/maintenance`
+
+Input (JSON):
+
+- `title`: *optional* - Some title for the Maintenance
+  Without this field, LibreNMS uses the device group name
+- `behavior`: *optional* - id of maintenance behavior desired
+  Defaults to alert.scheduled_maintenance_default_behavior if omitted
+- `notes`: *optional* - Some description for the Maintenance
+- `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`
+  eg: 2022-08-01 22:45:00
+  Without this field, LibreNMS uses the current system time `now()`
+- `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`
+  eg: 02:00
+
+Example with start time:
+
+```curl
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X POST https://foo.example/api/v0/devicegroups/Cisco%20switches/maintenance/ \
+  --data-raw '
+{
+ "title":"Device group Maintenance",
+  "notes":"A 2 hour Maintenance triggered via API with start time",
+  "start":"2022-08-01 08:00:00",
+  "duration":"2:00"
+}
+'
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Device group Cisco switches (2) will begin maintenance mode at 2022-08-01 22:45:00 for 2:00h"
+}
+```
+
+Example with no start time:
+
+```curl
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X POST https://foo.example/api/v0/devicegroups/Cisco%20switches/maintenance/ \
+  --data-raw '
+{
+ "title":"Device group Maintenance",
+  "notes":"A 2 hour Maintenance triggered via API with no start time",
+  "duration":"2:00"
+}
+'
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Device group Cisco switches (2) moved into maintenance mode for 2:00h"
+}
+```
+
+### Add devices to group
+
+Add devices to a device group.
+
+Route: `/api/v0/devicegroups/:name/devices`
+
+- name Is the name of the device group which can be obtained using
+  [`get_devicegroups`](#get_devicegroups). Urlencode the name where
+  necessary. For example, `Linux Servers` needs urlencoding.
+
+Input (JSON):
+
+- `devices`: *required* - A list of devices to be added to the group.
+
+Example:
+
+```curl
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X POST https://foo.example/api/v0/devicegroups/LinuxServers/devices \
+  --data-raw '{"devices":[261,271]}'
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Devices added"
+}
+```
+
+### Remove devices from group
+
+Removes devices from a device group.
+
+Route: `/api/v0/devicegroups/:name/devices`
+
+- name Is the name of the device group which can be obtained using
+  [`get_devicegroups`](#get_devicegroups). Urlencode the name where
+  necessary. For example, `Linux Servers` needs urlencoding.
+
+Input (JSON):
+
+- `devices`: *required* - A list of devices to be removed from the group.
+
+Example:
+
+```curl
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' \
+  -X DELETE https://foo.example/api/v0/devicegroups/LinuxServers/devices \
+  --data-raw '{"devices":[261,271]}'
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "Devices removed"
+}
 ```

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * sitemonitor.inc.php
  *
@@ -18,11 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
+
+use LibreNMS\Enum\SensorType;
+
 $oid = '.1.3.6.1.4.1.32050.2.1.27.5.4';
-$current = (snmp_get($device, $oid, '-Oqv') / 10);
+$current = (SnmpQuery::get($oid)->value() / 10);
 if ($current > 0) {
-    discover_sensor($valid['sensor'], 'current', $device, $oid, 0, 'sitemonitor', 'Current', 10, 1, null, null, null, null, $current);
+    discover_sensor(null, SensorType::Current, $device, $oid, 0, 'sitemonitor', 'Current', 10, 1, null, null, null, null, $current);
 }

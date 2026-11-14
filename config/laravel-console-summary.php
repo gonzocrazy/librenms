@@ -17,18 +17,26 @@ return [
     'hide' => [
         'auth:*',
         'cache:*',
+        'channel:*',
         'clear-compiled',
+        'completion',
         'config:cache',
-        'config:clear',
+        'config:show',
+        'config:publish',
         'db:*',
         'debugbar:*',
+        'docs',
         'down',
+        'model:*',
+        'lang:*',
         'dusk',
         'dusk:*',
         'env',
+        'env:*',
         'event:*',
         'help',
         'ide-helper:*',
+        'install:*',
         'key:*',
         'list',
         'make:*',
@@ -36,6 +44,8 @@ return [
         'notifications:*',
         'optimize:*',
         'package:*',
+        'permission:*',
+        'poller:*', // legacy test commands
         'queue:*',
         'release:*',
         'route:*',
@@ -52,7 +62,20 @@ return [
         'up',
         'vendor:*',
         'view:*',
-        'vue-i18n:*',
+        'webpush:*',
         'ziggy:*',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Binary Name
+    |--------------------------------------------------------------------------
+    |
+    | This option allows to override the Artisan binary name that is used
+    | in the command usage output.
+    |
+    */
+
+    'binary' => 'lnms',
+
 ];

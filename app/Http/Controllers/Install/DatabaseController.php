@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DatabaseController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,6 +32,9 @@ use Illuminate\Support\Arr;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\DB\Schema;
 use LibreNMS\Interfaces\InstallerStep;
+use LibreNMS\ValidationResult;
+use LibreNMS\Validations\Database;
+use LibreNMS\Validator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DatabaseController extends InstallationController implements InstallerStep
@@ -54,40 +59,53 @@ class DatabaseController extends InstallationController implements InstallerStep
     {
         Eloquent::setConnection(
             'setup',
-            $request->get('host', 'localhost'),
-            $request->get('username', 'librenms'),
-            $request->get('password', ''),
-            $request->get('database', 'librenms'),
-            $request->get('port', 3306),
-            $request->get('unix_socket')
+            $request->input('host', 'localhost'),
+            $request->input('username', 'librenms'),
+            $request->input('password', ''),
+            $request->input('database', 'librenms'),
+            $request->input('port', 3306),
+            $request->input('unix_socket')
         );
 
         session()->put('db', Arr::only(config('database.connections.setup', []), self::KEYS));
         session()->forget('install.database'); // reset db complete status
 
         $ok = false;
-        $message = '';
+        $messages = [];
         try {
             $conn = Eloquent::DB('setup');
             $ok = $conn && ! is_null($conn->getPdo());
+
+            // validate Database
+            $validator = new Validator();
+            new Database()->validateSystem($validator);
+            $results = $validator->getResults('database');
+
+            foreach ($results as $result) {
+                if ($result->getStatus() == ValidationResult::FAILURE) {
+                    $ok = false;
+                    $messages[] = $result->getMessage() . '  ' . $result->getFix();
+                }
+            }
         } catch (\Exception $e) {
-            $message = $e->getMessage();
+            $messages[] = $e->getMessage();
         }
 
         return response()->json([
             'result' => $ok ? 'ok' : 'fail',
-            'message' => $message,
+            'message' => implode('<br />', $messages),
         ]);
     }
 
     public function migrate(Request $request)
     {
-        $response = new StreamedResponse(function () {
+        $response = new StreamedResponse(function (): void {
             try {
                 $this->configureDatabase();
                 $output = new StreamedOutput(fopen('php://stdout', 'w'));
                 echo "Starting Update...\n";
-                $ret = \Artisan::call('migrate', ['--seed' => true, '--force' => true], $output);
+                $schema_file = database_path('schema/mysql-schema.sql');
+                $ret = \Artisan::call('migrate', ['--seed' => true, '--force' => true, '--no-ansi' => true, '--no-interaction' => true, '--schema-path' => $schema_file], $output);
                 if ($ret !== 0) {
                     throw new \RuntimeException('Migration failed');
                 }
@@ -127,6 +145,6 @@ class DatabaseController extends InstallationController implements InstallerStep
 
     public function icon(): string
     {
-        return 'fa-database';
+        return 'fa-solid fa-database';
     }
 }

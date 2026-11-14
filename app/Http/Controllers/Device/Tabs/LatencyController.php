@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LatencyController.php
  *
@@ -18,26 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Device\Tabs;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\Device;
-use Carbon\Carbon;
-use DB;
-use LibreNMS\Config;
+use Illuminate\Http\Request;
+use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Interfaces\UI\DeviceTab;
 use LibreNMS\Util\Smokeping;
-use Request;
 
 class LatencyController implements DeviceTab
 {
     public function visible(Device $device): bool
     {
-        return Config::get('smokeping.integration') || DB::table('device_perf')
-            ->where('device_id', $device->device_id)->exists();
+        return (bool) LibrenmsConfig::get('smokeping.integration') || $device->pollingMethod(PollingMethodType::Icmp)?->enabled !== false;
     }
 
     public function slug(): string
@@ -55,17 +55,8 @@ class LatencyController implements DeviceTab
         return __('Latency');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
-        $from = Request::get('dtpickerfrom', Carbon::now()->subDays(2)->format(Config::get('dateformat.byminute')));
-        $to = Request::get('dtpickerto', Carbon::now()->format(Config::get('dateformat.byminute')));
-
-        $perf = $this->fetchPerfData($device, $from, $to);
-
-        $duration = $perf && $perf->isNotEmpty()
-            ? abs(strtotime($perf->first()->date) - strtotime($perf->last()->date)) * 1000
-            : 0;
-
         $smokeping = new Smokeping($device);
         $smokeping_tabs = [];
         if ($smokeping->hasInGraph()) {
@@ -76,38 +67,8 @@ class LatencyController implements DeviceTab
         }
 
         return [
-            'dtpickerfrom' => $from,
-            'dtpickerto' => $to,
-            'duration' => $duration,
-            'perfdata' => $this->formatPerfData($perf),
             'smokeping' => $smokeping,
             'smokeping_tabs' => $smokeping_tabs,
         ];
-    }
-
-    private function fetchPerfData(Device $device, $from, $to)
-    {
-        return DB::table('device_perf')
-            ->where('device_id', $device->device_id)
-            ->whereBetween('timestamp', [$from, $to])
-            ->select(DB::raw("DATE_FORMAT(timestamp, '%Y-%m-%d %H:%i') date,xmt,rcv,loss,min,max,avg"))
-            ->get();
-    }
-
-    /**
-     * Data ready for json export
-     * @param \Illuminate\Support\Collection $data
-     * @return array
-     */
-    private function formatPerfData($data)
-    {
-        return $data->reduce(function ($data, $entry) {
-            $data[] = ['x' => $entry->date, 'y' => $entry->loss, 'group' => 0];
-            $data[] = ['x' => $entry->date, 'y' => $entry->min, 'group' => 1];
-            $data[] = ['x' => $entry->date, 'y' => $entry->max, 'group' => 2];
-            $data[] = ['x' => $entry->date, 'y' => $entry->avg, 'group' => 3];
-
-            return $data;
-        }, []);
     }
 }

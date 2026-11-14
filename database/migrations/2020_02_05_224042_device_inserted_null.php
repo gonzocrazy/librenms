@@ -4,18 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DeviceInsertedNull extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('devices', function (Blueprint $table) {
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
-                \DB::statement('ALTER TABLE `devices` CHANGE `inserted` `inserted` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;');
+        Schema::table('devices', function (Blueprint $table): void {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+                DB::statement('ALTER TABLE `devices` CHANGE `inserted` `inserted` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;');
             } else {
                 $table->dateTime('inserted')->nullable()->useCurrent()->change();
             }
@@ -29,7 +29,7 @@ class DeviceInsertedNull extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

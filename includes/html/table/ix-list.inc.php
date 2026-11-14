@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LibreNMS PeeringDB Integration
  *
@@ -16,10 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$asn = strip_tags($vars['asn']);
+$asn = strip_tags((string) $vars['asn']);
 
 $sql = ' FROM `pdb_ix` WHERE `asn` = ?';
 $params = [$asn];
@@ -43,7 +45,7 @@ if (! isset($sort) || empty($sort)) {
 $sql .= " ORDER BY $sort";
 
 if (isset($current)) {
-    $limit_low = (($current * $rowCount) - ($rowCount));
+    $limit_low = (($current * $rowCount) - $rowCount);
     $limit_high = $rowCount;
 }
 
@@ -57,15 +59,15 @@ foreach (dbFetchRows($sql, $params) as $ix) {
     $ix_id = $ix['ix_id'];
     $response[] = [
         'exchange' => $ix['name'],
-        'action'   => "<a class='btn btn-sm btn-primary' href='" . \LibreNMS\Util\Url::generate(['page' => 'peering', 'section' => 'ix-peers', 'asn' => $asn, 'ixid' => $ix['ix_id']]) . "' role='button'>Show Peers</a>",
-        'links'    => "<a href='https://peeringdb.com/ix/$ix_id' target='_blank'><i class='fa fa-database'></i></a>",
+        'action' => "<a class='btn btn-sm btn-primary' href='" . \LibreNMS\Util\Url::generate(['page' => 'peering', 'section' => 'ix-peers', 'asn' => $asn, 'ixid' => $ix['ix_id']]) . "' role='button'>Show Peers</a>",
+        'links' => "<a href='https://peeringdb.com/ix/$ix_id' target='_blank'><i class='fa fa-database'></i></a>",
     ];
 }
 
 $output = [
-    'current'  => $current,
+    'current' => $current,
     'rowCount' => $rowCount,
-    'rows'     => $response,
-    'total'    => $total,
+    'rows' => $response,
+    'total' => $total,
 ];
 echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

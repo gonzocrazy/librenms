@@ -10,11 +10,11 @@
                     "version": "4.2.4",
                     "hardware": "Room Alert 4E",
                     "features": null,
+                    "location": "<private>",
                     "os": "avtech",
                     "type": "environment",
                     "serial": null,
-                    "icon": "avtech.svg",
-                    "location": "<private>"
+                    "icon": "avtech.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Network",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -147,9 +140,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -159,15 +149,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Network",
                     "ifPhysAddress": "0080a3cc9a1c",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -256,6 +242,7 @@
                     "sensor_type": "switch",
                     "sensor_descr": "Switch Sen 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -269,6 +256,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "switch"
                 },
                 {
@@ -280,6 +268,7 @@
                     "sensor_type": "avtech",
                     "sensor_descr": "Internal Sensor",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -293,6 +282,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -304,6 +294,7 @@
                     "sensor_type": "avtech",
                     "sensor_descr": "Ext Sensor 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 23,
@@ -317,6 +308,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -328,6 +320,7 @@
                     "sensor_type": "avtech",
                     "sensor_descr": "Ext Sensor 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 23,
@@ -341,6 +334,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -348,19 +342,30 @@
                 {
                     "state_name": "switch",
                     "state_descr": "Off",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": -1
                 },
                 {
                     "state_name": "switch",
                     "state_descr": "On",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 }
             ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.0.11.104",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "10.0.11.0/24",
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

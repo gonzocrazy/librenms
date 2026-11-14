@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HostUnreachableException.php
  *
@@ -18,19 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Exceptions;
 
+use LibreNMS\Enum\PollingMethodType;
+
 class HostUnreachableException extends \Exception
 {
     protected $reasons = [];
 
-    public function __toString()
+    /**
+     * @param  PollingMethodType|null  $method  the polling method that could not reach the host
+     */
+    public function __construct(string $message = '', public readonly ?PollingMethodType $method = null)
     {
-        $string = __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        parent::__construct($message);
+    }
+
+    public function __toString(): string
+    {
+        $string = self::class . ": [{$this->code}]: {$this->message}\n";
         foreach ($this->reasons as $reason) {
             $string .= "  $reason\n";
         }
@@ -39,16 +51,16 @@ class HostUnreachableException extends \Exception
     }
 
     /**
-     * Add additional reasons
-     * @param string $message
+     * Add a human-readable reason the host could not be reached
      */
-    public function addReason($message)
+    public function addReason(string $reason): void
     {
-        $this->reasons[] = $message;
+        $this->reasons[] = $reason;
     }
 
     /**
      * Get the reasons
+     *
      * @return array
      */
     public function getReasons()

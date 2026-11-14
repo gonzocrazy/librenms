@@ -4,11 +4,7 @@ $scale_min = 0;
 
 require 'includes/html/graphs/common.inc.php';
 
-$ceph_pool_rrd = ceph_rrd('df');
-
-if (Rrd::checkRrdExists($ceph_pool_rrd)) {
-    $rrd_filename = $ceph_pool_rrd;
-}
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'ceph', $app->app_id, 'df', $vars['pool']]);
 
 $ds = 'objects';
 

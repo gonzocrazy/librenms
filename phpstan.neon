@@ -1,25 +1,48 @@
 includes:
-    - phpstan-baseline.neon
-    - vendor/nunomaduro/larastan/extension.neon
+    - vendor/larastan/larastan/extension.neon
     - vendor/phpstan/phpstan-mockery/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
 
 parameters:
+    phpVersion:
+        min: 80400
+        max: 80599
+
+    parseModelCastsMethod: true
 
     paths:
         - app
+        - bootstrap
         - config
         - database
         - LibreNMS
         - resources
+        - routes
         - tests
+
+    excludePaths:
+        - bootstrap/cache
+        - tests/Unit/Data/KafkaDBStoreTest.php
+        - LibreNMS/Data/Store/Kafka.php
 
     scanDirectories:
         - includes
 
+    scanFiles:
+        - vendor/amenadiel/jpgraph/src/config.inc.php
+
     level: 5
 
-    checkMissingIterableValueType: false
     treatPhpDocTypesAsCertain: false
+
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+
+    checkModelProperties: true
+    checkAuthCallsWhenInRequestScope: true
+    checkModelMethodVisibility: true
+    noUnnecessaryEnumerableToArrayCalls: true
 
     ignoreErrors:
         - '#Unsafe usage of new static#'

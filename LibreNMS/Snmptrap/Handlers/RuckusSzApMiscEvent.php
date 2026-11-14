@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RuckusSzApMiscEvent.php
  *
@@ -21,6 +22,7 @@
  * an event from a connected access point.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -30,7 +32,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class RuckusSzApMiscEvent implements SnmptrapHandler
 {
@@ -38,14 +39,14 @@ class RuckusSzApMiscEvent implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         $severity = RuckusSzSeverity::getSeverity($trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZEventSeverity')));
         $eventDescr = $trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZEventDescription'));
-        Log::event("AP event: $eventDescr", $device->device_id, 'trap', $severity);
+        $trap->log("AP event: $eventDescr", $severity);
     }
 }

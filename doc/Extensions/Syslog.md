@@ -1,102 +1,45 @@
-source: Extensions/Syslog.md
-path: blob/master/doc/
+# Syslog support
 
-# Setting up syslog support
 
-This document will explain how to send syslog data to LibreNMS.
-Please also refer to the file Graylog.md for an alternate way of
-integrating syslog with LibreNMS.
-
-## Syslog server installation
-
-### syslog-ng
-
-For Debian / Ubuntu:
-
-```ssh
-apt-get install syslog-ng
-```
-
-For CentOS / RedHat
-
-```ssh
-yum install syslog-ng
-```
-
-Once syslog-ng is installed, edit the relevant config file (most
-likely /etc/syslog-ng/syslog-ng.conf) and paste the following:
+## Syslog integration variants
+This section explain different ways to receive and process syslog with LibreNMS.
+Except of graylog, all Syslogs variants store their logs in the LibreNMS database. You need to enable the Syslog extension:
 
 ```bash
-@version:3.5
-@include "scl.conf"
+lnms config:set enable_syslog true
+```
+A Syslog integration gives you a centralized view of information within the LibreNMS (device view, traps, event). Further more you can trigger alerts based on syslog messages (see rule collections).
 
-# syslog-ng configuration file.
-#
-# This should behave pretty much like the original syslog on RedHat. But
-# it could be configured a lot smarter.
-#
-# See syslog-ng(8) and syslog-ng.conf(5) for more information.
-#
-# Note: it also sources additional configuration files (*.conf)
-#       located in /etc/syslog-ng/conf.d/
+### Traditional Syslog server
 
-options {
-        chain_hostnames(off);
-        flush_lines(0);
-        use_dns(no);
-        use_fqdn(no);
-        owner("root");
-        group("adm");
-        perm(0640);
-        stats_freq(0);
-        bad_hostname("^gconfd$");
-};
+#### syslog-ng
+=== "Debian / Ubuntu"
+    ```ssh
+    apt-get install syslog-ng-core
+    ```
+=== "CentOS / RedHat"
+    ```ssh
+    yum install syslog-ng
+    ```
 
-source s_sys {
-    system();
-    internal();
-};
+Once syslog-ng is installed, create the config file 
+(/etc/syslog-ng/conf.d/librenms.conf) and paste the following:
 
+```bash
 source s_net {
         tcp(port(514) flags(syslog-protocol));
         udp(port(514) flags(syslog-protocol));
 };
 
-########################
-# Destinations
-########################
 destination d_librenms {
         program("/opt/librenms/syslog.php" template ("$HOST||$FACILITY||$PRIORITY||$LEVEL||$TAG||$R_YEAR-$R_MONTH-$R_DAY $R_HOUR:$R_MIN:$R_SEC||$MSG||$PROGRAM\n") template-escape(yes));
 };
 
-filter f_kernel     { facility(kern); };
-filter f_default    { level(info..emerg) and
-                        not (facility(mail)
-                        or facility(authpriv)
-                        or facility(cron)); };
-filter f_auth       { facility(authpriv); };
-filter f_mail       { facility(mail); };
-filter f_emergency  { level(emerg); };
-filter f_news       { facility(uucp) or
-                        (facility(news)
-                        and level(crit..emerg)); };
-filter f_boot   { facility(local7); };
-filter f_cron   { facility(cron); };
-
-########################
-# Log paths
-########################
 log {
         source(s_net);
-        source(s_sys);
+        source(s_src);
         destination(d_librenms);
 };
-
-# Source additional configuration files (.conf extension only)
-@include "/etc/syslog-ng/conf.d/*.conf"
-
-
-# vim:ft=syslog-ng:ai:si:ts=4:sw=4:et:
 ```
 
 Next start syslog-ng:
@@ -104,13 +47,6 @@ Next start syslog-ng:
 ```ssh
 service syslog-ng restart
 ```
-
-Add the following to your LibreNMS `config.php` file to enable the Syslog extension:
-
-```php
-$config['enable_syslog'] = 1;
-```
-
 
 If no messages make it to the syslog tab in LibreNMS, chances are you experience an issue with SELinux. If so, create a file mycustom-librenms-rsyslog.te , with the following content:
 
@@ -142,12 +78,12 @@ semodule -i mycustom-librenms-rsyslog.pp
 ```
 
 
-### rsyslog
+#### rsyslog
 
 If you prefer rsyslog, here are some hints on how to get it working.
 
-Add the following to your rsyslog config somewhere (could be at the
-top of the file in the step below, could be in `rsyslog.conf` if you
+Add these lines to your rsyslog config. Put them at the top of the file
+in the step below, or in `rsyslog.conf` if you
 are using remote logs for something else on this host)
 
 ```
@@ -196,20 +132,14 @@ Create a file called `/etc/rsyslog.d/30-librenms.conf`and add the following depe
     *.* :omprog:;librenms
     ```
 
-If your rsyslog server is recieving messages relayed by another syslog
-server, you may try replacing `%fromhost%` with `%hostname%`, since
+If your rsyslog server is receiving messages relayed by another syslog
+server, replace `%fromhost%` with `%hostname%`, because
 `fromhost` is the host the message was received from, not the host
 that generated the message.  The `fromhost` property is preferred as
 it avoids problems caused by devices sending incorrect hostnames in
 syslog messages.
 
-Add the following to your LibreNMS `config.php` file to enable the Syslog extension:
-
-```php
-$config['enable_syslog'] = 1;
-```
-
-### logstash
+### Local Logstash
 
 If you prefer logstash, and it is installed on the same server as
 LibreNMS, here are some hints on how to get it working.
@@ -248,47 +178,120 @@ the incoming syslog port. Alternatively, if you already have a
 logstash config file that works except for the LibreNMS export, take
 only the "exec" section from output and add it.
 
-Add the following to your LibreNMS `config.php` file to enable the Syslog extension:
+### Remote Logstash (or any json source)
+With a large logstash or elastic installation, send the relevant logs
+as JSON to the LibreNMS API "syslog sink". This method is more flexible
+and more secure in transport. It needs no major change to an existing
+ELK setup. You can also send simple JSON key-value messages to this
+sink from any application or script. The example below shows this. 
 
-```ssh
-$config['enable_syslog'] = 1;
+For a long term search or an advanced aggregation search, use Kibana,
+Grafana, or Graylog. Keep `config['syslog_purge']` short.
+
+A schematic setup can look like this:
+```
+  ┌──────┐
+  │Device├─►┌───────────────────┐                ┌──────────────┐
+  └──────┘  │Logstash Cluster   ├┬──────────────►│ElasticSearch ├┐
+            │  RabbitMQ         ││               │ Cluster      ││
+ ┌──────┬──►│    Filtering etc  ││ ───────┐      └┬─────────────┼│
+ │Device│   └┬──────────────────┼│        │       └──────────────┘
+ └──────┘    └───────────────────┘        ▼
+                                      ~~~WAN~~~
+                                          │
+                                        ┌─┼─┐
+                                        │┼┼┼│ LB / Firewall / etc
+                                        └─┼─┘
+                                          │
+                                          ▼
+                         ┌────────────────────┐    ┌────────────────────┐
+                         │LibreNMS Sink       ├┬──►│LibreNMS Master     │
+                         │/api/v0/syslogsink/ ││   │ MariaDB            │
+                         └┬───────────────────┼│   └────────────────────┘
+                          └────────────────────┘
 ```
 
-# Syslog Clean Up
-
-Can be set inside of  `config.php`
-
-```php
-$config['syslog_purge'] = 30;
+A minimal [Logstash http output](https://www.elastic.co/guide/en/logstash/current/plugins-outputs-http.html) configuration can look like this: 
+```
+output {
+....
+        #feed it to LibreNMS
+     	http {
+     		http_method => "post"
+     		url => "https://sink.librenms.org/api/v0/syslogsink/    # replace with your librenms host
+     		format => "json_batch"                                  # put multiple syslogs in on HTTP message
+                retry_failed => false                               # if true, logstash is blocking if the API is unavailable, be careful! 
+                headers => ["Authorization","Bearer xxxxxxxLibreNMSApiToken"]
+                
+                # optional if your mapping is not already done before or does not match. "msg" and "host" is mandatory. 
+                # you might also use out the clone {} function to duplicate your log stream and a dedicated log filtering/mapping etc.
+                # mapping => {
+                # "host"=> "%{host}"
+                # "program" => "%{program}"
+                # "facility" => "%{facility_label}"
+                # "priority" => "%{syslog5424_pri}"
+                # "level" => "%{facility_label}"				
+                # "tag" => "%{topic}"
+                # "msg" => "%{message}"
+                # "timestamp" => "%{@timestamp}"
+                # }
+        }
+}
 ```
 
-The cleanup is run by daily.sh and any entries over X days old are
-automatically purged. Values are in days. See here for more Clean Up
-Options [Link](../Support/Cleanup-options.md)
+Sample test data:
+```
+curl -L -X POST 'https://sink.librenms.org/api/v0/syslogsink/' -H 'Authorization: Bearer xxxxxxxLibreNMSApiToken' --data-raw '[   
+    {
+        "msg": "kernel: minimum Message",
+        "host": "mydevice.fqdn.com"
+    },
+    {
+        "msg": "Line protocol on Interface GigabitEthernet1/0/41, changed state to up",
+        "facility": 23,
+        "priority": "189",
+        "program": "LINEPROTO-5-UPDOWN",
+        "host": "172.29.10.24",
+        "@timestamp": "2022-12-01T20:14:28.257Z",
+        "severity": 5,
+        "level": "ERROR"
+    },
+    {
+        "msg": "kernel: a unknown host",
+        "host": "unknown.fqdn.com"
+    }
+]'
+```
+`msg` and `host` are the minimum keys. 
 
-# Client configuration
 
-Below are sample configurations for a variety of clients. You should
-understand the config before using it as you may want to make some
-slight changes. Further configuration hints may be found in the file Graylog.md.
+### Graylog
+
+This variant method use a external Graylog installation and its database. Please refer to the dedicated [Graylog](Graylog.md) documentation.
+
+## Client configuration
+
+The sections below give example configurations of several clients. Read
+each configuration before you use it. You often need a small change.
+The file `Graylog.md` gives more configuration advice.
 
 Replace librenms.ip with IP or hostname of your LibreNMS install.
 
 Replace any variables in <brackets> with the relevant information.
 
-## syslog
+### syslog
 
 ```config
 *.*     @librenms.ip
 ```
 
-## rsyslog
+### rsyslog
 
 ```config
 *.* @librenms.ip:514
 ```
 
-## Cisco ASA
+### Cisco ASA
 
 ```config
 logging enable
@@ -299,7 +302,7 @@ logging trap notifications
 logging host <outside interface name> librenms.ip
 ```
 
-## Cisco IOS
+### Cisco IOS
 
 ```config
 logging trap debugging
@@ -307,13 +310,13 @@ logging facility local6
 logging librenms.ip
 ```
 
-## Cisco NXOS
+### Cisco NXOS
 
 ```config
 logging server librenms.ip 5 use-vrf default facility local6
 ```
 
-## Juniper Junos
+### Juniper Junos
 
 ```config
 set system syslog host librenms.ip authorization any
@@ -326,7 +329,7 @@ set system syslog host librenms.ip exclude-hostname
 set system syslog time-format
 ```
 
-## Huawei VRP
+### Huawei VRP
 
 ```config
 info-center loghost librenms.ip
@@ -342,14 +345,14 @@ info-center filter-id bymodule-alias SNMP SNMP_IPUNLOCK
 info-center filter-id bymodule-alias HTTP ACL_DENY
 ```
 
-## Huawei SmartAX (GPON OLT)
+### Huawei SmartAX (GPON OLT)
 
 ```config
 loghost add librenms.ip librenms
 loghost activate name librenms
 ```
 
-## Allied Telesis Alliedware Plus
+### Allied Telesis Alliedware Plus
 
 ```config
 log date-format iso // Required so syslog-ng/LibreNMS can correctly interpret the log message formatting.
@@ -359,96 +362,178 @@ log host x.x.x.x level notices program imish // Useful for seeing all commands e
 log host x.x.x.x level notices program imi // Required for Oxidized Syslog hook log message.
 log host source <eth0>
 ```
+    
+### HPE/Aruba Procurve
+    
+```config
+configure
+logging severity warning
+logging facility local6
+logging librenms.ip control-descr "LibreNMS"
+logging notify running-config-change
+write memory
+```
 
 If you have permitted udp and tcp 514 through any firewall then that
-should be all you need. Logs should start appearing and displayed
+is enough. The logs then appear and LibreNMS shows them
 within the LibreNMS web UI.
 
-## Windows
+### Windows
 
 By Default windows has no native way to send logs to a remote syslog server.
 
 Using this how to you can download Datagram-Syslog Agent to send logs
 to a remote syslog server (LibreNMS).
 
-### Note
+#### Note
 
 Keep in mind you can use any agent or program to send the logs. We are
-just using this Datagram-Syslog Agent for this example.
+This example uses the Datagram-Syslog Agent.
 
 [Link to How to](http://techgenix.com/configuring-syslog-agent-windows-server-2012/)
 
-You will need to download and install "Datagram-Syslog Agent" for this how to
+Download and install "Datagram-Syslog Agent" for this procedure
 [Link to Download](http://download.cnet.com/Datagram-SyslogAgent/3001-2085_4-10370938.html)
 
-# External hooks
+## External hooks
 
 Trigger external scripts based on specific syslog patterns being
-matched with syslog hooks. Add the following to your LibreNMS
-`config.php` to enable hooks:
+matched with syslog hooks. Enable syslog hook support:
 
-```ssh
-$config['enable_syslog_hooks'] = 1;
+```bash
+lnms config:set enable_syslog_hooks true
 ```
 
 The below are some example hooks to call an external script in the
 event of a configuration change on Cisco ASA, IOS, NX-OS and IOS-XR
-devices. Add to your `config.php` file to enable.
+devices.
 
-## Cisco ASA
+### Cisco ASA
 
-```ssh
-$config['os']['asa']['syslog_hook'][] = Array('regex' => '/%ASA-(config-)?5-111005/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+=== "lnms"
+    ```bash
+    lnms config:set os.asa.syslog_hook '[{ "regex": "/%ASA-(config-)?5-111005/", "script": "/opt/librenms/scripts/syslog-notify-oxidized.php" }]'
+    ```
 
-## Cisco IOS
+=== "legacy config.php"
+    ```php
+    $config['os']['asa']['syslog_hook'][] = Array('regex' => '/%ASA-(config-)?5-111005/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
 
-```ssh
-$config['os']['ios']['syslog_hook'][] = Array('regex' => '/%SYS-(SW[0-9]+-)?5-CONFIG_I/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+### Cisco IOS
 
-## Cisco NXOS
+=== "lnms"
+    ```bash
+    lnms config:set os.ios.syslog_hook '[{"regex":"/%SYS-(SW[0-9]+-)?5-CONFIG_I/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
 
-```ssh
-$config['os']['nxos']['syslog_hook'][] = Array('regex' => '/%VSHD-5-VSHD_SYSLOG_CONFIG_I/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+=== "legacy config.php"
+    ```php
+    $config['os']['ios']['syslog_hook'][] = Array('regex' => '/%SYS-(SW[0-9]+-)?5-CONFIG_I/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
 
-## Cisco IOSXR
+### Cisco NXOS
 
-```ssh
-$config['os']['iosxr']['syslog_hook'][] = Array('regex' => '/%GBL-CONFIG-6-DB_COMMIT/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+=== "lnms"
+    ```bash
+    lnms config:set os.nxos.syslog_hook '[{"regex":"/%VSHD-5-VSHD_SYSLOG_CONFIG_I/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
 
-## Juniper Junos
+=== "legacy config.php"
+    ```php
+    $config['os']['nxos']['syslog_hook'][] = Array('regex' => '/%VSHD-5-VSHD_SYSLOG_CONFIG_I/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
 
-```ssh
-$config['os']['junos']['syslog_hook'][] = Array('regex' => '/UI_COMMIT:/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+### Cisco IOSXR
 
-## Juniper ScreenOS
+=== "lnms"
+    ```bash
+    lnms config:set os.iosxr.syslog_hook '[{"regex":"/%GBL-CONFIG-6-DB_COMMIT/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]'
+    ```
 
-```ssh
-$config['os']['screenos']['syslog_hook'][] = Array('regex' => '/System configuration saved/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+=== "legacy config.php"
+    ```php
+    $config['os']['iosxr']['syslog_hook'][] = Array('regex' => '/%GBL-CONFIG-6-DB_COMMIT/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
 
-## Allied Telesis Alliedware Plus
+### Juniper Junos
+
+=== "lnms"
+    ```bash
+    lnms config:set os.junos.syslog_hook '[{"regex":"/UI_COMMIT:/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
+
+=== "legacy config.php"
+    ```php
+    $config['os']['junos']['syslog_hook'][] = Array('regex' => '/UI_COMMIT:/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
+
+### Juniper ScreenOS
+
+=== "lnms"
+    ```bash
+    lnms config:set os.screenos.syslog_hook '[{"regex":"/System configuration saved/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
+
+=== "legacy config.php"
+    ```php
+    $config['os']['screenos']['syslog_hook'][] = Array('regex' => '/System configuration saved/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
+
+### Allied Telesis Alliedware Plus
 
 **Note:** At least software version 5.4.8-2.1 is required. `log host
-x.x.x.x level notices program imi` may also be required depending on
+x.x.x.x level notices program imi` can also be necessary, from
 configuration. This is to ensure the syslog hook log message gets sent
 to the syslog server.
 
-```ssh
-$config['os']['awplus']['syslog_hook'][] = Array('regex' => '/IMI.+.Startup-config saved on/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
-```
+=== "lnms"
+    ```bash
+    lnms config:set os.awplus.syslog_hook '[{"regex":"/IMI.+.Startup-config saved on/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
 
-# Configuration Options
+=== "legacy config.php"
+    ```php
+    $config['os']['awplus']['syslog_hook'][] = Array('regex' => '/IMI.+.Startup-config saved on/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
+    
+### HPE/Aruba Procurve
 
-## Matching syslogs to hosts with different names
+=== "lnms"
+    ```bash
+    lnms config:set os.procurve.syslog_hook '[{"regex":"/Running Config Change/","script":"/opt/librenms/scripts/syslog-notify-oxidized.php"}]' 
+    ```
 
-In some cases, you may get logs that aren't being associated with the
+=== "legacy config.php"
+    ```php
+    $config['os']['procurve']['syslog_hook'][] = Array('regex' => '/Running Config Change/', 'script' => '/opt/librenms/scripts/syslog-notify-oxidized.php');
+    ```
+
+## Configuration Options
+### Syslog Clean Up
+
+Default can be set:
+
+=== "lnms"
+    ```bash
+    lnms config:set syslog_purge 30
+    ```
+
+=== "legacy config.php"
+    ```php
+    $config['syslog_purge'] = 30;
+    ```
+
+The cleanup is run by daily.sh and any entries over X days old are
+automatically purged. Values are in days. See here for more Clean Up
+Options [Link](../Support/Cleanup-options.md)
+
+
+### Matching syslogs to hosts with different names
+
+Some logs have no association with the
 device in LibreNMS. For example, in LibreNMS the device is known as
-"ne-core-01", and that's how DNS resolves. However, the received
+"ne-core-01", and DNS resolves it in that form. The received
 syslogs are for "loopback.core-nw".
 
 To fix this issue, you can configure LibreNMS to translate the
@@ -457,9 +542,19 @@ associated with the correct device.
 
 Example:
 
-```ssh
-$config['syslog_xlate'] = array(
-        'loopback0.core7k1.noc.net' => 'n7k1-core7k1',
-        'loopback0.core7k2.noc.net' => 'n7k2-core7k2'
-);
-```
+=== "lnms"
+    ```bash
+    lnms config:set syslog_xlate \
+    '{
+        "loopback0.core7k1.noc.net": "n7k1-core7k1",
+        "loopback0.core7k2.noc.net": "n7k2-core7k2"
+    }'
+    ```
+
+=== "legacy config.php"
+    ```php
+    $config['syslog_xlate'] = array(
+            'loopback0.core7k1.noc.net' => 'n7k1-core7k1',
+            'loopback0.core7k2.noc.net' => 'n7k2-core7k2'
+    );
+    ```

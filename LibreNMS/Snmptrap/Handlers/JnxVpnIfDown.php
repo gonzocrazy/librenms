@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JnxVpnIfDown.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Neil Kahle <nkahle@kanren.net>
  */
@@ -25,9 +27,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class JnxVpnIfDown implements SnmptrapHandler
 {
@@ -35,8 +37,8 @@ class JnxVpnIfDown implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -44,6 +46,6 @@ class JnxVpnIfDown implements SnmptrapHandler
         $vpnType = $trap->getOidData($trap->findOid('JUNIPER-VPN-MIB::jnxVpnIfVpnType'));
         $vpnName = $trap->getOidData($trap->findOid('JUNIPER-VPN-MIB::jnxVpnIfVpnName'));
 
-        Log::event("$vpnType on interface $vpnName has gone down", $device->device_id, 'trap', 4);
+        $trap->log("$vpnType on interface $vpnName has gone down", Severity::Warning);
     }
 }

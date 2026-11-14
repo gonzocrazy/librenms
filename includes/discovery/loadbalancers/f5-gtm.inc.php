@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LibreNMS module to display F5 GTM Wide IP Details
  *
@@ -12,8 +13,9 @@
  * the source code distribution for details.
  */
 
+use LibreNMS\Util\ProgressList;
+
 // Define some error messages
-use LibreNMS\Util\IP;
 
 $error_poolaction = [];
 $error_poolaction[0] = 'Unused';
@@ -28,7 +30,7 @@ $component = new LibreNMS\Component();
 $components = $component->getComponents($device['device_id']);
 
 // We only care about our device id.
-$components = $components[$device['device_id']];
+$components = $components[$device['device_id']] ?? [];
 
 // We extracted all the components for this device, now lets only get the LTM ones.
 $keep = [];
@@ -44,8 +46,10 @@ $components = $keep;
 
 // Begin our master array, all other values will be processed into this array.
 $tblBigIP = [];
-
-if ((snmp_get($device, 'sysModuleAllocationProvisionLevel.3.103.116.109', '-Ovqs', 'F5-BIGIP-SYSTEM-MIB')) != false) {
+$gtmWideIPEntry = null;
+$gtmWideStatusEntry = null;
+$gtmPoolEntry = null;
+if (snmp_get($device, 'sysModuleAllocationProvisionLevel.3.103.116.109', '-Ovqs', 'F5-BIGIP-SYSTEM-MIB') != false) {
     $gtmWideIPEntry = snmpwalk_array_num($device, '1.3.6.1.4.1.3375.2.3.12.1.2.1', 0);
     if (! is_null($gtmWideIPEntry)) {
         $gtmWideStatusEntry = snmpwalk_array_num($device, '1.3.6.1.4.1.3375.2.3.12.3.2.1', 0);
@@ -68,8 +72,8 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
             $result = [];
 
             // Find all Virtual server names and UID's, then we can find everything else we need.
-            if (strpos($oid, '1.3.6.1.4.1.3375.2.3.12.3.2.1.1.') !== false) {
-                [$null, $index] = explode('1.3.6.1.4.1.3375.2.3.12.3.2.1.1.', $oid);
+            if (str_contains((string) $oid, '1.3.6.1.4.1.3375.2.3.12.3.2.1.1.')) {
+                [$null, $index] = explode('1.3.6.1.4.1.3375.2.3.12.3.2.1.1.', (string) $oid);
                 $result['type'] = 'f5-gtm-wide';
                 $result['UID'] = (string) $index;
                 $result['label'] = $value;
@@ -113,8 +117,8 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
             $result = [];
 
             // Find all Pool names and UID's, then we can find everything else we need.
-            if (strpos($oid, '1.3.6.1.4.1.3375.2.3.6.2.3.1.1.') !== false) {
-                [$null, $index] = explode('1.3.6.1.4.1.3375.2.3.6.2.3.1.1.', $oid);
+            if (str_contains((string) $oid, '1.3.6.1.4.1.3375.2.3.6.2.3.1.1.')) {
+                [$null, $index] = explode('1.3.6.1.4.1.3375.2.3.6.2.3.1.1.', (string) $oid);
                 $result['type'] = 'f5-gtm-pool';
                 $result['UID'] = (string) $index;
                 $result['label'] = $value;
@@ -138,6 +142,7 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
      *
      * Let's loop over the SNMP data to see if we need to ADD or UPDATE any components.
      */
+    $progress = ProgressList::start('GTM components');
     foreach ($tblBigIP as $key => $array) {
         $component_key = false;
 
@@ -153,11 +158,11 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
             $new_component = $component->createComponent($device['device_id'], $array['type']);
             $component_key = key($new_component);
             $components[$component_key] = array_merge($new_component[$component_key], $array);
-            echo '+';
+            $progress->mark('+');
         } else {
             // The component does exist, merge the details in - UPDATE.
             $components[$component_key] = array_merge($components[$component_key], $array);
-            echo '.';
+            $progress->mark('.');
         }
     }
 
@@ -168,7 +173,7 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
         // Guilty until proven innocent
         $found = false;
 
-        foreach ($tblBigIP as $k => $v) {
+        foreach ($tblBigIP as $v) {
             if (($array['UID'] == $v['UID']) && ($array['type'] == $v['type'])) {
                 // Yay, we found it...
                 $found = true;
@@ -177,12 +182,12 @@ if (! is_null($gtmWideIPEntry) || ! is_null($gtmWideStatusEntry) || ! is_null($g
 
         if ($found === false) {
             // The component has not been found. we should delete it.
-            echo '-';
+            $progress->mark('-');
             $component->deleteComponent($key);
         }
     }
 
     // Write the Components back to the DB.
     $component->setComponentPrefs($device['device_id'], $components);
-    echo "\n";
+    $progress->end();
 } // End if not error

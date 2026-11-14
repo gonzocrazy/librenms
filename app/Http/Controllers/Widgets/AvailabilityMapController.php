@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AvailabilityMapController.php
  *
@@ -18,164 +19,262 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Widgets;
 
+use App\Facades\LibrenmsConfig;
+use App\Models\AlertSchedule;
 use App\Models\Device;
 use App\Models\DeviceGroup;
 use App\Models\Service;
 use Illuminate\Http\Request;
-use LibreNMS\Config;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
+use LibreNMS\Util\Url;
 
 class AvailabilityMapController extends WidgetController
 {
-    protected $title = 'Availability Map';
+    protected string $name = 'availability-map';
 
     public function __construct()
     {
         $this->defaults = [
             'title' => null,
-            'type' => (int) Config::get('webui.availability_map_compact', 0),
+            'type' => (int) LibrenmsConfig::get('webui.availability_map_compact', 0),
             'tile_size' => 12,
             'color_only_select' => 0,
             'show_disabled_and_ignored' => 0,
+            'show_totals' => 1,
             'mode_select' => 0,
-            'order_by' => Config::get('webui.availability_map_sort_status') ? 'status' : 'hostname',
+            'order_by' => LibrenmsConfig::get('webui.availability_map_sort_status') ? 'status' : 'display-name',
             'device_group' => null,
         ];
     }
 
-    public function getView(Request $request)
+    public function getView(Request $request): string|View
     {
         $data = $this->getSettings();
 
-        $devices = [];
-        $device_totals = [];
-        $services = [];
-        $services_totals = [];
-
-        $mode = $data['mode_select'];
-        if ($mode == 0 || $mode == 2) {
-            [$devices, $device_totals] = $this->getDevices($request);
-        }
-        if ($mode > 0) {
-            [$services, $services_totals] = $this->getServices($request);
-        }
-
-        $data['device'] = Device::first();
+        [$devices, $device_totals] = $this->getDevices();
+        [$services, $services_totals] = $this->getServices();
 
         $data['devices'] = $devices;
         $data['device_totals'] = $device_totals;
         $data['services'] = $services;
         $data['services_totals'] = $services_totals;
+        $data['base_filter'] = isset($data['device_group']) ? ['groups.id' => ['eq' => $data['device_group']]] : [];
 
         return view('widgets.availability-map', $data);
     }
 
-    public function getSettingsView(Request $request)
-    {
-        return view('widgets.settings.availability-map', $this->getSettings(true));
-    }
-
-    /**
-     * @param Request $request
-     * @return array
-     */
-    private function getDevices(Request $request)
+    private function getDevices(): array
     {
         $settings = $this->getSettings();
 
+        if ($settings['mode_select'] == 1) { // services only
+            return [[], []];
+        }
+
         // filter for by device group or show all
         if ($settings['device_group']) {
-            $device_query = DeviceGroup::find($settings['device_group'])->devices()->hasAccess($request->user());
+            $device_query = DeviceGroup::find($settings['device_group'])->devices()->hasAccess(Auth::user());
         } else {
-            $device_query = Device::hasAccess($request->user());
+            $device_query = Device::hasAccess(Auth::user());
         }
 
         if (! $settings['show_disabled_and_ignored']) {
             $device_query->isNotDisabled();
         }
-        $device_query->orderBy($settings['order_by']);
-        $devices = $device_query->select('devices.device_id', 'hostname', 'sysName', 'status', 'uptime', 'last_polled', 'disabled', 'disable_notify', 'location_id')->get();
+        $devices = $device_query->select(['devices.device_id', 'hostname', 'sysName', 'display', 'status', 'uptime', 'last_polled', 'disabled', 'ignore', 'ignore_status'])->get();
 
         // process status
-        $uptime_warn = Config::get('uptime_warning', 84600);
-        $totals = ['warn' => 0, 'up' => 0, 'down' => 0, 'maintenance' => 0, 'ignored' => 0, 'disabled' => 0];
-        foreach ($devices as $device) {
-            if ($device->disabled) {
-                $totals['disabled']++;
-                $device->stateName = 'disabled';
-                $device->labelClass = 'blackbg';
-            } elseif ($device->disable_notify) {
-                $totals['ignored']++;
-                $device->stateName = 'alert-dis';
-                $device->labelClass = 'label-default';
-            } elseif ($device->status == 1) {
-                if (($device->uptime < $uptime_warn) && ($device->uptime != 0)) {
-                    $totals['warn']++;
-                    $device->stateName = 'warn';
-                    $device->labelClass = 'label-warning';
-                } else {
-                    $totals['up']++;
-                    $device->stateName = 'up';
-                    $device->labelClass = 'label-success';
-                }
-            } else {
-                $totals['down']++;
-                $device->stateName = 'down';
-                $device->labelClass = 'label-danger';
-            }
+        $uptime_warn = (int) LibrenmsConfig::get('uptime_warning', 86400);
+        $check_maintenance = AlertSchedule::isActive()->exists(); // check if any maintenance schedule is active
+        // TODO: take a deeper look, why key ignored still has to exist
+        $totals = ['warn' => 0, 'up' => 0, 'down' => 0, 'maintenance' => 0, 'ignored' => 0, 'ignored-up' => 0, 'ignored-down' => 0, 'disabled' => 0];
+        $data = [];
 
-            if ($device->isUnderMaintenance()) {
-                $device->labelClass = 'label-default';
+        foreach ($devices as $device) {
+            // parse state and count
+            [$state_name, $class] = $this->parseDeviceState($device, $uptime_warn);
+            $totals[$state_name]++;
+
+            if ($check_maintenance && $device->isUnderMaintenance()) {
+                $class = 'label-default';
                 $totals['maintenance']++;
             }
+
+            if ($settings['type'] == 1) {
+                $class = "availability-map-oldview-box-$state_name";
+            }
+
+            $data[] = [
+                'status' => $device->status,
+                'link' => Url::deviceUrl($device),
+                'tooltip' => $this->getDeviceTooltip($device, $state_name),
+                'label' => $this->getDeviceLabel($device, $state_name), // add another field for the selected label
+                'labelClass' => $class,
+            ];
         }
 
-        return [$devices, $totals];
+        $this->sort($data);
+
+        return [$data, $totals];
     }
 
-    private function getServices($request)
+    private function getServices(): array
     {
         $settings = $this->getSettings();
 
-        // filter for by device group or show all
-        if ($settings['device_group']) {
-            $services_query = DeviceGroup::find($settings['device_group'])->services()->hasAccess($request->user());
-        } else {
-            $services_query = Service::hasAccess($request->user());
+        if ($settings['mode_select'] == 0) { // devices only
+            return [[], []];
         }
 
-        if ($settings['order_by'] == 'status') {
-            $services_query->orderBy('service_status', 'DESC')->orderBy('service_type');
-        } elseif ($settings['order_by'] == 'hostname') {
-            $services_query->leftJoin('devices', 'services.device_id', 'devices.device_id')->orderBy('hostname')->orderBy('service_type');
+        // filter for by device group or show all
+        if ($settings['device_group']) {
+            $services_query = DeviceGroup::find($settings['device_group'])->services()->hasAccess(Auth::user());
+        } else {
+            $services_query = Service::hasAccess(Auth::user());
         }
-        $services = $services_query->with(['device' => function ($query) {
-            $query->select('devices.device_id', 'hostname', 'sysName');
-        }])->select('service_id', 'services.device_id', 'service_type', 'service_desc', 'service_status')->get();
+
+        $services = $services_query->with([
+            'device' => function ($query): void {
+                $query->select(['devices.device_id', 'hostname', 'sysName', 'display']);
+            },
+        ])->select(['service_id', 'services.device_id', 'service_type', 'service_name', 'service_desc', 'service_status'])->get();
 
         // process status
         $totals = ['warn' => 0, 'up' => 0, 'down' => 0];
+        $data = [];
         foreach ($services as $service) {
-            if ($service->service_status == 0) {
-                $service->labelClass = 'label-success';
-                $service->stateName = 'up';
-                $totals['up']++;
-            } elseif ($service->service_status == 1) {
-                $service->labelClass = 'label-warning';
-                $service->stateName = 'warn';
-                $totals['warn']++;
-            } else {
-                $service->labelClass = 'label-danger';
-                $service->stateName = 'down';
-                $totals['down']++;
+            [$state_name, $class] = $this->parseServiceState($service);
+            $totals[$state_name]++;
+
+            if ($settings['type'] == 1) {
+                $class = "availability-map-oldview-box-$state_name";
             }
+
+            $data[] = [
+                'status' => $service->service_status,
+                'link' => Url::deviceUrl($service->device),
+                'tooltip' => $this->getServiceTooltip($service),
+                'label' => $this->getServiceLabel($service),
+                'labelClass' => $class,
+            ];
         }
 
-        return [$services, $totals];
+        $this->sort($data);
+
+        return [$data, $totals];
+    }
+
+    private function sort(array &$data): void
+    {
+        match ($this->getSettings()['order_by']) {
+            'status' => usort($data, fn ($l, $r) => ($l['status'] <=> $r['status']) ?: strcasecmp((string) $l['label'], (string) $r['label'])),
+            'label' => usort($data, fn ($l, $r) => strcasecmp((string) $l['label'], (string) $r['label'])),
+            // device display name (tooltip starts with the display name)
+            default => usort($data, fn ($l, $r) => strcasecmp((string) $l['tooltip'], (string) $r['tooltip']) ?: strcasecmp((string) $l['label'], (string) $r['label'])),
+        };
+    }
+
+    private function getDeviceLabel(Device $device, string $state_name): string
+    {
+        $choice = (int) ($this->getSettings()['color_only_select'] ?? 0);
+
+        return match ($choice) {
+            1 => '',
+            4 => $device->shortDisplayName(),
+            2 => strtolower($device->hostname),
+            3 => strtolower($device->sysName),
+            default => __($state_name),
+        };
+    }
+
+    private function getServiceLabel(Service $service): string
+    {
+        $choice = (int) ($this->getSettings()['color_only_select'] ?? 0);
+
+        if ($choice == 1) {
+            return '';
+        }
+
+        return empty($service->service_name) ? $service->service_type : $service->service_name;
+    }
+
+    private function getDeviceTooltip(Device $device, string $state_name): string
+    {
+        $tooltip = $device->display;
+
+        if (! $device->status && ! $device->last_polled) {
+            $time = __('Never polled');
+        } else {
+            $time = $device->formatDownUptime(true);
+        }
+
+        if ($time) {
+            $tooltip .= ' - ' . ($state_name == 'down' ? 'downtime ' : '') . $time;
+        }
+
+        return $tooltip;
+    }
+
+    private function getServiceTooltip(Service $service): string
+    {
+        $device = $service->device;
+        $tooltip = $device->display . ' [' . $service->service_type . ']';
+
+        $description = $service->service_name ?: $service->service_desc;
+        if ($description) {
+            $tooltip .= ' ' . $description;
+        }
+
+        return $tooltip;
+    }
+
+    private function parseDeviceState(Device $device, int $uptime_warn): array
+    {
+        if ($device->disabled) {
+            return ['disabled', 'blackbg'];
+        }
+
+        if ($device->ignore_status) {
+            return ['ignored-up', 'label-success'];
+        }
+
+        if ($device->ignore) {
+            if (($device->status == 1) && ($device->uptime != 0)) {
+                return ['ignored-up', 'label-success'];
+            }
+
+            return ['ignored-down', 'label-default'];
+        }
+
+        if ($device->status == 1) {
+            if (($device->uptime < $uptime_warn) && ($device->uptime != 0)) {
+                return ['warn', 'label-warning'];
+            }
+
+            return ['up', 'label-success'];
+        }
+
+        return ['down', 'label-danger'];
+    }
+
+    private function parseServiceState(Service $service): array
+    {
+        if ($service->service_status == 0) {
+            return ['up', 'label-success'];
+        }
+
+        if ($service->service_status == 1) {
+            return ['warn', 'label-warning'];
+        }
+
+        return ['down', 'label-danger'];
     }
 }

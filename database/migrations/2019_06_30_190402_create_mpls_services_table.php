@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMplsServicesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('mpls_services', function (Blueprint $table) {
+        Schema::create('mpls_services', function (Blueprint $table): void {
             $table->increments('svc_id');
             $table->unsignedInteger('svc_oid');
             $table->unsignedInteger('device_id')->index();
@@ -42,8 +42,8 @@ class CreateMplsServicesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('mpls_services');
     }
-}
+};

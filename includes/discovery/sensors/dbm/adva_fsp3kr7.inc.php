@@ -1,10 +1,13 @@
 <?php
+
 /**
  * LibreNMS - ADVA device support - Pre-Cache for Sensors
  *
  * @category   Network_Monitoring
+ *
  * @author     Christoph Zilian <czilian@hotmail.com>
  * @license    https://gnu.org/copyleft/gpl.html GNU GPL
+ *
  * @link       https://github.com/librenms/librenms/
  *
  * This program is free software: you can redistribute it and/or modify it
@@ -14,10 +17,12 @@
  * the source code distribution for details.
  **/
 
+use LibreNMS\Enum\SensorType;
+
 //********* ADVA FSP3000 R7 Series
 
-    $multiplier = 1;
-    $divisor = 10;
+$multiplier = 1;
+$divisor = 10;
 
 foreach ($pre_cache['adva_fsp3kr7'] as $index => $entry) {
     if ($entry['entityFacilityAidString'] and $entry['pmSnapshotCurrentInputPower']) {
@@ -27,8 +32,8 @@ foreach ($pre_cache['adva_fsp3kr7'] as $index => $entry) {
         $descr = $entry['entityFacilityAidString'] . ' RX';
 
         discover_sensor(
-            $valid['sensor'],
-            'dbm',
+            null,
+            SensorType::Dbm,
             $device,
             $oidRX,
             'pmSnapshotCurrentInputPower' . $index,
@@ -50,8 +55,8 @@ foreach ($pre_cache['adva_fsp3kr7'] as $index => $entry) {
         $currentTX = $entry['pmSnapshotCurrentOutputPower'] / $divisor;
 
         discover_sensor(
-            $valid['sensor'],
-            'dbm',
+            null,
+            SensorType::Dbm,
             $device,
             $oidTX,
             'pmSnapshotCurrentOutputPower' . $index,

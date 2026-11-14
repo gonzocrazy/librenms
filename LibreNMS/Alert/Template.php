@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\Alert;
 
 use App\Models\AlertTemplate;
+use Illuminate\Support\Facades\Blade;
 use LibreNMS\Enum\AlertState;
 
 class Template
@@ -34,7 +37,7 @@ class Template
     /**
      * Get the template details
      *
-     * @param array|null $obj
+     * @param  array|null  $obj
      * @return mixed
      */
     public function getTemplate($obj = null)
@@ -43,7 +46,7 @@ class Template
             // Return the cached template information.
             return $this->template;
         }
-        $this->template = AlertTemplate::whereHas('map', function ($query) use ($obj) {
+        $this->template = AlertTemplate::whereHas('map', function ($query) use ($obj): void {
             $query->where('alert_rule_id', '=', $obj['rule_id']);
         })->first();
         if (! $this->template) {
@@ -66,41 +69,67 @@ class Template
     /**
      * Parse Blade body
      *
-     * @param array $data
+     * @param  array  $data
      * @return string
      */
     public function bladeBody($data)
     {
-        $alert['alert'] = new AlertData($data['alert']);
+        $alert['alert'] = new AlertData($data['alert'] ?? $data);
         try {
-            return view(['template' => $data['template']->template], $alert)->__toString();
+            return Blade::render($data['template']->template, $alert);
         } catch (\Exception $e) {
-            return view(['template' => $this->getDefaultTemplate()], $alert)->__toString();
+            return Blade::render($this->getDefaultTemplate($data['template']->name ?? '', $e->getMessage()), $alert);
         }
     }
 
     /**
      * Parse Blade title
      *
-     * @param array $data
+     * @param  array  $data
      * @return string
      */
     public function bladeTitle($data)
     {
-        $alert['alert'] = new AlertData($data['alert']);
-        try {
-            return view(['template' => $data['title']], $alert)->__toString();
-        } catch (\Exception $e) {
-            return $data['title'] ?: view(['template' => 'Template ' . $data['name']], $alert)->__toString();
+        $template = $data['template'] ?? null;
+        $state = $data['state'] ?? ($data['alert']['state'] ?? null);
+        $isRecovered = $state == AlertState::RECOVERED;
+
+        $alertData = new AlertData($data['alert'] ?? $data);
+
+        $display = $alertData['display'];
+        $name = $alertData['name'];
+        $defaultTitle = $isRecovered
+            ? 'Device ' . $display . ' recovered from ' . ($name ?: $alertData['rule'])
+            : 'Alert for device ' . $display . ' - ' . $name;
+
+        $templateTitle = $isRecovered
+            ? ($template->title_rec ?? null)
+            : ($template->title ?? null);
+
+        if (! empty($templateTitle)) {
+            try {
+                $title = Blade::render($templateTitle, ['alert' => $alertData]);
+            } catch (\Throwable) {
+                $title = $defaultTitle;
+            }
+        } else {
+            $title = $defaultTitle;
         }
+
+        if ($state == AlertState::ACKNOWLEDGED) {
+            $title .= ' Has been acknowledged';
+        } elseif ($state == AlertState::WORSE) {
+            $title .= ' Has worsened';
+        } elseif ($state == AlertState::BETTER) {
+            $title .= ' Has improved';
+        } elseif ($state == AlertState::CHANGED) {
+            $title .= ' changed';
+        }
+
+        return $title;
     }
 
-    /**
-     * Get the default template
-     *
-     * @return string
-     */
-    public function getDefaultTemplate()
+    public function getDefaultTemplate(string $template_name, string $error): string
     {
         return '{{ $alert->title }}' . PHP_EOL .
             'Severity: {{ $alert->severity }}' . PHP_EOL .
@@ -112,6 +141,7 @@ class Template
             '@foreach ($alert->faults as $key => $value)' . PHP_EOL .
             '  #{{ $key }}: {{ $value[\'string\'] }} @endforeach' . PHP_EOL .
             '@endif' . PHP_EOL .
-            'Alert sent to: @foreach ($alert->contacts as $key => $value) {{ $value }} <{{ $key }}> @endforeach';
+            'Alert sent to: @foreach ($alert->contacts as $key => $value) {{ $value }} <{{ $key }}> @endforeach' . PHP_EOL .
+            'Warning! Fallback template used due to error in template ' . htmlspecialchars($template_name) . ': ' . htmlspecialchars($error) . PHP_EOL;
     }
 }

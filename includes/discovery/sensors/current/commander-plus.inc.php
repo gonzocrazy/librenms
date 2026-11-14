@@ -1,4 +1,5 @@
 <?php
+
 /**
  * commander-plus.inc.php
  *
@@ -18,21 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-$current = snmp_get($device, 'batteryCurrent.0', '-Oqv', 'CCPOWER-MIB');
+
+use LibreNMS\Enum\SensorType;
+
+$current = SnmpQuery::get('CCPOWER-MIB::batteryCurrent.0')->value();
 $oid = '.1.3.6.1.4.1.18642.1.2.2.1.0';
 $descr = 'Battery current';
 $divisor = 1;
 $multiplier = 1;
-discover_sensor($valid['sensor'], 'current', $device, $oid, 'batteryCurrent', 'commander-plus', $descr, $divisor, $multiplier, null, null, null, null, $current);
+discover_sensor(null, SensorType::Current, $device, $oid, 'batteryCurrent', 'commander-plus', $descr, $divisor, $multiplier, null, null, null, null, $current);
 
-$current = snmp_get($device, 'rectifierLoadCurrent.0', '-Oqv', 'CCPOWER-MIB');
+$current = SnmpQuery::get('CCPOWER-MIB::rectifierLoadCurrent.0')->value();
 $oid = '.1.3.6.1.4.1.18642.1.2.1.2.0';
 $descr = 'Rectifier Current';
 $divisor = 1;
 $multiplier = 1;
 $limit_low = 0;
 $limit = 5000;
-discover_sensor($valid['sensor'], 'current', $device, $oid, 'rectifierLoadCurrent', 'commander-plus', $descr, $divisor, $multiplier, $limit_low, null, null, $limit, $current);
+discover_sensor(null, SensorType::Current, $device, $oid, 'rectifierLoadCurrent', 'commander-plus', $descr, $divisor, $multiplier, $limit_low, null, null, $limit, $current);

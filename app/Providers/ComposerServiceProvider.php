@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ComposerServiceProvider.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,7 +36,7 @@ class ComposerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         View::composer('layouts.librenmsv1', \App\Http\ViewComposers\LayoutComposer::class);
         View::composer('layouts.menu', \App\Http\ViewComposers\MenuComposer::class);
@@ -45,7 +47,7 @@ class ComposerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

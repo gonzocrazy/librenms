@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "compas",
                     "type": "power",
                     "serial": null,
-                    "icon": "alpha.png",
-                    "location": "<private>"
+                    "icon": "alpha.png"
                 }
             ]
         },
@@ -30,8 +30,9 @@
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.91.0",
                     "sensor_index": "0",
                     "sensor_type": "compas",
-                    "sensor_descr": "Battery Charge",
+                    "sensor_descr": "Battery #0 Charge",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 100,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -52,10 +54,11 @@
                     "sensor_class": "current",
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.61.0",
-                    "sensor_index": "es1dc1DataBatBatInputCurrent",
+                    "sensor_index": "es1dc1DataBatBatInputCurrent.0",
                     "sensor_type": "compas",
-                    "sensor_descr": "Battery Input Current",
+                    "sensor_descr": "Battery #0 Input Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -69,6 +72,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -76,10 +80,11 @@
                     "sensor_class": "current",
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.52.0",
-                    "sensor_index": "es1dc1DataLoadLoadCurrent",
+                    "sensor_index": "es1dc1DataLoadLoadCurrent.0",
                     "sensor_type": "compas",
-                    "sensor_descr": "Load Current",
+                    "sensor_descr": "Load #0 Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -93,6 +98,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -100,10 +106,11 @@
                     "sensor_class": "current",
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.22.0",
-                    "sensor_index": "es1dc1DataRectifiersRectifiersOutCurrent",
+                    "sensor_index": "es1dc1DataRectifiersRectifiersOutCurrent.0",
                     "sensor_type": "compas",
-                    "sensor_descr": "Output Current",
+                    "sensor_descr": "Output #0 Current",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -117,6 +124,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -128,6 +136,7 @@
                     "sensor_type": "compas",
                     "sensor_descr": "Runtime",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3600,
@@ -141,6 +150,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -148,10 +158,11 @@
                     "sensor_class": "state",
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.72.0",
-                    "sensor_index": "es1dc1DataBatBatTestState",
+                    "sensor_index": "es1dc1DataBatBatTestState.0",
                     "sensor_type": "es1dc1DataBatBatTestState",
-                    "sensor_descr": "Battery Test Status",
+                    "sensor_descr": "Battery #0 Test Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -165,6 +176,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "es1dc1DataBatBatTestState"
                 },
                 {
@@ -172,10 +184,11 @@
                     "sensor_class": "state",
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.1.0",
-                    "sensor_index": "es1dc1DataSystemDCMode",
+                    "sensor_index": "es1dc1DataSystemDCMode.0",
                     "sensor_type": "es1dc1DataSystemDCMode",
-                    "sensor_descr": "System DC Mode",
+                    "sensor_descr": "System DC #0 Mode",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -189,6 +202,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "es1dc1DataSystemDCMode"
                 },
                 {
@@ -198,8 +212,9 @@
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.71.0",
                     "sensor_index": "0",
                     "sensor_type": "compas",
-                    "sensor_descr": "Battery Temperature",
+                    "sensor_descr": "Battery #0 Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 11,
@@ -213,6 +228,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -222,8 +238,9 @@
                     "sensor_oid": ".1.3.6.1.4.1.26854.3.2.1.20.1.20.1.13.3.11.0",
                     "sensor_index": "0",
                     "sensor_type": "compas",
-                    "sensor_descr": "DC Bus Voltage",
+                    "sensor_descr": "DC Bus #0 Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 55,
@@ -237,6 +254,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -244,105 +262,90 @@
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Never Tested",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Success",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "On Going",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: Timeout",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: Vbus Too Low",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: Load Too Low",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: AC Failure",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: Canceled",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: LVD Opened",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataBatBatTestState",
                     "state_descr": "Failed: No Battery",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataSystemDCMode",
                     "state_descr": "Float",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "es1dc1DataSystemDCMode",
                     "state_descr": "Equalize",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "es1dc1DataSystemDCMode",
                     "state_descr": "Battery Test",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "es1dc1DataSystemDCMode",
                     "state_descr": "AC Failure",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "es1dc1DataSystemDCMode",
                     "state_descr": "Safe",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 }

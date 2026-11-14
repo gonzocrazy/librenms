@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MuninController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,7 +27,9 @@
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
+use Illuminate\Http\Request;
 use LibreNMS\Interfaces\UI\DeviceTab;
+use LibreNMS\Util\Url;
 
 class MuninController implements DeviceTab
 {
@@ -49,8 +53,33 @@ class MuninController implements DeviceTab
         return __('Munin');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
-        return [];
+        $plugins = $device->muninPlugins()
+            ->orderBy('mplug_category')
+            ->orderBy('mplug_type')
+            ->get();
+
+        $categories = $plugins->pluck('mplug_category')->unique()->values();
+
+        $currentGroup = $categories->contains($request->input('group'))
+            ? $request->input('group')
+            : ($categories->first() ?? '');
+
+        $categoryOptions = $categories->mapWithKeys(fn ($category) => [
+            $category => [
+                'text' => ucfirst($category),
+                'link' => Url::deviceUrl($device, ['tab' => 'munin', 'group' => $category]),
+            ],
+        ])->all();
+
+        $selectedPlugins = $plugins->where('mplug_category', $currentGroup)->values();
+
+        return [
+            'categories' => $categories,
+            'categoryOptions' => $categoryOptions,
+            'currentGroup' => $currentGroup,
+            'plugins' => $selectedPlugins,
+        ];
     }
 }

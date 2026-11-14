@@ -1,4 +1,5 @@
 <?php
+
 /**
  * liebert.inc.php
  *
@@ -18,14 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Spencer Butler
  * @author     Spencer Butler <github@crooked.app>
  */
+
+use LibreNMS\Enum\SensorType;
+
 $entPhysicalIndex = null;
 $entPhysicalIndex_measured = null;
 $user_func = null;
 $group = null;
-$class = 'current';
 $poller_type = 'snmp';
 
 $psline_data = snmpwalk_cache_oid($device, 'lgpPduPsLineTable', [], 'LIEBERT-GP-PDU-MIB', 'liebert');
@@ -50,8 +54,8 @@ foreach (array_keys($psline_data) as $index) {
     $current = $psline_data[$index]['lgpPduPsLineEntryEcHundredths'];
 
     discover_sensor(
-        $valid['sensor'],
-        $class,
+        null,
+        SensorType::Current,
         $device,
         $oid,
         $index . 'lgpPduPsLineEntryEcHundredths',
@@ -81,7 +85,7 @@ foreach (array_keys($ps_data) as $index) {
 
     $oid = '.1.3.6.1.4.1.476.1.42.3.8.30.20.1.70.' . $index;
     $type = 'liebert';
-    $descr = 'Neutral ' . $ps_data[$index]['lgpPduPsLineEntryId'];
+    $descr = trim('Neutral ' . $ps_data[$index]['lgpPduPsEntryId']);
     $divisor = 10;
     $multiplier = 1;
 
@@ -93,8 +97,8 @@ foreach (array_keys($ps_data) as $index) {
     $current = $ps_data[$index]['lgpPduPsEntryEcNeutral'];
 
     discover_sensor(
-        $valid['sensor'],
-        $class,
+        null,
+        SensorType::Current,
         $device,
         $oid,
         $index . 'lgpPduPsEntryEcNeutral',
@@ -138,8 +142,8 @@ foreach (array_keys($rb_data) as $index) {
     $group = 'Line to Neutral';
 
     discover_sensor(
-        $valid['sensor'],
-        $class,
+        null,
+        SensorType::Current,
         $device,
         $oid,
         $index . 'lgpPduRbEntryEcHundredths',

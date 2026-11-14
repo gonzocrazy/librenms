@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2015 Daniel Preussker <f0o@devilcode.org>
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 
 /*
  * Bind9 Query Graph
@@ -32,7 +33,7 @@ $i = 0;
 $scale_min = 0;
 $nototal = 1;
 $unit_text = 'Query/sec';
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'bind', $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'bind', $app->app_id]);
 $array = [
     'any',
     'a',
@@ -48,17 +49,13 @@ $array = [
 $colours = 'merged';
 $rrd_list = [];
 
-Config::set('graph_colours.merged', array_merge(Config::get('graph_colours.greens'), Config::get('graph_colours.blues')));
+LibrenmsConfig::set('graph_colours.merged', array_merge(LibrenmsConfig::get('graph_colours.greens'), LibrenmsConfig::get('graph_colours.blues')));
 
-if (Rrd::checkRrdExists($rrd_filename)) {
-    foreach ($array as $ds) {
-        $rrd_list[$i]['filename'] = $rrd_filename;
-        $rrd_list[$i]['descr'] = strtoupper($ds);
-        $rrd_list[$i]['ds'] = $ds;
-        $i++;
-    }
-} else {
-    echo "file missing: $file";
+foreach ($array as $ds) {
+    $rrd_list[$i]['filename'] = $rrd_filename;
+    $rrd_list[$i]['descr'] = strtoupper($ds);
+    $rrd_list[$i]['ds'] = $ds;
+    $i++;
 }
 
 require 'includes/html/graphs/generic_multi_simplex_seperated.inc.php';

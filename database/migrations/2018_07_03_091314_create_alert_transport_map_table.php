@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2018_07_03_091314_create_alert_transport_map_table.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,16 +27,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAlertTransportMapTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('alert_transport_map', function (Blueprint $table) {
+        Schema::create('alert_transport_map', function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('rule_id');
             $table->unsignedInteger('transport_or_group_id');
@@ -47,8 +49,8 @@ class CreateAlertTransportMapTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('alert_transport_map');
     }
-}
+};

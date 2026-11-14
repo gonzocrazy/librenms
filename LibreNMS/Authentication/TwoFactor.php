@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TwoFactor.php
  *
@@ -18,7 +19,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @license GPL
+ *
  * @link       https://www.librenms.org
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @copyright  2017 Tony Murray
@@ -91,6 +94,7 @@ class TwoFactor
 
     /**
      * Generate Secret Key
+     *
      * @return string
      */
     public static function genKey()
@@ -107,13 +111,13 @@ class TwoFactor
         $bin = '';
         $x = -1;
         while (++$x < $len) {
-            $bin .= str_pad(base_convert(ord($raw[$x]), 10, 2), 8, '0', STR_PAD_LEFT);
+            $bin .= str_pad(base_convert((string) ord($raw[$x]), 10, 2), 8, '0', STR_PAD_LEFT);
         }
         $bin = str_split($bin, 5);
         $ret = '';
         $x = -1;
-        while (++$x < sizeof($bin)) {
-            $ret .= self::$base32_enc[base_convert(str_pad($bin[$x], 5, '0'), 2, 10)];
+        while (++$x < count($bin)) {
+            $ret .= self::$base32_enc[(int) base_convert(str_pad($bin[$x], 5, '0'), 2, 10)];
         }
 
         return $ret;
@@ -122,9 +126,9 @@ class TwoFactor
     /**
      * Verify HOTP token honouring window
      *
-     * @param string $key Secret Key
-     * @param int $otp OTP supplied by user
-     * @param int|bool $counter Counter, if false timestamp is used
+     * @param  string  $key  Secret Key
+     * @param  int  $otp  OTP supplied by user
+     * @param  int|bool  $counter  Counter, if false timestamp is used
      * @return bool|int
      */
     public static function verifyHOTP($key, $otp, $counter = false)
@@ -160,8 +164,9 @@ class TwoFactor
 
     /**
      * Generate HOTP (RFC 4226)
-     * @param string $key Secret Key
-     * @param int|bool $counter Optional Counter, Defaults to Timestamp
+     *
+     * @param  string  $key  Secret Key
+     * @param  int|bool  $counter  Optional Counter, Defaults to Timestamp
      * @return string
      */
     private static function oathHOTP($key, $counter = false)
@@ -184,20 +189,21 @@ class TwoFactor
             }
         }
         $hash = hash_hmac('sha1', pack('N*', 0) . pack('N*', $counter), $kbin, true);
-        $offset = ord($hash[19]) & 0xf;
-        $truncated = (((ord($hash[$offset + 0]) & 0x7f) << 24) |
-                ((ord($hash[$offset + 1]) & 0xff) << 16) |
-                ((ord($hash[$offset + 2]) & 0xff) << 8) |
-                (ord($hash[$offset + 3]) & 0xff)) % pow(10, self::OTP_SIZE);
+        $offset = ord($hash[19]) & 0xF;
+        $truncated = (((ord($hash[$offset + 0]) & 0x7F) << 24) |
+                ((ord($hash[$offset + 1]) & 0xFF) << 16) |
+                ((ord($hash[$offset + 2]) & 0xFF) << 8) |
+                (ord($hash[$offset + 3]) & 0xFF)) % 10 ** self::OTP_SIZE;
 
-        return str_pad($truncated, self::OTP_SIZE, '0', STR_PAD_LEFT);
+        return str_pad("$truncated", self::OTP_SIZE, '0', STR_PAD_LEFT);
     }
 
     /**
      * Generate 2fa URI
-     * @param string $username
-     * @param string $key
-     * @param bool $counter if type is counter (false for time based)
+     *
+     * @param  string  $username
+     * @param  string  $key
+     * @param  bool  $counter  if type is counter (false for time based)
      * @return string
      */
     public static function generateUri($username, $key, $counter = false)

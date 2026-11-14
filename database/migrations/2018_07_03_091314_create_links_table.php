@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateLinksTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('links', function (Blueprint $table) {
+        Schema::create('links', function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('local_port_id')->nullable()->index();
             $table->unsignedInteger('local_device_id');
@@ -33,8 +33,8 @@ class CreateLinksTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('links');
     }
-}
+};

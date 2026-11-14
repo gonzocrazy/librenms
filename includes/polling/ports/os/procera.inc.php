@@ -1,4 +1,5 @@
 <?php
+
 /**
  * procera.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs <pdheinrichs@gmail.com>
  */
@@ -46,7 +48,7 @@ $required = [
 
 // Media Types as per PACKETLOGIC-CHANNEL-MIB
 $mediaType = [
-    0 => ['ifDuplex' => null, 'ifSpeed' => 0, 'label'=> 'linkdown'],
+    0 => ['ifDuplex' => null, 'ifSpeed' => 0, 'label' => 'linkdown'],
     1 => ['ifDuplex' => 'halfDuplex', 'ifSpeed' => '10000000', 'label' => 'hd10'],
     2 => ['ifDuplex' => 'fullDuplex', 'ifSpeed' => '10000000', 'label' => 'fd10'],
     3 => ['ifDuplex' => 'halfDuplex', 'ifSpeed' => '100000000', 'label' => 'hd100'],

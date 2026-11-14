@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BridgeTopologyChanged.php
  *
@@ -23,9 +24,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class BridgeTopologyChanged implements SnmptrapHandler
 {
@@ -33,12 +34,12 @@ class BridgeTopologyChanged implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Topology of Spanning Tree Instance on device ' . $device->displayName() . ' was changed', $device->device_id, 'stp', 3);
+        $trap->log('SNMP Trap: Topology of Spanning Tree Instance on device ' . $device->hostname . ' was changed', Severity::Notice, 'stp');
     }
 }

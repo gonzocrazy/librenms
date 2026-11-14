@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dns.php
  *
@@ -18,44 +19,143 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2021 Thomas Berberich
  * @author     Thomas Berberch <sourcehhdoctor@gmail.com>
  */
 
 namespace LibreNMS\Util;
 
+use App\Models\Device;
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\AddressFamily;
 use LibreNMS\Interfaces\Geocoder;
+use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
+use Net_DNS2_Resolver;
 
 class Dns implements Geocoder
 {
-    protected $resolver;
-
-    public function __construct()
+    public function __construct(protected Net_DNS2_Resolver $resolver)
     {
-        $this->resolver = new \Net_DNS2_Resolver();
+    }
+
+    public static function lookupIp(Device $device): ?string
+    {
+        if ($device->overwrite_ip) {
+            return $device->overwrite_ip;
+        }
+
+        if (IP::isValid($device->hostname)) {
+            return $device->hostname;
+        }
+
+        $addresses = app(self::class)->getAddresses($device->hostname);
+
+        $transport = (new SnmpPollingMethod)->transport($device);
+        if ($transport == 'udp6' || $transport == 'tcp6') {
+            foreach ($addresses as $address) {
+                if (IPv6::isValid($address)) {
+                    return $address;
+                }
+            }
+        }
+
+        return array_first($addresses);
     }
 
     /**
-     * @param string $domain  Domain which has to be parsed
-     * @param string $record  DNS Record which should be searched
-     * @return array   List of matching records
+     * Get all IPs for a hostname
+     *
+     * @return string[]
      */
-    public function getRecord($domain, $record = 'A')
+    public function getAddresses(string $hostname, ?AddressFamily $family = null): array
+    {
+        $hints = match ($family) {
+            AddressFamily::IPv4 => ['ai_family' => AF_INET, 'ai_socktype' => SOCK_RAW],
+            AddressFamily::IPv6 => ['ai_family' => AF_INET6, 'ai_socktype' => SOCK_RAW],
+            default => ['ai_socktype' => SOCK_RAW],
+        };
+
+        $result = socket_addrinfo_lookup($hostname, null, $hints);
+
+        if ($result === false) {
+            return [];
+        }
+
+        return array_map(function ($info) {
+            $explaned = socket_addrinfo_explain($info);
+
+            return $explaned['ai_addr']['sin6_addr'] ?? $explaned['ai_addr']['sin_addr'];
+        }, $result);
+    }
+
+    /**
+     * The reverse name of an IP that also resolves forward to the IP.
+     * Uses the system resolver, so /etc/hosts and other name services are included.
+     */
+    public function resolveHostname(string $ip): ?string
+    {
+        $packed = @inet_pton($ip);
+        if ($packed === false) {
+            return null;
+        }
+
+        $hostname = $this->reverseHostname($ip);
+        if ($hostname === null) {
+            return null;
+        }
+
+        $family = strlen($packed) === 16 ? AddressFamily::IPv6 : AddressFamily::IPv4;
+        foreach ($this->getAddresses($hostname, $family) as $address) {
+            if (@inet_pton($address) === $packed) {
+                return rtrim($hostname, '.');
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The reverse name, even when it does not resolve back to the address.
+     */
+    public function reverseHostname(string $ip): ?string
+    {
+        if (! IP::isValid($ip)) {
+            return null;
+        }
+
+        $hostname = @gethostbyaddr($ip);
+
+        return $hostname && ! IP::isValid($hostname) ? rtrim($hostname, '.') : null;
+    }
+
+    /**
+     * @param  string  $domain  Domain which has to be parsed
+     * @param  string  $record  DNS Record which should be searched
+     * @return array<\Net_DNS2_RR> List of matching records
+     */
+    public function getRecord(string $domain, string $record = 'A'): array
     {
         try {
             $ret = $this->resolver->query($domain, $record);
 
             return $ret->answer;
         } catch (\Net_DNS2_Exception $e) {
-            d_echo('::query() failed: ' . $e->getMessage());
+            Log::debug('Net_DNS2_Resolver::query(' . $domain . ', ' . $record . ') failed: ' . $e->getMessage());
 
             return [];
         }
     }
 
-    public function getCoordinates($hostname)
+    /**
+     * @param  string  $hostname
+     * @return array{}|array{lat: float|null, lng: float|null}
+     */
+    public function getCoordinates($hostname): array
     {
-        foreach ($this->getRecord($hostname, 'LOC') as $record) {
+        $r = $this->getRecord($hostname, 'LOC');
+
+        foreach ($r as $record) {
             return [
                 'lat' => $record->latitude ?? null,
                 'lng' => $record->longitude ?? null,

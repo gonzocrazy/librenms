@@ -1,7 +1,5 @@
 <?php
 
-$class = 'dbm';
-$unit = 'dBm';
-$graph_type = 'sensor_dbm';
+$class = \LibreNMS\Enum\SensorType::Dbm;
 
 require 'sensors.inc.php';

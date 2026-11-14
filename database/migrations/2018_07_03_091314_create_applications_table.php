@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateApplicationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('applications', function (Blueprint $table) {
+        Schema::create('applications', function (Blueprint $table): void {
             $table->increments('app_id');
             $table->unsignedInteger('device_id');
             $table->string('app_type', 64);
@@ -20,7 +20,7 @@ class CreateApplicationsTable extends Migration
             $table->tinyInteger('discovered')->default(0);
             $table->string('app_state_prev', 32)->nullable();
             $table->string('app_status', 8);
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('timestamp')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('timestamp')->useCurrent();
@@ -35,8 +35,8 @@ class CreateApplicationsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('applications');
     }
-}
+};

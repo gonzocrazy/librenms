@@ -1,63 +1,72 @@
-source: Support/Adding-a-Device.md
-path: blob/master/doc/
-
 # Adding Device
 
-You have two options for adding a new device into LibreNMS. You can
-add a device via the `cli` or by using the `WebUI`.
+There are two ways to add a new device to LibreNMS. You can use the
+[web interface](Adding-a-Device.md#via-webui) or the
+[command line](Adding-a-Device.md#via-cli).
 
-## CLI
+## Via WebUI
 
-Using the command line via ssh you can add a new device by changing to
-the directory of your LibreNMS install and typing (be sure to put the
-correct details).
+In the web interface, go to Devices in the menu and click Add Device.
+Enter the details of the device. Then click `Add Host`. The screenshot
+below shows a device with the community `my_company` and SNMP `v2c`:
+
+![Add device](../img/webui_add_device.png)
+
+The default SNMP port is 161.
+
+By default, LibreNMS polls the data through the hostname. To poll the
+data through a specific IP address, such as a management IP address,
+set the hostname to that IP address. After you add the device, you can
+edit the device and set the display name to the original hostname.
+
+
+## Via CLI
+
+Connect with ssh as the `librenms` user. Then change to the directory
+of your LibreNMS install and run this command with your own details:
 
 ```bash
-./addhost.php yourhostname [community] [v1|v2c] [port] [udp|udp6|tcp|tcp6]
+./lnms device:add --v2c -c yourSNMPcommunity yourhostname
 ```
 
-As an example, if your device with the name `mydevice.example.com` is
-configured to use the community `my_company` using snmp `v2c` then you
-would enter:
+For a list of the available options and the defaults, run
+`./lnms device:add --help`.
+
+For a device with the name `mydevice.example.com`, the community
+`my_company`, and SNMP `v2c`, run this command:
 
 ```bash
-./addhost.php mydevice.example.com my_company v2c
+./lnms device:add --v2c -c my_company mydevice.example.com
 ```
 
-> Please note that if the community contains special characters such
-> as `$` then you will need to wrap it in `'`. I.e: `'Pa$$w0rd'`.
+!!! note
+    A community with a special character such as `$` needs single
+    quotation marks around it. An example is `'Pa$$w0rd'`.
 
-## WebUI
+## Ping Only Device
 
-Using the web interface, go to Devices and click Add Device. Enter the
-details required for the device that you want to add and then click
-'Add Host'. As an example, if your device is configured to use the
-community `my_company` using snmp `v2c` then you would enter: SNMP
-Port defaults to 161.
+You can add a ping only device through the web interface or the command
+line. In the web interface, set the SNMP button to "off". LibreNMS adds
+the device as a ping only device and shows an ICMP response graph.
 
-By default Hostname will be used for polling data. If you want
-to get polling Device data via a specific IP-Address (e.g. Management IP)
-fill out the optional field `Overwrite IP` with it's IP-Address.
+- Hostname: the IP address or the DNS name.
+- Hardware: optional. You can enter any text.
+- OS: optional. This field sets the OS icon of the device.
 
-![Add device](/img/webui_add_device.png)
+On the command line, use this command:
 
-### Ping Only Device
+```bash
+./lnms device:add --ping-only yourhostname
+```
 
-You can add ping only devices into LibreNMS through the WebUI. When
-adding the device switch the SNMP button to "off". Device will be
-added into LibreNMS as Ping Only Device and will show ICMP Response Graph.
+![Ping Only](../img/add-ping-only.png)
 
-- Hostname: IP address or DNS name.
-- Hardware: Optional you can type in whatever you like.
-- OS: Optional this will add the Device's OS Icon.
+A video is available: [How to add ping only devices](https://youtu.be/cjuByubg-uk)
 
-[How to add ping only devices](https://youtu.be/cjuByubg-uk)
+## Automatic Discovery and API
 
-![Ping Only](/img/add-ping-only.png)
-
-If you would like to add devices automatically then you will probably
-want to read the [Auto-discovery
+To add devices automatically, read the [Auto-discovery
 Setup](../Extensions/Auto-Discovery.md) guide.
 
-You may also want to add devices programmatically, if so, take a look
-at our [API documentation](../API/index.md)
+To add devices from your own program, read the [API
+documentation](../API/index.md).

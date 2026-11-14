@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Smokeping.php
  *
@@ -18,24 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Util;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Illuminate\Support\Str;
-use LibreNMS\Config;
+use LibreNMS\Exceptions\RrdNotFoundException;
 
 class Smokeping
 {
-    private $device;
     private $files;
 
-    public function __construct(Device $device)
+    public function __construct(private readonly Device $device)
     {
-        $this->device = $device;
     }
 
     public static function make(Device $device)
@@ -45,19 +46,19 @@ class Smokeping
 
     public function getFiles()
     {
-        if (is_null($this->files) && Config::has('smokeping.dir')) {
+        if (is_null($this->files) && LibrenmsConfig::has('smokeping.dir')) {
             $dir = $this->generateFileName();
             if (is_dir($dir) && is_readable($dir)) {
                 foreach (array_diff(scandir($dir), ['.', '..']) as $file) {
                     if (stripos($file, '.rrd') !== false) {
-                        if (strpos($file, '~') !== false) {
-                            [$target, $slave] = explode('~', $this->filenameToHostname($file));
+                        if (str_contains($file, '~')) {
+                            [$target, $slave] = explode('~', (string) $this->filenameToHostname($file));
                             $this->files['in'][$target][$slave] = $file;
                             $this->files['out'][$slave][$target] = $file;
                         } else {
                             $target = $this->filenameToHostname($file);
-                            $this->files['in'][$target][Config::get('own_hostname')] = $file;
-                            $this->files['out'][Config::get('own_hostname')][$target] = $file;
+                            $this->files['in'][$target][LibrenmsConfig::get('own_hostname')] = $file;
+                            $this->files['out'][LibrenmsConfig::get('own_hostname')][$target] = $file;
                         }
                     }
                 }
@@ -76,11 +77,28 @@ class Smokeping
 
     public function generateFileName($file = '')
     {
-        if (Config::get('smokeping.integration') === true) {
-            return Config::get('smokeping.dir') . '/' . $this->device->type . '/' . $file;
+        if (LibrenmsConfig::get('smokeping.integration') === true) {
+            return LibrenmsConfig::get('smokeping.dir') . '/' . ($this->device->type ?: 'Ungrouped') . '/' . $file;
         } else {
-            return Config::get('smokeping.dir') . '/' . $file;
+            return LibrenmsConfig::get('smokeping.dir') . '/' . $file;
         }
+    }
+
+    /**
+     * Path to pass to rrdtool. When rrdcached is in use and the smokeping dir
+     * is inside rrd_dir, the path is made relative because a remote rrdcached
+     * daemon rejects absolute paths.
+     */
+    public function rrdFileName(string $file = ''): string
+    {
+        $path = $this->generateFileName($file);
+        $rrd_dir = Str::finish(LibrenmsConfig::get('rrd_dir'), '/');
+
+        if (LibrenmsConfig::get('rrdcached') && str_starts_with($path, '/') && ! str_starts_with($path, $rrd_dir)) {
+            throw new RrdNotFoundException('Smokeping data directory must sit within the librenms rrd_dir where using rrdcached.  See https://docs.librenms.org/Extensions/Smokeping/#share-rrdcached-with-librenms for instructions on how to fix.');
+        }
+
+        return str_starts_with($path, $rrd_dir) ? substr($path, strlen($rrd_dir)) : $path;
     }
 
     public function otherGraphs($direction)
@@ -99,7 +117,7 @@ class Smokeping
                     'device' => $device,
                     'graph' => [
                         'type' => 'smokeping_' . $direction,
-                        'device' => $this->device->device_id,
+                        'device' => $this->device,
                         $remote => $device->device_id,
                     ],
                 ];
@@ -126,7 +144,7 @@ class Smokeping
 
     private function filenameToHostname($name)
     {
-        if (Config::get('smokeping.integration') === true) {
+        if (LibrenmsConfig::get('smokeping.integration') === true) {
             $name = str_replace('_', '.', $name);
         }
 

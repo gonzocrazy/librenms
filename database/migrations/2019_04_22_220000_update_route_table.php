@@ -3,19 +3,19 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class UpdateRouteTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         //Remove the old route table, as it is not used anymore.
         Schema::drop('route');
 
-        Schema::create('route', function (Blueprint $table) {
+        Schema::create('route', function (Blueprint $table): void {
             $table->increments('route_id');
             $table->timestamps();
             $table->unsignedInteger('device_id');
@@ -40,11 +40,11 @@ class UpdateRouteTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('route');
         // Create the old route table to reverse this.
-        Schema::create('route', function (Blueprint $table) {
+        Schema::create('route', function (Blueprint $table): void {
             $table->unsignedInteger('device_id');
             $table->string('context_name', 128);
             $table->string('ipRouteDest', 39);
@@ -58,4 +58,4 @@ class UpdateRouteTable extends Migration
             $table->index(['device_id', 'context_name', 'ipRouteDest', 'ipRouteNextHop'], 'device');
         });
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DeviceOutage.php
  *
@@ -18,14 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class DeviceOutage extends DeviceRelatedModel
 {
+    use HasFactory;
+
     public $timestamps = false;
-    protected $primaryKey = null;
+    protected $fillable = ['device_id', 'going_down', 'up_again'];
 }

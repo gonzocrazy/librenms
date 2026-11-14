@@ -1,20 +1,17 @@
-source: Extensions/IRC-Bot-Extensions.md
-path: blob/master/doc/
-
-# Quick Guide
+# IRC Bot Extensions
 
 Okay this is a very quick walk-through in writing your own `commands` for the IRC-Bot.
 
-First of all, create a file in `includes/ircbot`, the file-name should
+First create a file in `includes/ircbot`. The file name
 be in this format: `command.inc.php`.
 
 When editing the file, do not open nor close PHP-tags.
-Any variable you assign will be discarded as soon as your command returns.
+The bot removes each of your variables at the return of your command.
 Some variables, specially all listed under `$this->`, have special meanings or effects.
 Before a command is executed, the IRC-Bot ensures that the
 MySQL-Socket is working, that `$this->user` points to the right user
 and that the user is authenticated.
-Below you will find a table with related functions and attributes.
+The table below gives the related functions and attributes.
 You can chain-load any built-in command by calling `$this->_command("My Parameters")`.
 You cannot chain-load external commands.
 
@@ -28,26 +25,26 @@ To enable your command, edit your `config.php` and add something like this:
 
 See: [Example](#example)
 
-# Functions and Attributes
+## Functions and Attributes
 
 ... that are accessible from within an extension
 
-## Functions
+### Functions
 
 Function( (Type) $Variable [= Default] [,...] ) | Returns | Description
 --- | --- | ---
 `$this->getChan( )` | `String` | Returns `channel` of current event.
-`$this->getData( (boolean) $Block = false )` | `String/Boolean` | Returns a `line` from the IRC-Buffer if it's not matched against any other `command`. If `$Block` is `true`, wait until a suitable line is returned.
+`$this->getData( (boolean) $Block = false )` | `String/Boolean` | Returns a `line` from the IRC buffer without a match against another `command`. If `$Block` is `true`, wait until a suitable line is returned.
 `$this->getUser( )` | `String` | Returns `nick` of current user. Not to confuse with `$this->user`!
 `$this->get_user( )` | `Array` | See `$this->user` in Attributes.
 `$this->irc_raw( (string) $Protocol )` | `Boolean` | Sends raw IRC-Protocol.
 `$this->isAuthd( )` | `Boolean` | `true` if the user is authenticated.
 `$this->joinChan( (string) $Channel )` | `Boolean` | Joins given `$Channel`.
 `$this->log( (string) $Message )` | `Boolean` | Logs given `$Message` into `STDOUT`.
-`$this->read( (string) $Buffer )` | `String/Boolean` | Returns a `line` from given `$Buffer` or `false` if there's nothing suitable inside the Buffer. Please use `$this->getData()` for handler-safe data retrieval.
+`$this->read( (string) $Buffer )` | `String/Boolean` | Returns a `line` from given `$Buffer` or `false` for an empty buffer. Please use `$this->getData()` for handler-safe data retrieval.
 `$this->respond( (string) $Message )` | `Boolean` | Responds to the `request` auto-detecting channel or private message.
 
-## Attributes
+### Attributes
 
 Attribute | Type | Description
 --- | --- | ---
@@ -66,7 +63,7 @@ Attribute | Type | Description
 `$this->tick` | `Int` | Interval to check buffers in microseconds.
 `$this->user` | `Array` | Array containing details about the `user` that sent the `request`.
 
-# Example
+## Example
 
 `includes/ircbot/join-ng.inc.php`
 

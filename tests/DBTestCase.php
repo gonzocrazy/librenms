@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DBTestCase.php
  *
@@ -18,20 +19,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Tests;
 
+use LibreNMS\Tests\Traits\RequiresDatabase;
+
 abstract class DBTestCase extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        if (! getenv('DBTEST')) {
-            static::markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
-        }
-
-        parent::setUpBeforeClass();
-    }
+    use RequiresDatabase;
 }

@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateMempoolsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('mempools', function (Blueprint $table) {
+        Schema::create('mempools', function (Blueprint $table): void {
             $table->increments('mempool_id');
             $table->string('mempool_index', 16);
             $table->integer('entPhysicalIndex')->nullable();
@@ -37,8 +37,8 @@ class CreateMempoolsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('mempools');
     }
-}
+};

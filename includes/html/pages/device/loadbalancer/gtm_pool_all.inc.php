@@ -37,9 +37,9 @@
         } ?>
         <tr>
             <td><?php echo $wide_id; ?></td>
-            <td><?php echo $array['label']; ?></td>
-            <td><?php echo $status; ?></td>
-            <td><?php echo $message; ?></td>
+            <td><?php echo e($array['label']); ?></td>
+            <td><?php echo e($status); ?></td>
+            <td><?php echo e($message); ?></td>
         </tr>
         <?php
     }
@@ -58,7 +58,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_gtm_allpool_requests';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -76,7 +76,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_gtm_allpool_dropped';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -89,7 +89,7 @@
                 2: "danger"
             },
         }).on("click.rs.jquery.bootgrid", function (e, columns, row) {
-            var link = '<?php echo \LibreNMS\Util\Url::generate($vars, ['type' => 'gtm_pool', 'subtype' => 'gtm_pool_det']); ?>gtmpoolid='+row['gtmpoolid'];
+            var link = <?php echo json_encode(\LibreNMS\Util\Url::generate($vars, ['type' => 'gtm_pool', 'subtype' => 'gtm_pool_det'])); ?> + 'gtmpoolid=' + row['gtmpoolid'];
             window.location.href = link;
         });
     </script>

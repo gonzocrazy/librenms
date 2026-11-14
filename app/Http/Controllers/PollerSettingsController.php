@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PollerSettingsController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -39,7 +41,7 @@ class PollerSettingsController extends Controller
             return response()->json(['error' => 'Invalid setting'], 422);
         }
 
-        $poller->$setting = $request->get('value');
+        $poller->$setting = $request->input('value');
         $poller->save();
 
         return response()->json(['value' => $poller->$setting]);

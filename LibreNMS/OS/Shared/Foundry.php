@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Foundry.php
  *
@@ -18,63 +19,69 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\OS\Shared;
 
-use LibreNMS\Device\Processor;
+use App\Models\Processor;
+use Illuminate\Support\Collection;
 use LibreNMS\Interfaces\Discovery\ProcessorDiscovery;
 use LibreNMS\OS;
+use SnmpQuery;
 
 class Foundry extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns a Collection of Processor models that have been discovered
      *
-     * @return array Processors
+     * @return Collection<Processor>
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): Collection
     {
-        $processors_data = snmpwalk_cache_triple_oid($this->getDeviceArray(), 'snAgentCpuUtilTable', [], 'FOUNDRY-SN-AGENT-MIB');
-        $module_descriptions = $this->getCacheByIndex('snAgentConfigModuleDescription', 'FOUNDRY-SN-AGENT-MIB');
+        $module_descriptions = SnmpQuery::walk('FOUNDRY-SN-AGENT-MIB::snAgentConfigModuleDescription')->pluck();
 
-        $processors = [];
-        foreach ($processors_data as $index => $entry) {
-            // use the 5 minute readings
-            if ($entry['snAgentCpuUtilInterval'] != 300) {
-                continue;
+        return \SnmpQuery::walk('FOUNDRY-SN-AGENT-MIB::snAgentCpuUtilTable')->mapTable(function ($entry, $slot, $cpu, $interval) use ($module_descriptions) {
+            // only discover 5min
+            if ($interval == 300) {
+                $module_description = '';
+                if (isset($module_descriptions[$slot])) {
+                    $module_description = $module_descriptions[$slot];
+                    [$module_description] = explode(' ', $module_description);
+                }
+
+                $descr = "Slot $slot $module_description [$cpu]";
+                $index = "$slot.$cpu.$interval";
+
+                if (is_numeric($entry['FOUNDRY-SN-AGENT-MIB::snAgentCpuUtil100thPercent'])) {
+                    return new Processor([
+                        'processor_type' => $this->getName(),
+                        'processor_oid' => '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.' . $index,
+                        'processor_index' => $index,
+                        'processor_descr' => $descr,
+                        'processor_precision' => 100,
+                        'hrDeviceIndex' => null,
+                        'processor_perc_warn' => null,
+                        'processor_usage' => $entry['FOUNDRY-SN-AGENT-MIB::snAgentCpuUtil100thPercent'],
+                    ]);
+                } elseif (is_numeric($entry['FOUNDRY-SN-AGENT-MIB::snAgentCpuUtilPercent'])) {
+                    return new Processor([
+                        'processor_type' => $this->getName(),
+                        'processor_oid' => '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.' . $index,
+                        'processor_index' => $index,
+                        'processor_descr' => $descr,
+                        'processor_precision' => 1,
+                        'hrDeviceIndex' => null,
+                        'processor_perc_warn' => null,
+                        'processor_usage' => $entry['FOUNDRY-SN-AGENT-MIB::snAgentCpuUtilPercent'],
+                    ]);
+                }
             }
 
-            if (is_numeric($entry['snAgentCpuUtil100thPercent'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.' . $index;
-                $precision = 100;
-                $usage = $entry['snAgentCpuUtil100thPercent'] / $precision;
-            } elseif (is_numeric($entry['snAgentCpuUtilValue'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.' . $index;
-                $precision = 1;
-                $usage = $entry['snAgentCpuUtilValue'] / $precision;
-            } else {
-                continue;
-            }
-
-            $module_description = $module_descriptions[$entry['snAgentCpuUtilSlotNum']];
-            [$module_description] = explode(' ', $module_description);
-            $descr = "Slot {$entry['snAgentCpuUtilSlotNum']} $module_description [{$entry['snAgentCpuUtilSlotNum']}]";
-
-            $processors[] = Processor::discover(
-                $this->getName(),
-                $this->getDeviceId(),
-                $usage_oid,
-                $index,
-                $descr,
-                $precision,
-                $usage
-            );
-        }
-
-        return $processors;
+            return null;
+        })->filter()->values();
     }
 }

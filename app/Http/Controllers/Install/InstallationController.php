@@ -1,4 +1,5 @@
 <?php
+
 /**
  * InstallationController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,10 +35,10 @@ class InstallationController extends Controller
     protected $connection = 'setup';
     protected $step;
     protected $steps = [
-        'checks' => \App\Http\Controllers\Install\ChecksController::class,
-        'database' => \App\Http\Controllers\Install\DatabaseController::class,
-        'user' => \App\Http\Controllers\Install\MakeUserController::class,
-        'finish' => \App\Http\Controllers\Install\FinalizeController::class,
+        'checks' => ChecksController::class,
+        'database' => DatabaseController::class,
+        'user' => MakeUserController::class,
+        'finish' => FinalizeController::class,
     ];
 
     public function redirectToFirst()
@@ -108,8 +110,21 @@ class InstallationController extends Controller
     {
         $data['steps'] = $this->hydrateControllers();
         $data['step'] = $this->step;
+        $data['primary_step'] = $this->getPrimaryStep();
 
         return $data;
+    }
+
+    protected function getPrimaryStep(): ?string
+    {
+        foreach ($this->hydrateControllers() as $name => $controller) {
+            /** @var InstallerStep $controller */
+            if ($controller->enabled() && ! $controller->complete()) {
+                return $name;
+            }
+        }
+
+        return null;
     }
 
     protected function configureDatabase()
@@ -125,7 +140,7 @@ class InstallationController extends Controller
                 $db['port'] ?? 3306,
                 $db['socket'] ?? null
             );
-            config(['database.default', $this->connection]);
+            config('database.default', $this->connection);
         }
     }
 
@@ -140,9 +155,7 @@ class InstallationController extends Controller
 
     protected function hydrateControllers()
     {
-        $this->steps = array_map(function ($class) {
-            return is_object($class) ? $class : app()->make($class);
-        }, $this->steps);
+        $this->steps = array_map(fn ($class) => is_object($class) ? $class : app()->make($class), $this->steps);
 
         return $this->steps;
     }
@@ -151,11 +164,9 @@ class InstallationController extends Controller
     {
         $this->hydrateControllers();
 
-        return array_map(function (InstallerStep $controller) {
-            return [
-                'enabled' => $controller->enabled(),
-                'complete' => $controller->complete(),
-            ];
-        }, $this->steps);
+        return array_map(fn (InstallerStep $controller) => [
+            'enabled' => $controller->enabled(),
+            'complete' => $controller->complete(),
+        ], $this->steps);
     }
 }

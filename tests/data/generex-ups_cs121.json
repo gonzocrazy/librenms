@@ -10,11 +10,11 @@
                     "version": "CS121 v 4.26.14",
                     "hardware": "Rittal RITTAL PMC Extension",
                     "features": null,
+                    "location": "<private>",
                     "os": "generex-ups",
                     "type": "power",
                     "serial": null,
-                    "icon": "generex-ups.svg",
-                    "location": "<private>"
+                    "icon": "generex-ups.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "CS121 Ethernet",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -147,9 +140,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -159,15 +149,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "CS121 Ethernet",
                     "ifPhysAddress": "00030518194e",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -256,6 +242,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 80,
@@ -269,6 +256,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -280,6 +268,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -293,6 +282,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -304,6 +294,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -317,6 +308,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -328,6 +320,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -341,6 +334,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -352,6 +346,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 76,
@@ -365,6 +360,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -376,6 +372,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 68,
@@ -389,6 +386,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -400,6 +398,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -413,6 +412,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -424,6 +424,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -437,6 +438,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -448,6 +450,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -461,6 +464,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -472,6 +476,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input Phase 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -485,6 +490,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -496,6 +502,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Bypass",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -509,6 +516,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -520,6 +528,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Percentage load 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 28,
@@ -533,6 +542,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -544,6 +554,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Percentage load 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 27,
@@ -557,6 +568,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -568,6 +580,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Percentage load 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 24,
@@ -581,6 +594,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -592,6 +606,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 19000,
@@ -605,6 +620,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -616,6 +632,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 18300,
@@ -629,6 +646,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -640,6 +658,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 16600,
@@ -653,6 +672,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -664,6 +684,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Estimated battery time remaining",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 59,
@@ -677,6 +698,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -688,6 +710,7 @@
                     "sensor_type": "upsBatteryStatusState",
                     "sensor_descr": "Battery Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -701,6 +724,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsBatteryStatusState"
                 },
                 {
@@ -712,6 +736,7 @@
                     "sensor_type": "upsOutputSourceState",
                     "sensor_descr": "Output Source",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -725,6 +750,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsOutputSourceState"
                 },
                 {
@@ -736,6 +762,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 21,
@@ -749,6 +776,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -760,6 +788,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 1",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 227,
@@ -773,6 +802,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -784,6 +814,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 273,
@@ -797,6 +828,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -808,6 +840,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 227,
@@ -821,6 +854,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -832,6 +866,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output Phase 3",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 227,
@@ -845,6 +880,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -852,77 +888,66 @@
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Low",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Depleted",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Other",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "None",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Bypass",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Battery",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Booster",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Reducer",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 2
                 }

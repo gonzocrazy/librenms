@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AlertsController.php
  *
@@ -18,19 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Widgets;
 
-use App\Models\Alert;
 use Illuminate\Http\Request;
-use LibreNMS\Enum\AlertState;
+use Illuminate\View\View;
 
 class AlertsController extends WidgetController
 {
-    protected $title = 'Alerts';
+    protected string $name = 'alerts';
     protected $defaults = [
         'title' => null,
         'device' => null,
@@ -43,20 +44,11 @@ class AlertsController extends WidgetController
         'location' => 1,
         'sort' => 1,
         'hidenavigation' => 0,
+        'uncollapse_key_count' => 1,
+        'unreachable' => null,
     ];
 
-    public function getView(Request $request)
-    {
-        $alert_count = Alert::where('state', '!=', AlertState::RECOVERED)->count();
-
-        if ($alert_count) {
-            $this->title .= ' (' . $alert_count . ')';
-        }
-
-        return view('widgets.alerts', $this->getSettings());
-    }
-
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
         $data['severities'] = [
@@ -75,6 +67,7 @@ class AlertsController extends WidgetController
             'acknowledged' => '2',
             'worse' => '3',
             'better' => '4',
+            'changed' => '5',
         ];
 
         return view('widgets.settings.alerts', $data);

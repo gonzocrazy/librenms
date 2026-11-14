@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ApplicationController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,10 +27,16 @@
 namespace App\Http\Controllers\Select;
 
 use App\Models\Application;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
+/**
+ * @extends SelectController<Application>
+ */
 class ApplicationController extends SelectController
 {
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'type' => 'nullable|string',
@@ -37,17 +45,16 @@ class ApplicationController extends SelectController
 
     /**
      * Defines the base query for this resource
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request): Builder
     {
-        $query = Application::hasAccess($request->user())->with(['device' => function ($query) {
-            $query->select('device_id', 'hostname', 'sysName');
+        $this->authorize('viewAny', Application::class);
+
+        $query = Application::hasAccess($request->user())->with(['device' => function ($query): void {
+            $query->select('device_id', 'hostname', 'sysName', 'display');
         }]);
 
-        if ($type = $request->get('type')) {
+        if ($type = $request->input('type')) {
             $query->where('app_type', $type);
         }
 
@@ -55,13 +62,14 @@ class ApplicationController extends SelectController
     }
 
     /**
-     * @param Application $app
+     * @param  Application  $model
+     * @return array{id: int|string, text: string, icon?: string}
      */
-    public function formatItem($app)
+    public function formatItem(Model $model): array
     {
         return [
-            'id' => $app->app_id,
-            'text' => $app->displayName() . ' - ' . $app->device->displayName(),
+            'id' => $model->app_id,
+            'text' => $model->displayName() . ' - ' . $model->device->display,
         ];
     }
 }

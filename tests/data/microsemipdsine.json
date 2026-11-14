@@ -10,11 +10,11 @@
                     "version": "4.17.05.07",
                     "hardware": "Midspan",
                     "features": null,
+                    "location": "<private>",
                     "os": "microsemipdsine",
                     "type": "network",
                     "serial": "000076",
-                    "icon": "microsemi.png",
-                    "location": "<private>"
+                    "icon": "microsemi.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Ethernet Interface",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -147,9 +140,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -158,16 +148,12 @@
                     "ifMtu": 1500,
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Ethernet Interface",
-                    "ifPhysAddress": "303a353a3561",
-                    "ifHardType": null,
+                    "ifPhysAddress": "00055a03eb92",
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -256,6 +242,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Max Power (Unit 1)",
                     "group": "Main (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 430,
@@ -269,6 +256,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -280,6 +268,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 1",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8,
@@ -293,6 +282,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -304,6 +294,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 10",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -317,6 +308,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -328,6 +320,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 11",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -341,6 +334,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -352,6 +346,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 12",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -365,6 +360,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -376,6 +372,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 2",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8,
@@ -389,6 +386,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -400,6 +398,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 3",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 7,
@@ -413,6 +412,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -424,6 +424,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 4",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8,
@@ -437,6 +438,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -448,6 +450,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 5",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -461,6 +464,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -472,6 +476,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 6",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -485,6 +490,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -496,6 +502,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 7",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -509,6 +516,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -520,6 +528,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 8",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -533,6 +542,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -544,6 +554,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Consumption, unit 1, port 9",
                     "group": "Ports (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -557,6 +568,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -568,6 +580,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Used Power (Unit 1)",
                     "group": "Main (Unit 1)",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 69,
@@ -581,6 +594,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -592,6 +606,7 @@
                     "sensor_type": "microsemipdsine",
                     "sensor_descr": "Power Supply Voltage",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 55,
@@ -605,11 +620,24 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.254.191.40",
+                    "ipv4_prefixlen": 16,
+                    "context_name": "",
+                    "ipv4_network": "10.254.0.0/16",
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

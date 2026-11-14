@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Keyable.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +30,8 @@ interface Keyable
 {
     /**
      * Get a string that can identify a unique instance of this model
+     *
      * @return string|int
      */
-    public function getCompositeKey();
+    public function getCompositeKey(): string|int;
 }

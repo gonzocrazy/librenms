@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Python.php
  *
@@ -18,13 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 namespace LibreNMS\Validations;
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 use LibreNMS\Util\Version;
 use LibreNMS\Validator;
 use Symfony\Component\Process\Process;
@@ -37,11 +39,11 @@ class Python extends BaseValidation
      * Validate this module.
      * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
      *
-     * @param Validator $validator
+     * @param  Validator  $validator
      */
-    public function validate(Validator $validator)
+    public function validate(Validator $validator): void
     {
-        $version = Version::python();
+        $version = Version::get()->python();
 
         if (empty($version)) {
             $validator->fail('python3 not found', 'Install Python 3 for your system.');
@@ -50,8 +52,14 @@ class Python extends BaseValidation
         }
 
         $this->checkVersion($validator, $version);
-        $this->checkPipVersion($validator, $version);
-        $this->checkExtensions($validator);
+
+        $pip_output = (string) `pip3 --version 2>/dev/null`;
+        if (empty($pip_output)) {
+            $validator->warn('pip3 is not available');
+        } else {
+            $this->checkPipVersion($validator, $pip_output, $version);
+            $this->checkExtensions($validator);
+        }
     }
 
     private function checkVersion(Validator $validator, $version)
@@ -61,11 +69,11 @@ class Python extends BaseValidation
         }
     }
 
-    private function checkPipVersion(Validator $validator, $version)
+    private function checkPipVersion(Validator $validator, string $pip_output, string $version)
     {
-        preg_match('/\(python ([0-9.]+)\)/', `pip3 --version 2>/dev/null`, $matches);
-        $pip = $matches[1];
-        $python = implode('.', array_slice(explode('.', $version), 0, 2));
+        preg_match('/\(python ([0-9.]+)\)/', $pip_output, $matches);
+        $pip = $matches[1] ?? '';
+        $python = implode('.', array_slice(explode('.', (string) $version), 0, 2));
         if ($pip && version_compare($python, $pip, '!=')) {
             $validator->fail("python3 ($python) and pip3 ($pip) versions do not match.  This likely will cause dependencies to be installed for the wrong python version.");
         }
@@ -73,8 +81,8 @@ class Python extends BaseValidation
 
     private function checkExtensions(Validator $validator)
     {
-        $pythonExtensions = '/scripts/check_requirements.py';
-        $process = new Process([Config::get('install_dir') . $pythonExtensions, '-v']);
+        $pythonExtensions = '/scripts/dynamic_check_requirements.py';
+        $process = new Process([LibrenmsConfig::get('install_dir') . $pythonExtensions, '-v']);
         $process->run();
 
         if ($process->getExitCode() !== 0) {
@@ -82,9 +90,12 @@ class Python extends BaseValidation
             $user_mismatch = function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? null) !== $user : false;
 
             if ($user_mismatch) {
-                $validator->warn("Could not check Python dependencies because this script is not running as $user");
+                $validator->warn(
+                    "Could not check Python dependencies because this script is not running as $user",
+                    'The install docs show how this is done on a new install: https://docs.librenms.org/Installation/Install-LibreNMS/#configure-php-fpm'
+                );
             } else {
-                $validator->fail("Python3 module issue found: '" . $process->getOutput() . "'", 'pip3 install -r ' . Config::get('install_dir') . '/requirements.txt');
+                $validator->fail("Python3 module issue found: '" . $process->getOutput() . "'", 'pip3 install -r ' . LibrenmsConfig::get('install_dir') . '/requirements.txt');
             }
         }
     }

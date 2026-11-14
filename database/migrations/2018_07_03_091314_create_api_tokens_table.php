@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateApiTokensTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('api_tokens', function (Blueprint $table) {
+        Schema::create('api_tokens', function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->string('token_hash')->nullable()->unique();
@@ -26,8 +26,8 @@ class CreateApiTokensTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('api_tokens');
     }
-}
+};

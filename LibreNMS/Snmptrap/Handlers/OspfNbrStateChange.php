@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OspfNbrStateChange.php
  *
@@ -21,6 +22,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 KanREN Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -28,9 +30,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class OspfNbrStateChange implements SnmptrapHandler
 {
@@ -38,8 +40,8 @@ class OspfNbrStateChange implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -49,15 +51,13 @@ class OspfNbrStateChange implements SnmptrapHandler
 
         $ospfNbr->ospfNbrState = $trap->getOidData($trap->findOid('OSPF-MIB::ospfNbrState'));
 
-        $severity = 4;
+        $severity = match ($ospfNbr->ospfNbrState) {
+            'full' => Severity::Ok,
+            'down' => Severity::Error,
+            default => Severity::Warning,
+        };
 
-        if ($ospfNbr->ospfNbrState == 'full') {
-            $severity = 1;
-        } elseif ($ospfNbr->ospfNbrState == 'down') {
-            $severity = 5;
-        }
-
-        Log::event("OSPF neighbor $ospfNbrIpAddr changed state to $ospfNbr->ospfNbrState", $device->device_id, 'trap', $severity);
+        $trap->log("OSPF neighbor $ospfNbrIpAddr changed state to $ospfNbr->ospfNbrState", $severity);
 
         $ospfNbr->save();
     }

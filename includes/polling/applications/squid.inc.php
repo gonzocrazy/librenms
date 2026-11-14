@@ -3,7 +3,6 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'squid';
-$app_id = $app['app_id'];
 
 $oids = [
     '.1.3.6.1.4.1.3495.1.2.5.1.0',
@@ -45,7 +44,7 @@ $oids = [
     '.1.3.6.1.4.1.3495.1.3.2.2.1.10.5',
     '.1.3.6.1.4.1.3495.1.3.2.2.1.10.60',
 ];
-$returnedoids = snmp_get_multi_oid($device, $oids);
+$returnedoids = SnmpQuery::numeric()->get($oids)->values();
 
 $memmaxsize = $returnedoids['.1.3.6.1.4.1.3495.1.2.5.1.0'];
 $swapmaxsize = $returnedoids['.1.3.6.1.4.1.3495.1.2.5.2.0'];
@@ -86,7 +85,7 @@ $requestbyteratio1 = $returnedoids['.1.3.6.1.4.1.3495.1.3.2.2.1.10.1'];
 $requestbyteratio5 = $returnedoids['.1.3.6.1.4.1.3495.1.3.2.2.1.10.5'];
 $requestbyteratio60 = $returnedoids['.1.3.6.1.4.1.3495.1.3.2.2.1.10.60'];
 
-$rrd_name = ['app', $name, $app_id];
+$rrd_name = ['app', $name, $app->app_id];
 
 $rrd_def = RrdDefinition::make()
     ->addDataset('memmaxsize', 'GAUGE', 0)
@@ -127,10 +126,10 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('reqbyteratio5', 'GAUGE', 0)
     ->addDataset('reqbyteratio60', 'GAUGE', 0);
 
-$memmaxsize = $memmaxsize * 1000;
-$swapmaxsize = $swapmaxsize * 1000;
-$swaphighwm = $swaphighwm * 1000;
-$swaplowwm = $swaplowwm * 1000;
+$memmaxsize *= 1000;
+$swapmaxsize *= 1000;
+$swaphighwm *= 1000;
+$swaplowwm *= 1000;
 
 $fields = [
     'memmaxsize' => $memmaxsize,
@@ -172,8 +171,8 @@ $fields = [
     'reqbyteratio60' => $requestbyteratio60,
 ];
 
-$tags = ['name' => $name, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $name, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 
 $squid_app_status = ($returnedoids == false) ? false : 'Data ok';
 update_application($app, $squid_app_status, $fields);

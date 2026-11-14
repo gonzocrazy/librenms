@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DashboardController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,41 +27,67 @@
 namespace App\Http\Controllers\Select;
 
 use App\Models\Dashboard;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
+/**
+ * @extends SelectController<Dashboard>
+ */
 class DashboardController extends SelectController
 {
-    protected function searchFields($request)
+    protected function searchFields($request): array
     {
-        return ['dashboard_name'];
+        return ['dashboard_name', 'username'];
     }
 
     /**
      * Defines the base query for this resource
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request): Builder
     {
-        return Dashboard::query()
-            ->where('access', '>', 0)
-            ->with('user')
-            ->orderBy('user_id')
-            ->orderBy('dashboard_name');
+        $this->authorize('viewAny', Dashboard::class);
+
+        return Dashboard::hasAccess($request->user())
+            ->leftJoin('users', 'dashboards.user_id', 'users.user_id') // left join so we can search username
+            ->orderBy('dashboards.user_id')
+            ->orderBy('dashboard_name')
+            ->select(['dashboard_id', 'username', 'dashboard_name']);
     }
 
-    public function formatItem($dashboard)
+    /**
+     * @param  Dashboard  $model
+     * @return array{id: int|string, text: string, icon?: string}
+     */
+    public function formatItem(Model $model): array
     {
-        /** @var Dashboard $dashboard */
         return [
-            'id' => $dashboard->dashboard_id,
-            'text' => $this->describe($dashboard),
+            'id' => $model->dashboard_id,
+            'text' => $this->describe($model),
         ];
     }
 
-    private function describe($dashboard)
+    protected function prependItem(): array
     {
-        return "{$dashboard->user->username}: {$dashboard->dashboard_name} ("
+        return [
+            'id' => 0,
+            'text' => __('No Default Dashboard'),
+        ];
+    }
+
+    /**
+     * @param  Dashboard  $dashboard
+     * @return string
+     */
+    private function describe(Dashboard $dashboard): string
+    {
+        if ($dashboard->dashboard_id == 0) {
+            return $this->prependItem()['text'];
+        }
+
+        $username = $dashboard->username ?? __('Unknown');
+
+        return "$username: {$dashboard->dashboard_name} ("
             . ($dashboard->access == 1 ? __('read-only') : __('read-write')) . ')';
     }
 }

@@ -1,4 +1,3 @@
-<h3> Alert Rules </h3>
 <?php
 
 /*
@@ -13,4 +12,4 @@
  * the source code distribution for details.
  */
 
-require_once 'includes/html/print-alert-rules.php';
+require 'includes/html/print-alert-rules.php';

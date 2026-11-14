@@ -21,16 +21,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 header('Content-type: application/json');
 
-if (! Auth::user()->hasGlobalAdmin()) {
+if (Gate::denies('alert-template.update')) {
     exit(json_encode([
         'status' => 'error',
         'message' => 'You need to be admin',
@@ -44,14 +46,7 @@ if (empty($vars['template'])) {
     ]));
 }
 
-$new_body = '';
-foreach (explode(PHP_EOL, $vars['template']) as $line) {
-    $new_body .= convert_template($line) . PHP_EOL;
-}
-$new_title = convert_template($vars['title']);
-
-function convert_template($line)
-{
+$convert_template = function ($line) {
     if (Str::contains($line, '{calc')) {
         return preg_replace(
             [
@@ -62,7 +57,7 @@ function convert_template($line)
                 "@php\necho \\1;\n@endphp ",
                 '$value[\'\2\']',
             ],
-            $line
+            (string) $line
         );
     }
 
@@ -91,7 +86,7 @@ function convert_template($line)
         '{{ $\1[\'\2\'] }}',
         '{{ $alert->\1 }}',
     ];
-    $old1 = preg_replace($find, $replace, $old1);
+    $old1 = preg_replace($find, $replace, (string) $old1);
 
     // Revert some over-zealous changes:
     $find = [
@@ -103,8 +98,14 @@ function convert_template($line)
         '$value',
     ];
 
-    return preg_replace($find, $replace, $old1);
+    return preg_replace($find, $replace, (string) $old1);
+};
+
+$new_body = '';
+foreach (explode(PHP_EOL, (string) $vars['template']) as $line) {
+    $new_body .= $convert_template($line) . PHP_EOL;
 }
+$new_title = $convert_template($vars['title']);
 
 exit(json_encode([
     'status' => 'ok',

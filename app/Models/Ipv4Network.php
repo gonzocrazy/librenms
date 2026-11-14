@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ipv4Network.php
  *
@@ -18,15 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Gate;
 
 class Ipv4Network extends Model
 {
@@ -34,11 +39,39 @@ class Ipv4Network extends Model
 
     public $timestamps = false;
     protected $primaryKey = 'ipv4_network_id';
+    protected $fillable = [
+        'ipv4_network',
+        'context_name',
+    ];
+
+    // ---- Query scopes ----
+
+    /**
+     * Networks containing at least one address the user can access.
+     */
+    protected function scopeHasAccess(Builder $query, User $user): Builder
+    {
+        if (Gate::forUser($user)->allows('viewAll', Port::class)) {
+            return $query;
+        }
+
+        return $query->whereIn($this->qualifyColumn('ipv4_network_id'), Ipv4Address::hasAccess($user)->select('ipv4_network_id'));
+    }
 
     // ---- Define Relationships ----
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Ipv4Address, $this>
+     */
     public function ipv4(): HasMany
     {
-        return $this->hasMany(\App\Models\Ipv4Address::class, 'ipv4_network_id');
+        return $this->hasMany(Ipv4Address::class, 'ipv4_network_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\App\Models\Port, \App\Models\Ipv4Address, $this>
+     */
+    public function connectedPorts(): HasManyThrough
+    {
+        return $this->hasManyThrough(Port::class, Ipv4Address::class, 'ipv4_network_id', 'port_id', 'ipv4_network_id', 'port_id');
     }
 }

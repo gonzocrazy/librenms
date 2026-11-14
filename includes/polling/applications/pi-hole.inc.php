@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,16 +17,15 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'pi-hole';
-$app_id = $app['app_id'];
 $options = '-Oqv';
 $oid = '.1.3.6.1.4.1.8072.1.3.2.4.1.2.7.112.105.45.104.111.108.101';
 
 $pihole = snmp_walk($device, $oid, $options);
 
 if ($pihole) {
-    [$domains_blocked, $dns_query, $ads_blocked, $ads_percentage, $unique_domains, $queries_forwarded, $queries_cached, $query_a, $query_aaaa, $query_ptr, $query_srv] = explode("\n", $pihole);
+    [$domains_blocked, $dns_query, $ads_blocked, $ads_percentage, $unique_domains, $queries_forwarded, $queries_cached, $query_a, $query_aaaa, $query_ptr, $query_srv] = explode("\n", (string) $pihole);
 
-    $rrd_name = ['app', $name, $app_id];
+    $rrd_name = ['app', $name, $app->app_id];
     $rrd_def = RrdDefinition::make()
         ->addDataset('domains_blocked', 'GAUGE', 0)
         ->addDataset('dns_query', 'GAUGE', 0)
@@ -53,8 +53,8 @@ if ($pihole) {
         'query_srv' => $query_srv,
     ];
 
-    $tags = ['name' => $name, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-    data_update($device, 'app', $tags, $fields);
+    $tags = ['name' => $name, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+    app('Datastore')->put($device, 'app', $tags, $fields);
     update_application($app, $pihole, $fields);
 }
 

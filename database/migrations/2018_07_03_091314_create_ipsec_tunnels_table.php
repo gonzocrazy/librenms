@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateIpsecTunnelsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('ipsec_tunnels', function (Blueprint $table) {
+        Schema::create('ipsec_tunnels', function (Blueprint $table): void {
             $table->increments('tunnel_id');
             $table->unsignedInteger('device_id');
             $table->unsignedInteger('peer_port');
@@ -30,8 +30,8 @@ class CreateIpsecTunnelsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('ipsec_tunnels');
     }
-}
+};

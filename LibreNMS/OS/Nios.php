@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Nios.php
  *
@@ -25,12 +26,13 @@
 
 namespace LibreNMS\OS;
 
+use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
 
 class Nios extends \LibreNMS\OS implements OSPolling
 {
-    public function pollOS()
+    public function pollOS(DataStorageInterface $datastore): void
     {
         //#############
         // Create ddns update rrd
@@ -52,14 +54,14 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('prereq_reject', 'DERIVE', 0);
 
         $fields = [
-            'success' => $data[0]['ibDDNSUpdateSuccess'],
-            'failure' => $data[0]['ibDDNSUpdateFailure'],
-            'reject' => $data[0]['ibDDNSUpdateReject'],
-            'prereq_reject' => $data[0]['ibDDNSUpdatePrerequisiteReject'],
+            'success' => $data[0]['ibDDNSUpdateSuccess'] ?? null,
+            'failure' => $data[0]['ibDDNSUpdateFailure'] ?? null,
+            'reject' => $data[0]['ibDDNSUpdateReject'] ?? null,
+            'prereq_reject' => $data[0]['ibDDNSUpdatePrerequisiteReject'] ?? null,
         ];
 
-        $tags = compact('rrd_def');
-        data_update($this->getDeviceArray(), 'ib_dns_dyn_updates', $tags, $fields);
+        $tags = ['rrd_def' => $rrd_def];
+        $datastore->put($this->getDeviceArray(), 'ib_dns_dyn_updates', $tags, $fields);
         $this->enableGraph('ib_dns_dyn_updates');
 
         //#################
@@ -78,12 +80,12 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('PerfnonAA', 'GAUGE', 0);
 
         $fields = [
-            'PerfAA' => $data[0]['ibNetworkMonitorDNSAAT1AvgLatency'],
-            'PerfnonAA' => $data[0]['ibNetworkMonitorDNSNonAAT1AvgLatency'],
+            'PerfAA' => $data[0]['ibNetworkMonitorDNSAAT1AvgLatency'] ?? null,
+            'PerfnonAA' => $data[0]['ibNetworkMonitorDNSNonAAT1AvgLatency'] ?? null,
         ];
 
-        $tags = compact('rrd_def');
-        data_update($this->getDeviceArray(), 'ib_dns_performance', $tags, $fields);
+        $tags = ['rrd_def' => $rrd_def];
+        $datastore->put($this->getDeviceArray(), 'ib_dns_performance', $tags, $fields);
         $this->enableGraph('ib_dns_performance');
 
         //#################
@@ -106,14 +108,14 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('nxrrset', 'DERIVE', 0);
 
         $fields = [
-            'success' => $data['"summary"']['ibBindZoneSuccess'],
-            'failure' => $data['"summary"']['ibBindZoneFailure'],
-            'nxdomain' => $data['"summary"']['ibBindZoneNxDomain'],
-            'nxrrset' => $data['"summary"']['ibBindZoneNxRRset'],
+            'success' => $data['"summary"']['ibBindZoneSuccess'] ?? null,
+            'failure' => $data['"summary"']['ibBindZoneFailure'] ?? null,
+            'nxdomain' => $data['"summary"']['ibBindZoneNxDomain'] ?? null,
+            'nxrrset' => $data['"summary"']['ibBindZoneNxRRset'] ?? null,
         ];
 
-        $tags = compact('rrd_def');
-        data_update($this->getDeviceArray(), 'ib_dns_request_return_codes', $tags, $fields);
+        $tags = ['rrd_def' => $rrd_def];
+        $datastore->put($this->getDeviceArray(), 'ib_dns_request_return_codes', $tags, $fields);
         $this->enableGraph('ib_dns_request_return_codes');
 
         //#################
@@ -146,19 +148,19 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('request', 'DERIVE', 0);
 
         $fields = [
-            'ack' => $data[0]['ibDhcpTotalNoOfAcks'],
-            'decline' => $data[0]['ibDhcpTotalNoOfDeclines'],
-            'discover' => $data[0]['ibDhcpTotalNoOfDiscovers'],
-            'inform' => $data[0]['ibDhcpTotalNoOfInforms'],
-            'nack' => $data[0]['ibDhcpTotalNoOfNacks'],
-            'offer' => $data[0]['ibDhcpTotalNoOfOffers'],
-            'other' => $data[0]['ibDhcpTotalNoOfOthers'],
-            'release' => $data[0]['ibDhcpTotalNoOfReleases'],
-            'request' => $data[0]['ibDhcpTotalNoOfRequests'],
+            'ack' => $data[0]['ibDhcpTotalNoOfAcks'] ?? null,
+            'decline' => $data[0]['ibDhcpTotalNoOfDeclines'] ?? null,
+            'discover' => $data[0]['ibDhcpTotalNoOfDiscovers'] ?? null,
+            'inform' => $data[0]['ibDhcpTotalNoOfInforms'] ?? null,
+            'nack' => $data[0]['ibDhcpTotalNoOfNacks'] ?? null,
+            'offer' => $data[0]['ibDhcpTotalNoOfOffers'] ?? null,
+            'other' => $data[0]['ibDhcpTotalNoOfOthers'] ?? null,
+            'release' => $data[0]['ibDhcpTotalNoOfReleases'] ?? null,
+            'request' => $data[0]['ibDhcpTotalNoOfRequests'] ?? null,
         ];
 
-        $tags = compact('rrd_def');
-        data_update($this->getDeviceArray(), 'ib_dhcp_messages', $tags, $fields);
+        $tags = ['rrd_def' => $rrd_def];
+        $datastore->put($this->getDeviceArray(), 'ib_dhcp_messages', $tags, $fields);
         $this->enableGraph('ib_dhcp_messages');
     }
 }

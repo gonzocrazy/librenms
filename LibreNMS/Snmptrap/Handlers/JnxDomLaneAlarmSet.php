@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JnxDomLaneAlarmSet.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
 use Log;
@@ -35,8 +38,8 @@ class JnxDomLaneAlarmSet implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -53,6 +56,6 @@ class JnxDomLaneAlarmSet implements SnmptrapHandler
             return;
         }
 
-        Log::event("DOM lane alarm on interface $port->ifDescr lane $lane. Current alarm(s): $alarmList", $device->device_id, 'trap', 5);
+        $trap->log("DOM lane alarm on interface $port->ifDescr lane $lane. Current alarm(s): $alarmList", Severity::Error);
     }
 }

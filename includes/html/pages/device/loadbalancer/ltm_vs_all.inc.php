@@ -52,11 +52,11 @@
         <tr>
             <td><?php echo $vs_id; ?></td>
             <td><?php echo $id; ?></td>
-            <td><?php echo $array['label']; ?></td>
-            <td><?php echo $string; ?></td>
-            <td><?php echo $array['pool']; ?></td>
-            <td><?php echo $status; ?></td>
-            <td><?php echo $message; ?></td>
+            <td><?php echo e($array['label']); ?></td>
+            <td><?php echo e($string); ?></td>
+            <td><?php echo e($array['pool']); ?></td>
+            <td><?php echo e($status); ?></td>
+            <td><?php echo e($message); ?></td>
         </tr>
         <?php
     }
@@ -64,6 +64,23 @@
     </tbody>
 </table>
 
+<div class="panel panel-default" id="currconnections">
+    <div class="panel-heading">
+        <h3 class="panel-title">Current Connections</h3>
+    </div>
+    <div class="panel-body">
+        <?php
+        $graph_array = [];
+        $graph_array['device'] = $device['device_id'];
+        $graph_array['height'] = '100';
+        $graph_array['width'] = '215';
+        $graph_array['legend'] = 'no';
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
+        $graph_array['type'] = 'device_bigip_ltm_allvs_currconns';
+        require 'includes/html/print-graphrow.inc.php';
+        ?>
+    </div>
+</div>
 <div class="panel panel-default" id="connections">
     <div class="panel-heading">
         <h3 class="panel-title">Connections</h3>
@@ -75,7 +92,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_ltm_allvs_conns';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -93,7 +110,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_ltm_allvs_bytesin';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -111,7 +128,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_ltm_allvs_bytesout';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -129,7 +146,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_ltm_allvs_pktsin';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -147,7 +164,7 @@
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
         $graph_array['legend'] = 'no';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_bigip_ltm_allvs_pktsout';
         require 'includes/html/print-graphrow.inc.php';
         ?>
@@ -160,7 +177,7 @@
                 2: "danger"
             },
         }).on("click.rs.jquery.bootgrid", function (e, columns, row) {
-            var link = '<?php echo \LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_vs', 'subtype' => 'ltm_vs_det']); ?>vsid='+row['vsid']+'/poolid='+row['poolid'];
+            var link = <?php echo json_encode(\LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_vs', 'subtype' => 'ltm_vs_det'])); ?> + 'vsid=' + row['vsid']+'/poolid='+row['poolid'];
             window.location.href = link;
         });
     </script>

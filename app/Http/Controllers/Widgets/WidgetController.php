@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WidgetController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,14 +30,14 @@ use App\Http\Controllers\Controller;
 use App\Models\DeviceGroup;
 use App\Models\PortGroup;
 use App\Models\UserWidget;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 abstract class WidgetController extends Controller
 {
-    /** @var string sets the title for this widget, use title() function if you need to dynamically generate */
-    protected $title = 'Widget';
+    protected string $name = 'widget'; // used for route, view, and translation paths
 
     /** @var array Set default values for settings */
     protected $defaults = [];
@@ -44,23 +46,39 @@ abstract class WidgetController extends Controller
     protected $settings = null;
 
     /**
-     * @param Request $request
-     * @return View|string
+     * Get the displayable (translated) title of this widget
+     * If you want a dynamically generated title, do it in this method
      */
-    abstract public function getView(Request $request);
-
-    /**
-     * @param Request $request
-     * @return View
-     */
-    public function getSettingsView(Request $request)
+    public function getTitle(): string
     {
-        return view('widgets.settings.base');
+        return __("widgets.$this->name.title");
     }
 
-    public function __invoke(Request $request)
+    /**
+     * Get the view to display for the widget
+     */
+    public function getView(Request $request): View|string
     {
-        $this->show_settings = (bool) $request->get('settings');
+        return view("widgets.$this->name", $this->getSettings());
+    }
+
+    /**
+     * @param  Request  $request
+     * @return View
+     */
+    public function getSettingsView(Request $request): View
+    {
+        if (view()->exists("widgets.settings.$this->name")) {
+            return view("widgets.settings.$this->name", $this->getSettings(true));
+        }
+
+        return view('widgets.settings.base', $this->getSettings(true));
+    }
+
+    public function __invoke(Request $request): JsonResponse
+    {
+        $this->show_settings = (bool) $request->input('settings');
+        $title = $this->getTitle();
 
         if ($this->show_settings) {
             $view = $this->getSettingsView($request);
@@ -70,7 +88,7 @@ abstract class WidgetController extends Controller
             $this->getSettings();
 
             if (! empty($this->settings['device_group']) || ! empty($this->settings['port_group'])) {
-                $this->title .= ' (';
+                $title .= ' (';
 
                 $title_details = [];
                 if (! empty($this->settings['device_group'])) {
@@ -80,16 +98,14 @@ abstract class WidgetController extends Controller
                     $title_details[] = PortGroup::find($this->settings['port_group'])->name;
                 }
 
-                $this->title .= implode(' ; ', $title_details);
-                $this->title .= ')';
+                $title .= implode(' ; ', $title_details);
+                $title .= ')';
             }
             $view = $this->getView($request);
         }
 
         if (! empty($this->settings['title'])) {
             $title = $this->settings['title'];
-        } else {
-            $title = __(method_exists($this, 'title') ? app()->call([$this, 'title']) : $this->title);
         }
 
         return $this->formatResponse($view, $title, $this->settings);
@@ -98,15 +114,18 @@ abstract class WidgetController extends Controller
     /**
      * Get the settings (with defaults applied)
      *
-     * @param bool $settingsView
+     * @param  bool  $settingsView
      * @return array
      */
-    public function getSettings($settingsView = false)
+    public function getSettings($settingsView = false): array
     {
         if (is_null($this->settings)) {
-            $id = \Request::get('id');
+            $id = \Request::input('id');
             $widget = UserWidget::find($id);
-            $this->defaults['refresh'] = $this->defaults['refresh'] ?? 60;
+            if (isset($widget) && isset($widget->dashboard) && ! \Auth::user()->can('view', $widget->dashboard)) {
+                abort(403, 'Unauthorized access to widget');
+            }
+            $this->defaults['refresh'] ??= 60;
             $this->settings = array_replace($this->defaults, $widget ? (array) $widget->settings : []);
             $this->settings['id'] = $id;
 
@@ -123,13 +142,13 @@ abstract class WidgetController extends Controller
     }
 
     /**
-     * @param View|string $view
-     * @param string $title
-     * @param array $settings
-     * @param string $status
-     * @return \Illuminate\Http\JsonResponse
+     * @param  View|string  $view
+     * @param  string  $title
+     * @param  array  $settings
+     * @param  string  $status
+     * @return JsonResponse
      */
-    private function formatResponse($view, $title, $settings, $status = 'ok')
+    private function formatResponse($view, $title, $settings, $status = 'ok'): JsonResponse
     {
         if ($view instanceof View) {
             $html = $view->__toString();
@@ -141,7 +160,7 @@ abstract class WidgetController extends Controller
 
         return response()->json([
             'status' => $status,
-            'title' => __($title),
+            'title' => htmlentities(__($title)),
             'html' => $html,
             'show_settings' => $show_settings,
             'settings' => $settings,

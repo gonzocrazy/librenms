@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * ModuleStatus.php
+ *
+ * -Description-
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @link       https://www.librenms.org
+ *
+ * @copyright  2023 Tony Murray
+ * @author     Tony Murray <murraytony@gmail.com>
+ */
+
+namespace LibreNMS\Polling;
+
+class ModuleStatus implements \Stringable
+{
+    public function __construct(
+        public ?bool $global,
+        public ?bool $os = null,
+        public ?bool $device = null,
+        public ?bool $manual = null,
+        public ?array $submodules = null,
+        public ?bool $method = null, // set by the device's polling methods
+    ) {
+    }
+
+    public function isEnabled(): bool
+    {
+        if ($this->global === null) {
+            return false; // this module does not have polling
+        }
+
+        if ($this->manual !== null) {
+            return $this->manual;
+        }
+
+        if ($this->device !== null) {
+            return $this->device;
+        }
+
+        if ($this->method !== null) {
+            return $this->method;
+        }
+
+        if ($this->os !== null) {
+            return $this->os;
+        }
+
+        return $this->global;
+    }
+
+    public function reason(): string
+    {
+        if ($this->manual !== null) {
+            return 'manually';
+        }
+
+        if ($this->device !== null) {
+            return 'by device';
+        }
+
+        if ($this->method !== null) {
+            return 'by polling method';
+        }
+
+        if ($this->os !== null) {
+            return 'by OS';
+        }
+
+        return 'globally';
+    }
+
+    public function hasSubModules(): bool
+    {
+        return ! empty($this->submodules);
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('Module %s: Global %s | OS %s | Method %s | Device %s | Manual %s',
+            $this->isEnabled() ? 'enabled' : 'disabled',
+            $this->global ? '+' : '-',
+            $this->os === null ? ' ' : ($this->os ? '+' : '-'),
+            $this->method === null ? ' ' : ($this->method ? '+' : '-'),
+            $this->device === null ? ' ' : ($this->device ? '+' : '-'),
+            $this->manual === null ? ' ' : ($this->manual ? '+' : '-'),
+        );
+    }
+}

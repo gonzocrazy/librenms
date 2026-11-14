@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LibreNMS
  *
@@ -7,7 +8,11 @@
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.  Please see LICENSE.txt at the top level of
  * the source code distribution for details.
- */
+ *
+ * @author     Peca Nesovanovic <peca.nesovanovic@sattrakt.com>
+*/
+
+use LibreNMS\Enum\SensorType;
 
 echo 'PBN ';
 
@@ -16,7 +21,8 @@ $divisor = 256;
 foreach ($pre_cache['pbn_oids'] as $index => $entry) {
     if (is_numeric($entry['temperature']) && ($entry['temperature'] !== '-65535')) {
         $oid = '.1.3.6.1.4.1.11606.10.9.63.1.7.1.4.' . $index;
-        $descr = dbFetchCell('SELECT `ifDescr` FROM `ports` WHERE `ifIndex`= ? AND `device_id` = ?', [$index, $device['device_id']]) . ' Temperature';
+        $port = PortCache::getByIfIndex($index, $device['device_id']);
+        $descr = $port?->ifDescr . ' Temperature';
         $limit_low = -256;
         $warn_limit_low = 10;
         $limit = 256;
@@ -24,6 +30,6 @@ foreach ($pre_cache['pbn_oids'] as $index => $entry) {
         $value = $entry['temperature'] / $divisor;
         $entPhysicalIndex = $index;
         $entPhysicalIndex_measured = 'ports';
-        discover_sensor($valid['sensor'], 'temperature', $device, $oid, '' . $index, 'pbn', $descr, $divisor, $multiplier, $limit_low, $warn_limit_low, $warn_limit, $limit, $value, 'snmp', $entPhysicalIndex, $entPhysicalIndex_measured);
+        discover_sensor(null, SensorType::Temperature, $device, $oid, '' . $index, 'pbn', $descr, $divisor, $multiplier, $limit_low, $warn_limit_low, $warn_limit, $limit, $value, 'snmp', $entPhysicalIndex, $entPhysicalIndex_measured);
     }
 }

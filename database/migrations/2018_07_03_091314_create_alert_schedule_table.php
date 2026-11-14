@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAlertScheduleTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('alert_schedule', function (Blueprint $table) {
+        Schema::create('alert_schedule', function (Blueprint $table): void {
             $table->increments('schedule_id');
             $table->boolean('recurring')->default(0)->unsigned();
             $table->dateTime('start')->default('1970-01-02 00:00:01');
@@ -32,8 +32,8 @@ class CreateAlertScheduleTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('alert_schedule');
     }
-}
+};

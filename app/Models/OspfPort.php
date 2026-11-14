@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OspfPort.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -65,9 +67,11 @@ class OspfPort extends PortRelatedModel
     ];
 
     // ---- Define Relationships ----
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Device, $this>
+     */
     public function device(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Device::class, 'device_id');
+        return $this->belongsTo(Device::class, 'device_id');
     }
 }

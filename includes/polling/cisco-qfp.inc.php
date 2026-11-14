@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -9,6 +10,7 @@
  * LibreNMS module to capture Cisco QFP Statistics
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 LibreNMS
  * @author     Pavle Obradovic <pobradovic08@gmail.com>
  */
@@ -29,8 +31,9 @@ $options = [
 ];
 
 $component = new LibreNMS\Component();
-$components = $component->getComponents($device['device_id'], $options);
-$components = $components[$device['device_id']];
+if ($components = $component->getComponents($device['device_id'], $options)) {
+    $components = $components[$device['device_id']];
+}
 
 /*
  * SNMP makes available multiple datapoints dependnet on the time interval
@@ -100,7 +103,7 @@ if (! empty($components) && is_array($components)) {
         if (! empty($util_data) && ! empty($memory_data)) {
             $total_packets = $util_data[$util_oids['InTotalPps']] + $util_data[$util_oids['OutTotalPps']];
             $throughput = $util_data[$util_oids['InTotalBps']] + $util_data[$util_oids['OutTotalBps']];
-            $average_packet = $throughput / 8 / $total_packets;
+            $average_packet = $total_packets ? floor($throughput / 8 / $total_packets) : 0;
             /*
              * Create component data array for `component_prefs`
              * and update components
@@ -125,8 +128,8 @@ if (! empty($components) && is_array($components)) {
                 $rrd_def->addDataset($name, 'GAUGE', 0);
                 $rrd[$name] = $util_data[$util_oids[$name]];
             }
-            $tags = compact('module', 'rrd_name', 'rrd_def', 'qfp_index');
-            data_update($device, $module, $tags, $rrd);
+            $tags = ['module' => $module, 'rrd_name' => $rrd_name, 'rrd_def' => $rrd_def, 'qfp_index' => $qfp_index];
+            app('Datastore')->put($device, $module, $tags, $rrd);
             unset($filename, $rrd_filename, $rrd_name, $rrd_def, $rrd);
 
             /*
@@ -138,8 +141,8 @@ if (! empty($components) && is_array($components)) {
                 $rrd_def->addDataset($name, 'GAUGE', 0);
                 $rrd[$name] = $memory_data[$memory_oids[$name]];
             }
-            $tags = compact('module', 'rrd_name', 'rrd_def', 'qfp_index');
-            data_update($device, $module, $tags, $rrd);
+            $tags = ['module' => $module, 'rrd_name' => $rrd_name, 'rrd_def' => $rrd_def, 'qfp_index' => $qfp_index];
+            app('Datastore')->put($device, $module, $tags, $rrd);
             unset($filename, $rrd_filename, $rrd_name, $rrd_def, $rrd);
         }
     }

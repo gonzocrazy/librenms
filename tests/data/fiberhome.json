@@ -10,11 +10,11 @@
                     "version": "RP0700",
                     "hardware": "AN5516-01",
                     "features": "WKE2.115.331R1A",
+                    "location": "<private>",
                     "os": "fiberhome",
                     "type": "network",
                     "serial": null,
-                    "icon": "fiberhome.svg",
-                    "location": "<private>"
+                    "icon": "fiberhome.svg"
                 }
             ]
         },
@@ -24,7 +24,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.5875.800.3.9.8.1.1.5.9",
                     "processor_index": "9",
@@ -35,7 +34,6 @@
                     "processor_perc_warn": 75
                 },
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.5875.800.3.9.8.1.1.5.10",
                     "processor_index": "10",
@@ -108,6 +106,7 @@
                     "sensor_type": "fanState",
                     "sensor_descr": "Fan slot 21 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -121,6 +120,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fanState"
                 },
                 {
@@ -132,6 +132,7 @@
                     "sensor_type": "fanState",
                     "sensor_descr": "Fan slot 22 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -145,6 +146,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fanState"
                 },
                 {
@@ -156,6 +158,7 @@
                     "sensor_type": "fanState",
                     "sensor_descr": "Fan slot 23 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -169,6 +172,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fanState"
                 },
                 {
@@ -180,6 +184,7 @@
                     "sensor_type": "powerState",
                     "sensor_descr": "Power slot 1 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -193,6 +198,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "powerState"
                 },
                 {
@@ -204,6 +210,7 @@
                     "sensor_type": "powerState",
                     "sensor_descr": "Power slot 2 Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -217,6 +224,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "powerState"
                 },
                 {
@@ -228,6 +236,7 @@
                     "sensor_type": "fiberhome",
                     "sensor_descr": "Internal Temperature 0",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 45,
@@ -241,6 +250,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -248,35 +258,30 @@
                 {
                     "state_name": "fanState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fanState",
                     "state_descr": "Failed",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "powerState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "powerState",
                     "state_descr": "Logw Voltage",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "powerState",
                     "state_descr": "PowerFault",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 2
                 }

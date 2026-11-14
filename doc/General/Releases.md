@@ -1,45 +1,57 @@
-source: General/Releases.md
-path: blob/master/doc/
+# Choosing a release
 
-# Introduction
+We use automated code tests, syntax tests, and unit tests to keep
+breaking changes out of the software. We also do manual code review.
+Bugs still get introduced. We also do major refactoring to improve the
+quality of the code base.
 
-We try to ensure that breaking changes aren't introduced by utilising
-various automated code testing, syntax testing and unit testing along
-with manual code review. However bugs can and do get introduced as
-well as major refactoring to improve the quality of the code base.
+Two branches are available. The default branch is `master`.
 
-We have two branches available for you to use. The default is the `master` branch.
+## Development branch
 
-# Development branch
+The `master` branch is the development branch. We commit to it often,
+and we merge several commits on most days. A change can therefore cause
+an unintended problem. When this happens, we usually fix or revert the
+change quickly.
 
-Our `master` branch is our dev branch, this is actively commited to
-and it's not uncommon for multiple commits to be merged in daily. As
-such sometimes changes will be introduced which will cause unintended
-issues. If this happens we are usually quick to fix or revert those changes.
+We value everyone who runs this branch. These users are the second line
+of tests after the automated tests and the manual tests at the merge
+stage.
 
-We appreciate everyone that runs this branch as you are in essence
-secondary testers to the automation and manually testing that is done
-during the merge stages.
+To use this branch, set the update channel. This branch is the default:
 
-You can configure your install (this is the default) to use this
-branch by setting `$config['update_channel'] = 'master';` in
-`config.php` and ensuring you switch to the master branch with:
+!!! setting "system/updates"
+    ```bash
+    lnms config:set update_channel master
+    ```
 
-`cd /opt/librenms && git checkout master`
+Then move to the master branch:
 
-# Stable branch
+```bast
+cd /opt/librenms
+git checkout master
+./daily.sh
+```
 
-With this in mind, we provide a monthly stable release which is
-released on or around  the last Sunday of the month. Code pull
-requests (aside from Bug fixes) are stopped days leading up to the
-release to ensure that we have a clean working branch at that point.
+## Stable branch
 
-The changelog is also updated and will reference the release number
-and date so you can see what changes have been made since the last release.
+We also supply a stable release each month. The release comes out near
+the middle of the month, usually on a weekday. Before the release, we
+stop the merge of pull requests other than bug fixes. The working
+branch is then clean at the release.
 
-To switch to using stable branches you can set
-`$config['update_channel'] = 'release';` in config.php and then switch
-to the latest release branch with:
+The [changelog](Changelog.md) gives the release number and the release
+date. It shows every change since the last release.
 
-`cd /opt/librenms && git fetch --tags && git checkout $(git describe
---tags $(git rev-list --tags --max-count=1))`
+To use the stable branch, set the update channel:
+
+!!! setting "system/updates"
+    ```bash
+    lnms config:set update_channel release
+    ```
+
+This setting pauses updates until the next stable release. LibreNMS then updates
+to that release. After that, LibreNMS updates only to stable releases.
+
+!!! warning
+    Do not downgrade LibreNMS. A downgrade is not supported and usually causes bugs.

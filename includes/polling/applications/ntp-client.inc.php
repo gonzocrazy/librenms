@@ -1,13 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\JsonAppException;
 use LibreNMS\Exceptions\JsonAppParsingFailedException;
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'ntp-client';
-$app_id = $app['app_id'];
-
-echo $name;
 
 try {
     $ntp = json_app_get($device, $name);
@@ -19,15 +17,14 @@ try {
         'data' => [],
     ];
     [$ntp['data']['offset'], $ntp['data']['frequency'], $ntp['data']['sys_jitter'],
-          $ntp['data']['clk_jitter'], $ntp['data']['clk_wander']] = explode("\n", $legacy);
+        $ntp['data']['clk_jitter'], $ntp['data']['clk_wander']] = explode("\n", (string) $legacy);
 } catch (JsonAppException $e) {
-    echo PHP_EOL . $name . ':' . $e->getCode() . ':' . $e->getMessage() . PHP_EOL;
+    Log::info($name . ':' . $e->getCode() . ':' . $e->getMessage());
     update_application($app, $e->getCode() . ':' . $e->getMessage(), []); // Set empty metrics and error message
 
     return;
 }
 
-$rrd_name = ['app', $name, $app_id];
 $rrd_def = RrdDefinition::make()
     ->addDataset('offset', 'GAUGE', -1000, 1000)
     ->addDataset('frequency', 'GAUGE', -1000, 1000)
@@ -43,6 +40,11 @@ $fields = [
     'stability' => $ntp['data']['clk_wander'],
 ];
 
-$tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
-data_update($device, 'app', $tags, $fields);
+$tags = [
+    'name' => $name,
+    'app_id' => $app->app_id,
+    'rrd_name' => ['app', $name, $app->app_id],
+    'rrd_def' => $rrd_def,
+];
+app('Datastore')->put($device, 'app', $tags, $fields);
 update_application($app, 'OK', $fields);

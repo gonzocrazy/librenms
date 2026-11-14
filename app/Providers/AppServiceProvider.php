@@ -2,34 +2,109 @@
 
 namespace App\Providers;
 
+use App\ApiClients\BingApi;
+use App\ApiClients\GoogleMapsApi;
+use App\ApiClients\MapquestApi;
+use App\ApiClients\NominatimApi;
+use App\Discovery\Sensor as DiscoverySensor;
+use App\Facades\LibrenmsConfig;
+use App\Horizon\Supervisors;
+use App\Models\Device;
+use App\Models\DeviceGroup;
+use App\Models\Location;
+use App\Models\Port;
 use App\Models\Sensor;
+use App\Models\User;
+use App\Policies\RolePolicy;
+use Illuminate\Console\Application as ConsoleApplication;
+use Illuminate\Console\Events\CommandStarting;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
+use Laravel\Horizon\Console\HorizonCommand;
+use Laravel\Horizon\Events\MasterSupervisorLooped;
+use Laravel\Horizon\Horizon;
+use Laravel\Horizon\MasterSupervisor;
+use Laravel\Sanctum\Sanctum;
+use LibreNMS\Cache\Device as DeviceCache;
 use LibreNMS\Cache\PermissionsCache;
-use LibreNMS\Config;
+use LibreNMS\Cache\Port as PortCache;
+use LibreNMS\Data\Source\Snmp\NetSnmp;
+use LibreNMS\Data\Source\Snmp\PhpSnmp;
+use LibreNMS\Data\Source\Snmp\SnmpBackendInterface;
+use LibreNMS\Data\Source\Snmp\SnmpQueryBuilder;
+use LibreNMS\Data\Source\Snmp\SnmpQueryInterface;
+use LibreNMS\Data\Source\Snmp\SnmpTranslatorInterface;
+use LibreNMS\Enum\SensorType;
+use LibreNMS\Interfaces\Geocoder;
+use LibreNMS\RRD\Backend\PhpRrd;
+use LibreNMS\RRD\Backend\RrdBackendInterface;
+use LibreNMS\RRD\Backend\Rrdtool;
+use LibreNMS\Util\Binaries;
+use LibreNMS\Util\Git;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Validate;
+use LibreNMS\Util\Version;
+use Spatie\Permission\Models\Role;
 use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * The path to the "home" route for your application.
+     *
+     * This is used by Laravel authentication to redirect users after login.
+     *
+     * @var string
+     */
+    public const HOME = '/';
+
+    /**
      * Register any application services.
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->registerFacades();
         $this->registerGeocoder();
 
-        $this->app->singleton('permissions', function ($app) {
-            return new PermissionsCache();
+        $this->app->scoped('permissions', fn () => new PermissionsCache());
+        $this->app->scoped('device-cache', fn () => new DeviceCache());
+        $this->app->scoped('port-cache', fn () => new PortCache());
+        $this->app->scoped(Binaries::class);
+        $this->app->scoped('sensor-discovery', fn (Application $app) => new DiscoverySensor($app->make('device-cache')->getPrimary()));
+
+        $this->app->singleton('git', fn () => new Git());
+        $this->app->singleton(Supervisors::class);
+
+        $this->app->bind(Device::class, function (Application $app) {
+            /** @var DeviceCache $cache */
+            $cache = $app->make('device-cache');
+
+            return $cache->hasPrimary() ? $cache->getPrimary() : new Device;
         });
-        $this->app->singleton('device-cache', function ($app) {
-            return new \LibreNMS\Cache\Device();
+
+        $this->app->bind(SnmpBackendInterface::class, function (Application $app) {
+            if (LibrenmsConfig::get('snmp.backend') === 'phpsnmp') {
+                return $app->make(PhpSnmp::class);
+            }
+
+            return $app->make(NetSnmp::class);
+        });
+        $this->app->bind(SnmpTranslatorInterface::class, NetSnmp::class);
+        $this->app->bind(SnmpQueryInterface::class, SnmpQueryBuilder::class);
+
+        $this->app->singleton(RrdBackendInterface::class, function (Application $app) {
+            $rrdcached = LibrenmsConfig::get('rrdcached') ?: null;
+
+            return LibrenmsConfig::get('rrd.backend') === 'php-rrd' ? new PhpRrd($rrdcached) : new Rrdtool($rrdcached, version: (string) LibrenmsConfig::get('rrdtool_version', '1.7.0'));
         });
     }
 
@@ -38,125 +113,224 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        \Illuminate\Pagination\Paginator::useBootstrap();
-
-        $this->app->booted('\LibreNMS\DB\Eloquent::initLegacyListeners');
-        $this->app->booted('\LibreNMS\Config::load');
-
         $this->bootCustomBladeDirectives();
         $this->bootCustomValidators();
         $this->configureMorphAliases();
-        $this->bootObservers();
+        Version::registerAboutCommand();
+
+        Password::defaults(function () {
+            $validation = Password::min(LibrenmsConfig::get('password.min_length', 8));
+
+            if (LibrenmsConfig::get('password.uncompromised', true)) {
+                $validation->uncompromised();
+            }
+
+            return $validation;
+        });
+
+        $this->bootAuth();
+        $this->bootHorizon();
     }
 
-    private function bootCustomBladeDirectives()
+    /**
+     * Horizon runs the queue workers with their supervisors from the node's settings.
+     * Status and statistics do not depend on it, see QueueServiceProvider.
+     */
+    private function bootHorizon(): void
     {
-        Blade::if('config', function ($key) {
-            return \LibreNMS\Config::get($key);
-        });
-        Blade::if('notconfig', function ($key) {
-            return ! \LibreNMS\Config::get($key);
-        });
-        Blade::if('admin', function () {
-            return auth()->check() && auth()->user()->isAdmin();
-        });
+        if (! class_exists(Horizon::class)) {
+            return;
+        }
 
-        Blade::directive('deviceLink', function ($arguments) {
-            return "<?php echo \LibreNMS\Util\Url::deviceLink($arguments); ?>";
+        Horizon::auth(fn ($request): bool => Supervisors::supported() && Gate::check('worker.horizon', [$request->user()]));
+        ConsoleApplication::starting(fn (ConsoleApplication $artisan) => $artisan->addCommand($this->app->make(HorizonCommand::class)->setAliases(['worker'])));
+        MasterSupervisor::$nameResolver = fn (): string => Supervisors::masterBasename();
+        Event::listen(CommandStarting::class, function (CommandStarting $event): void {
+            if ($event->command == 'horizon') {
+                $this->app->make(Supervisors::class)->start();
+            }
         });
-
-        Blade::directive('deviceUrl', function ($arguments) {
-            return "<?php echo \LibreNMS\Util\Url::deviceUrl($arguments); ?>";
-        });
-
-        Blade::directive('portLink', function ($arguments) {
-            return "<?php echo \LibreNMS\Util\Url::portLink($arguments); ?>";
-        });
+        Event::listen(MasterSupervisorLooped::class, fn (MasterSupervisorLooped $event) => $this->app->make(Supervisors::class)->looped($event->master));
     }
 
-    private function configureMorphAliases()
+    private function bootCustomBladeDirectives(): void
+    {
+        Blade::if('config', fn ($key, $value = true) => LibrenmsConfig::get($key) == $value);
+        Blade::if('notconfig', fn ($key) => ! LibrenmsConfig::get($key));
+        Blade::if('admin', fn () => auth()->check() && auth()->user()->hasRole('admin')); // TODO remove
+
+        Blade::directive('deviceUrl', fn ($arguments) => "<?php echo \LibreNMS\Util\Url::deviceUrl($arguments); ?>");
+
+        // Graphing
+        Blade::directive('signedGraphUrl', fn ($vars) => "<?php echo \LibreNMS\Util\Url::forExternalGraph($vars); ?>");
+
+        Blade::directive('signedGraphTag', fn ($vars) => "<?php echo '<img class=\"librenms-graph\" src=\"' . \LibreNMS\Util\Url::forExternalGraph($vars) . '\" />'; ?>");
+
+        Blade::directive('graphImage', fn ($expression) => "<?php echo \LibreNMS\Util\Graph::getImageData($expression); ?>");
+    }
+
+    private function configureMorphAliases(): void
     {
         $sensor_types = [];
-        foreach (Sensor::getTypes() as $sensor_type) {
-            $sensor_types[$sensor_type] = \App\Models\Sensor::class;
+        foreach (SensorType::values() as $sensor_type) {
+            $sensor_types[$sensor_type] = Sensor::class;
         }
         Relation::morphMap(array_merge([
-            'interface' => \App\Models\Port::class,
-            'sensor' => \App\Models\Sensor::class,
-            'device' => \App\Models\Device::class,
-            'device_group' => \App\Models\DeviceGroup::class,
-            'location' => \App\Models\Location::class,
+            'interface' => Port::class,
+            'sensor' => Sensor::class,
+            'device' => Device::class,
+            'device_group' => DeviceGroup::class,
+            'location' => Location::class,
+            'bgppeer' => \App\Models\BgpPeer::class,
+            'service' => \App\Models\Service::class,
+            'mempool' => \App\Models\Mempool::class,
+            'processor' => \App\Models\Processor::class,
+            'storage' => \App\Models\Storage::class,
+            'application' => \App\Models\Application::class,
+            'accesspoint' => \App\Models\AccessPoint::class,
+            'bill' => \App\Models\Bill::class,
         ], $sensor_types));
-    }
-
-    private function registerFacades()
-    {
-        // replace log manager so we can add the event function
-        $this->app->bind('log', function ($app) {
-            return new \App\Facades\LogManager($app);
-        });
     }
 
     private function registerGeocoder()
     {
-        $this->app->alias(\LibreNMS\Interfaces\Geocoder::class, 'geocoder');
-        $this->app->bind(\LibreNMS\Interfaces\Geocoder::class, function ($app) {
-            $engine = Config::get('geoloc.engine');
+        $this->app->alias(Geocoder::class, 'geocoder');
+        $this->app->bind(Geocoder::class, function ($app) {
+            $engine = LibrenmsConfig::get('geoloc.engine');
 
             switch ($engine) {
                 case 'mapquest':
                     Log::debug('MapQuest geocode engine');
 
-                    return $app->make(\App\ApiClients\MapquestApi::class);
+                    return $app->make(MapquestApi::class);
                 case 'bing':
                     Log::debug('Bing geocode engine');
 
-                    return $app->make(\App\ApiClients\BingApi::class);
+                    return $app->make(BingApi::class);
                 case 'openstreetmap':
                     Log::debug('OpenStreetMap geocode engine');
 
-                    return $app->make(\App\ApiClients\NominatimApi::class);
+                    return $app->make(NominatimApi::class);
                 default:
                 case 'google':
                     Log::debug('Google Maps geocode engine');
 
-                    return $app->make(\App\ApiClients\GoogleMapsApi::class);
+                    return $app->make(GoogleMapsApi::class);
             }
         });
     }
 
-    private function bootObservers()
-    {
-        \App\Models\Device::observe(\App\Observers\DeviceObserver::class);
-        \App\Models\Service::observe(\App\Observers\ServiceObserver::class);
-    }
-
     private function bootCustomValidators()
     {
-        Validator::extend('alpha_space', function ($attribute, $value) {
-            return preg_match('/^[\w\s]+$/u', $value);
-        });
+        Validator::extend('alpha_space', fn ($attribute, $value) => preg_match('/^[\w\s]+$/u', (string) $value));
 
         Validator::extend('ip_or_hostname', function ($attribute, $value, $parameters, $validator) {
-            $ip = substr($value, 0, strpos($value, '/') ?: strlen($value)); // allow prefixes too
+            // allow prefixes too
+            if (str_contains($value, '/') && preg_match('#^(.+)/\d{1,3}$#', $value, $matches)) {
+                return IP::isValid($matches[1]);
+            }
 
-            return IP::isValid($ip) || Validate::hostname($value);
-        }, __('The :attribute must a valid IP address/network or hostname.'));
+            return IP::isValid($value) || Validate::hostname($value);
+        });
 
-        Validator::extend('is_regex', function ($attribute, $value) {
-            return @preg_match($value, '') !== false;
-        }, __(':attribute is not a valid regular expression'));
+        Validator::extend('is_regex', fn ($attribute, $value) => @preg_match($value, '') !== false);
 
         Validator::extend('zero_or_exists', function ($attribute, $value, $parameters, $validator) {
-            if ($value === 0) {
+            if ($value === 0 || $value === '0') {
                 return true;
             }
 
             $validator = Validator::make([$attribute => $value], [$attribute => 'exists:' . implode(',', $parameters)]);
 
             return $validator->passes();
-        }, __('validation.exists'));
+        }, trans('validation.exists'));
+
+        Validator::extend('url_or_xml', function ($attribute, $value): bool {
+            if (! is_string($value)) {
+                return false;
+            }
+
+            if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
+                return true;
+            }
+
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($value);
+            if ($xml !== false) {
+                return true;
+            }
+
+            return false;
+        });
+
+        Validator::extend('array_keys_not_empty', function ($attribute, $value): bool {
+            if (! is_array($value)) {
+                return false;
+            }
+
+            return array_all($value, fn ($_, $key) => ! (is_string($key) && strlen(trim($key)) == 0));
+        });
+
+        Validator::extend('date_or_relative', function ($attribute, $value, $parameters, $validator) {
+            if (is_string($value) && preg_match('/^\d{9,13}$/', $value)) {
+                return true;
+            }
+
+            if (is_string($value) && preg_match('/^[+-]?\d+(mo|[smhdwy])$/', $value)) {
+                return true;
+            }
+
+            return $validator->validateDate($attribute, $value);
+        });
+    }
+
+    public function bootAuth(): void
+    {
+        Gate::policy(Role::class, RolePolicy::class);
+
+        Auth::provider('legacy', fn ($app, array $config) => new LegacyUserProvider());
+
+        Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
+            if ($request->is('api/v0*')) {
+                return $request->header('X-Auth-Token')
+                    ?? $request->bearerToken()
+                    ?? $request->query('api_token')
+                    ?? $request->input('api_token')
+                    ?? $request->getPassword();
+            }
+
+            return $request->bearerToken();
+        });
+
+        Sanctum::authenticateAccessTokensUsing(function ($accessToken, $isValid) {
+            if (! $isValid) {
+                return false;
+            }
+
+            return (bool) ($accessToken->tokenable->enabled ?? false);
+        });
+
+        Gate::define('admin', fn (User $user) => $user->hasRole('admin'));
+        Gate::define('global-read', fn (User $user) => $user->hasAnyRole('admin', 'global-read'));
+        Gate::define('demo', fn (User $user) => $user->hasRole('demo'));
+
+        // define super admin and global read
+        Gate::before(function (User $user, string $ability) {
+            if ($ability === 'demo') {
+                return null; // defer to middleware
+            }
+
+            if ($user->hasRole('admin')) {
+                return true;  // super admin
+            }
+
+            if ($user->hasRole('global-read') && preg_match('/^(\S+\.)?view(All|Any)?$/', $ability)) {
+                return true; // global read access
+            }
+
+            return null;
+        });
     }
 }

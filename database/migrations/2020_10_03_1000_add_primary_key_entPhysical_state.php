@@ -10,17 +10,17 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddPrimaryKeyEntphysicalState extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasColumn('entPhysical_state', 'id')) {
-            Schema::table('entPhysical_state', function (Blueprint $table) {
+            Schema::table('entPhysical_state', function (Blueprint $table): void {
                 $table->id()->first();
             });
         }
@@ -31,7 +31,7 @@ class AddPrimaryKeyEntphysicalState extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * powerdns-recursor.inc.php
  *
@@ -18,10 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-$rrd = Rrd::name($device['hostname'], ['app', 'powerdns-recursor', $app['app_id']]);
+$rrd = Rrd::name($device['hostname'], ['app', 'powerdns-recursor', $app->app_id]);
 if (Rrd::checkRrdExists($rrd)) {
     $rrd_filename = $rrd;
 }

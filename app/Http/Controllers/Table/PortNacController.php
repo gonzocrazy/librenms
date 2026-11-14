@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PortNacController.php
  *
@@ -18,35 +19,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Http\Controllers\Table;
 
+use App\Models\Port;
 use App\Models\PortsNac;
-use LibreNMS\Util\Rewrite;
-use LibreNMS\Util\Url;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\DB;
+use LibreNMS\Util\Mac;
 
+/**
+ * @extends TableController<PortsNac>
+ */
 class PortNacController extends TableController
 {
-    public function rules()
+    public function rules(): array
     {
         return [
-            'device_id' => 'required|int',
+            'device_id' => 'nullable|integer',
+            'searchby' => 'in:mac,ip,description,vendor,',
         ];
     }
 
-    public function searchFields($request)
+    public function searchFields(Request $request): array
     {
         return ['username', 'ip_address', 'mac_address'];
     }
 
-    protected function sortFields($request)
+    protected function sortFields(Request $request): array
     {
         return [
+            'device_id',
             'port_id',
             'mac_address',
+            'mac_oui',
             'ip_address',
             'vlan',
             'domain',
@@ -59,29 +73,119 @@ class PortNacController extends TableController
             'authc_status',
             'authz_status',
             'method',
+            'created_at',
+            'updated_at',
         ];
     }
 
     /**
      * Defines the base query for this resource
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request): Builder
     {
-        return PortsNac::where('device_id', $request->device_id)->hasAccess($request->user())->with('port');
+        $this->authorize('viewAny', Port::class);
+
+        return PortsNac::select('device_id', 'port_id', 'mac_address', 'ip_address', 'vlan', 'domain', 'host_mode', 'username', 'authz_by', 'timeout', 'time_elapsed', 'time_left', 'authc_status', 'authz_status', 'method', 'created_at', 'updated_at', 'historical')
+            ->when($request->device_id, fn ($q, $id) => $q->where('device_id', $id))
+            ->when($request->port_id, fn ($q, $id) => $q->where('port_id', $id))
+            ->when($request->showHistorical != 'true', fn ($q, $h) => $q->where('historical', 0))
+            ->hasAccess($request->user())
+            ->with('port')
+            ->with('device');
+    }
+
+    protected function search(?string $search, Builder $query, array $fields): Builder
+    {
+        if ($search = trim(\Request::input('searchPhrase') ?? '')) {
+            $mac_search = '%' . str_replace([':', ' ', '-', '.', '0x'], '', $search) . '%';
+
+            switch (\Request::input('searchby') ?? '') {
+                case 'mac':
+                    return $query->where('ports_nac.mac_address', 'like', $search);
+                case 'ip':
+                    return $query->whereIn('ports_nac.ip_address', $search);
+                case 'description':
+                    return $query->whereIntegerInRaw('ports_nac.port_id', $this->findPorts($search));
+                case 'vendor':
+                    $vendor_ouis = $this->ouisFromVendor($search);
+
+                    return $this->queryByOui($vendor_ouis, $query);
+                default:
+                    return $query->where(function ($query) use ($search, $mac_search): void {
+                        $vendor_ouis = $this->ouisFromVendor($search);
+                        $this->queryByOui($vendor_ouis, $query)
+                            ->orWhereIntegerInRaw('ports_nac.port_id', $this->findPorts($search))
+                            ->orWhere('ports_nac.vlan', 'like', '%' . $search . '%')
+                            ->orWhere('ports_nac.mac_address', 'like', $mac_search)
+                            ->orWhere('ports_nac.username', 'like', '%' . $search . '%')
+                            ->orWhere('ports_nac.ip_address', 'like', '%' . $search . '%');
+                    });
+            }
+        }
+
+        return $query;
     }
 
     /**
-     * @param PortsNac $nac
+     * @param  PortsNac  $model
+     * @return array<string, scalar>
      */
-    public function formatItem($nac)
+    public function formatItem(Model $model): array
     {
-        $item = $nac->toArray();
-        $item['port_id'] = Url::portLink($nac->port, $nac->port->getShortLabel());
-        $item['mac_address'] = Rewrite::readableMac($item['mac_address']);
+        $item = $model->toArray();
+        $mac = Mac::parse($item['mac_address']);
+        $item['updated_at'] = $model->updated_at ? ($item['historical'] == 0 ? $model->updated_at->diffForHumans() : $model->updated_at->toDateTimeString()) : '';
+        $item['created_at'] = $model->created_at ? $model->created_at->toDateTimeString() : '';
+        $item['port_id'] = Blade::render('<x-port-link :port="$port">{{ $port->getShortLabel() }}</x-port-link>', ['port' => $model->port]);
+        $item['mac_oui'] = $mac->vendor();
+        $item['mac_address'] = $mac->readable();
+        $item['device_id'] = Blade::render('<x-device-link :device="$device"/>', ['device' => $model->device]);
+        unset($item['device']); //avoid sending all device data in the JSON reply
+        unset($item['port']); //free some unused data to be sent to the browser
 
         return $item;
+    }
+
+    /**
+     * @param  string  $ifAlias
+     * @return Collection<int, int>
+     */
+    protected function findPorts(string $ifAlias): Collection
+    {
+        $port_id = \Request::input('port_id');
+        $device_id = \Request::input('device_id');
+
+        return Port::where('ifAlias', 'like', "%$ifAlias%")
+            ->when($device_id, fn ($query) => $query->where('device_id', $device_id))
+            ->when($port_id, fn ($query) => $query->where('port_id', $port_id))
+            ->pluck('port_id');
+    }
+
+    /**
+     * Get the OUI list for a specific vendor
+     *
+     * @param  string  $vendor
+     * @return array
+     */
+    protected function ouisFromVendor(string $vendor): array
+    {
+        return DB::table('vendor_ouis')
+            ->where('vendor', 'LIKE', '%' . $vendor . '%')
+            ->pluck('oui')
+            ->toArray();
+    }
+
+    /**
+     * filter $query from vendor OUIs
+     */
+    protected function queryByOui(array $vendor_ouis, Builder $query): Builder
+    {
+        $query->where(function (Builder $query) use ($vendor_ouis): void {
+            foreach ($vendor_ouis as $oui) {
+                $query->orWhere('ports_nac.mac_address', 'LIKE', "$oui%");
+            }
+        });
+
+        return $query; // Return the query builder instance
     }
 }

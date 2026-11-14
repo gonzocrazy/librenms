@@ -1,4 +1,5 @@
 <?php
+
 /**
  * transport-telegram.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
@@ -25,45 +27,101 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Exceptions\AlertTransportDeliveryException;
+use LibreNMS\Util\Graph;
+use LibreNMS\Util\Http;
 
 class Telegram extends Transport
 {
-    public function deliverAlert($obj, $opts)
-    {
-        $telegram_opts['chat_id'] = $this->config['telegram-chat-id'];
-        $telegram_opts['token'] = $this->config['telegram-token'];
-        $telegram_opts['format'] = $this->config['telegram-format'];
+    private  const string BASE_URL = 'https://api.telegram.org/bot';
 
-        return $this->contactTelegram($obj, $telegram_opts);
-    }
+    private $message = [];
 
-    public static function contactTelegram($obj, $data)
+    public function deliverAlert(array $alert_data): bool
     {
-        $curl = curl_init();
-        set_curl_proxy($curl);
-        $text = urlencode($obj['msg']);
-        $format = '';
-        if ($data['format']) {
-            $format = '&parse_mode=' . $data['format'];
-            if ($data['format'] == 'Markdown') {
-                $text = urlencode(preg_replace('/([a-z0-9]+)_([a-z0-9]+)/', "$1\_$2", $obj['msg']));
+        $url_send_message = self::BASE_URL . "{$this->config['telegram-token']}/sendMessage";
+        $url_send_photo = self::BASE_URL . "{$this->config['telegram-token']}/sendPhoto";
+        $url_send_file = self::BASE_URL . "{$this->config['telegram-token']}/sendDocument";
+        $send_as = "{$this->config['telegram-send-png-graph-mode']}";
+
+        $format = $this->config['telegram-format'];
+        $this->message['text'] = $format == 'Markdown'
+            ? preg_replace('/([a-z0-9]+)_([a-z0-9]+)/', "$1\_$2", (string) $alert_data['msg'])
+            : $alert_data['msg'];
+
+        $this->embedGraphs();
+
+        $base_params['chat_id'] = $this->config['telegram-chat-id'];
+
+        if (! empty($this->config['message-thread-id'])) {
+            $base_params['message_thread_id'] = $this->config['message-thread-id'];
+        }
+
+        if ($format) {
+            $base_params['parse_mode'] = $this->config['telegram-format'];
+        }
+
+        $params = $base_params;
+        $params['text'] = $this->message['text'];
+
+        $res = Http::client()->get($url_send_message, $params);
+
+        if ($res->successful()) {
+            if (isset($this->message['images'])) {
+                foreach ($this->message['images'] as $image) {
+                    $mime_type = finfo_buffer(finfo_open(), $image, FILEINFO_MIME_TYPE);
+                    $file_name = 'default';
+
+                    if ($mime_type == 'image/svg+xml') {
+                        $file_name = 'graph.svg';
+                        $send_mode = 'file';
+                    }
+
+                    if ($mime_type == 'image/png') {
+                        $file_name = 'graph.png';
+                    }
+
+                    switch ($send_as) {
+                        case 'photo':
+                            $res = Http::client()->attach('photo', $image, $file_name)
+                                ->withQueryParameters($base_params)
+                                ->post($url_send_photo);
+                            break;
+                        case 'file':
+                            $res = Http::client()->attach('document', $image, $file_name)
+                                ->withQueryParameters($base_params)
+                                ->post($url_send_file);
+                            break;
+                    }
+                }
             }
-        }
-        curl_setopt($curl, CURLOPT_URL, ("https://api.telegram.org/bot{$data['token']}/sendMessage?chat_id={$data['chat_id']}&text=$text{$format}"));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $ret = curl_exec($curl);
-        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        if ($code != 200) {
-            var_dump('Telegram returned Error'); //FIXME: propper debuging
-            var_dump('Return: ' . $ret); //FIXME: propper debuging
 
-            return 'HTTP Status code ' . $code . ', Body ' . $ret;
+            return $res->successful();
         }
 
-        return true;
+        throw new AlertTransportDeliveryException(
+            $alert_data,
+            $res->status(),
+            $res->body(),
+            $this->message['text'],
+            $params
+        );
     }
 
-    public static function configTemplate()
+    private function embedGraphs(): array
+    {
+        $regex = '#<img class="librenms-graph" src="(.*?)"\s*/>#';
+
+        $this->message['text'] = preg_replace_callback($regex, function ($match) {
+            $this->message['images'][] = Graph::getImage($match[1])->data;
+
+            return '';
+        }, (string) $this->message['text']);
+
+        return $this->message;
+    }
+
+    public static function configTemplate(): array
     {
         return [
             'config' => [
@@ -74,10 +132,16 @@ class Telegram extends Transport
                     'type' => 'text',
                 ],
                 [
+                    'title' => 'Thread ID',
+                    'name' => 'message-thread-id',
+                    'descr' => 'If your group support topics, you can put the topicId here',
+                    'type' => 'text',
+                ],
+                [
                     'title' => 'Token',
                     'name' => 'telegram-token',
                     'descr' => 'Telegram Token',
-                    'type' => 'text',
+                    'type' => 'password',
                 ],
                 [
                     'title' => 'Format',
@@ -90,9 +154,20 @@ class Telegram extends Transport
                         'HTML' => 'HTML',
                     ],
                 ],
+                [
+                    'title' => 'Send PNG Graph as',
+                    'name' => 'telegram-send-png-graph-mode',
+                    'descr' => 'Telegram send graph as, only for PNG graph, SVG will always be sent as file',
+                    'type' => 'select',
+                    'options' => [
+                        'photo' => 'photo',
+                        'file' => 'file',
+                    ],
+                ],
             ],
             'validation' => [
                 'telegram-chat-id' => 'required|string',
+                'message-thread-id' => 'integer',
                 'telegram-token' => 'required|string',
                 'telegram-format' => 'string',
             ],

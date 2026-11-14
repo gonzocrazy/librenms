@@ -11,10 +11,6 @@
  * the source code distribution for details.
  */
 
-if (! Auth::user()->hasGlobalAdmin()) {
-    exit('ERROR: You need to be admin');
-}
-
 ?>
 
 <div class="modal fade bs-example-modal-lg" id="alert-template" tabindex="-1" role="dialog" aria-labelledby="Create" aria-hidden="true">
@@ -28,23 +24,23 @@ if (! Auth::user()->hasGlobalAdmin()) {
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="name">Template name: </label>
+                            <label for="name">Template name </label>
                             <input type="text" class="form-control input-sm" id="name" name="name">
                         </div>
                         <div class="form-group">
-                            <label for="template">Template: </label>
+                            <label for="template">Template </label>
                             <textarea class="form-control" id="template" name="template" style="font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;" rows="15"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="rules_list">Attach template to rules: </label>
+                            <label for="rules_list">Attach template to rules </label>
                             <select id="rules_list" name="rules_list[]" class="form-control" multiple="multiple"></select>
                         </div>
                         <div class="form-group">
-                            <label for="title">Alert title: </label>
+                            <label for="title">Alert title </label>
                             <input type="text" class="form-control input-sm" id="title" name="title" placeholder="Alert Title">
                         </div>
                         <div class="form-group">
-                            <label for="title_rec">Recovery title: </label>
+                            <label for="title_rec">Recovery title </label>
                             <input type="text" class="form-control input-sm" id="title_rec" name="title_rec" placeholder="Recovery Title">
                         </div>
                         <button type="button" class="btn btn-primary btn-sm" name="create-template" id="create-template">Create template</button>
@@ -137,7 +133,7 @@ $('#alert-template').on('hide.bs.modal', function(event) {
     $('#convert-template').hide();
 });
 
-$('#create-template').click('', function(e) {
+$('#create-template').on("click", function(e) {
     e.preventDefault();
 
     var rules_items = $('#rules_list').select2('data');
@@ -151,7 +147,7 @@ $('#create-template').click('', function(e) {
 });
 
 //FIXME remove Deprecated template
-$('#convert-template').click('', function(e) {
+$('#convert-template').on("click", function(e) {
     e.preventDefault();
     var template = $("#template").val();
     var title    = $("#title").val();
@@ -201,7 +197,9 @@ function alertTemplateAjaxOps(template, name, template_id, title, title_rec, rul
                         }
                     });
                 } else {
-                    var newrow = [{id: output.newid, templatename: name, alert_rules: JSON.stringify(row_rules)}];
+
+                    var escaped_name = new Option(name).innerHTML;
+                    var newrow = [{id: output.newid, templatename: escaped_name, alert_rules: JSON.stringify(row_rules)}];
                     $('#templatetable').bootgrid("append", newrow);
                 }
             } else {

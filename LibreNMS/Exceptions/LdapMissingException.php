@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LdapMissingException.php
  *
@@ -18,20 +19,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Exceptions;
 
+use Exception;
+
 class LdapMissingException extends AuthenticationException
 {
-    private const DEFAULT_MESSAGE = 'PHP does not support LDAP, please install or enable the PHP LDAP extension';
+    private const string DEFAULT_MESSAGE = 'PHP does not support LDAP, please install or enable the PHP LDAP extension';
 
     public function __construct(
         string $message = self::DEFAULT_MESSAGE,
         int $code = 0,
-        \Exception $previous = null
+        ?Exception $previous = null
     ) {
         parent::__construct($message, false, $code, $previous);
     }
@@ -49,9 +53,9 @@ class LdapMissingException extends AuthenticationException
         return $request->wantsJson() ? response()->json([
             'status' => 'error',
             'message' => "$title: $message",
-        ]) : response()->view('errors.generic', [
+        ], 500) : response()->view('errors.generic', [
             'title' => $title,
             'content' => $message,
-        ]);
+        ], 500);
     }
 }

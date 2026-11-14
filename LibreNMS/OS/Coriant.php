@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Coriant.php
  *
@@ -25,16 +26,21 @@
 
 namespace LibreNMS\OS;
 
+use App\Models\Eventlog;
+use App\Models\MefInfo;
 use App\Models\TnmsneInfo;
 use App\Observers\ModuleModelObserver;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\Severity;
+use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Interfaces\Polling\OSPolling;
-use Log;
 
 class Coriant extends \LibreNMS\OS implements OSPolling
 {
-    public function pollOS()
+    public function pollOS(DataStorageInterface $datastore): void
     {
-        echo 'TNMS-NBI-MIB: enmsNETable';
+        Log::info('TNMS-NBI-MIB: enmsNETable');
 
         /*
          * Coriant have done some SQL over SNMP, since we have to populate and update all the tables
@@ -42,7 +48,7 @@ class Coriant extends \LibreNMS\OS implements OSPolling
          */
 
         $c_list = [];
-        ModuleModelObserver::observe('\App\Models\MplsLsp\TnmsneInfo');
+        ModuleModelObserver::observe(TnmsneInfo::class);
 
         foreach (snmpwalk_cache_multi_oid($this->getDeviceArray(), 'enmsNETable', [], 'TNMS-NBI-MIB') as $index => $ne) {
             $ne = TnmsneInfo::firstOrNew(['device_id' => $this->getDeviceId(), 'neID' => $index], [
@@ -58,7 +64,7 @@ class Coriant extends \LibreNMS\OS implements OSPolling
 
             if ($ne->isDirty()) {
                 $ne->save();
-                Log::event("Coriant enmsNETable Hardware $ne->neType : $ne->neName ($index) at $ne->neLocation Discovered", $this->getDevice(), 'system', 2);
+                Eventlog::log("Coriant enmsNETable Hardware $ne->neType : $ne->neName ($index) at $ne->neLocation Discovered", $this->getDevice(), 'system');
             }
             $c_list[] = $index;
         }
@@ -66,7 +72,20 @@ class Coriant extends \LibreNMS\OS implements OSPolling
         foreach (TnmsneInfo::where('device_id', $this->getDeviceId())->whereNotIn('neID', $c_list)->get() as $ne) {
             /** @var TnmsneInfo $ne */
             $ne->delete();
-            Log::event("Coriant enmsNETable Hardware $ne->neName at $ne->neLocation Removed", $this->getDevice(), 'system', $ne->neID);
+            Eventlog::log("Coriant enmsNETable Hardware $ne->neName at $ne->neLocation Removed", $this->getDevice(), 'system', Severity::Info, $ne->neID);
         }
+    }
+
+    /**
+     * Coriant MEF-EVC is a bit strange: the MTU is sometimes set to 0
+     */
+    public function discoverMef(): ?Collection
+    {
+        return parent::discoverMef()?->each(fn (MefInfo $mef) => $mef->mefMTU = $mef->mefMTU === 0 ? 1600 : $mef->mefMTU);
+    }
+
+    public function pollMef(Collection $mefs): Collection
+    {
+        return parent::pollMef($mefs)->each(fn (MefInfo $mef) => $mef->mefMTU = $mef->mefMTU === 0 ? 1600 : $mef->mefMTU);
     }
 }

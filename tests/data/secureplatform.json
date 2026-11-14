@@ -10,11 +10,11 @@
                     "version": "R75.40",
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "secureplatform",
                     "type": "firewall",
                     "serial": null,
-                    "icon": "checkpoint.png",
-                    "location": "<private>"
+                    "icon": "checkpoint.svg"
                 }
             ]
         },
@@ -24,7 +24,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.2620.1.6.7.2.4.0",
                     "processor_index": "0",
@@ -50,6 +49,7 @@
                     "sensor_type": "secureplatform",
                     "sensor_descr": "Overall CPU utilization",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 64,
@@ -63,10 +63,10 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
     }

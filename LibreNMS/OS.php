@@ -1,8 +1,9 @@
 <?php
+
 /**
  * OS.php
  *
- * Base OS class
+ * -Description-
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,51 +19,133 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
- * @copyright  2017 Tony Murray
+ *
+ * @copyright  2021 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\DeviceGraph;
+use App\Models\Mempool;
 use DeviceCache;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LibreNMS\Device\WirelessSensor;
 use LibreNMS\Device\YamlDiscovery;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Interfaces\Discovery\BgpPeerDiscovery;
+use LibreNMS\Interfaces\Discovery\EntityPhysicalDiscovery;
+use LibreNMS\Interfaces\Discovery\FdbTableDiscovery;
+use LibreNMS\Interfaces\Discovery\MefDiscovery;
 use LibreNMS\Interfaces\Discovery\MempoolsDiscovery;
+use LibreNMS\Interfaces\Discovery\NeighborDiscovery;
 use LibreNMS\Interfaces\Discovery\OSDiscovery;
 use LibreNMS\Interfaces\Discovery\ProcessorDiscovery;
+use LibreNMS\Interfaces\Discovery\StorageDiscovery;
+use LibreNMS\Interfaces\Discovery\StpInstanceDiscovery;
+use LibreNMS\Interfaces\Discovery\StpPortDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanDiscovery;
+use LibreNMS\Interfaces\Discovery\VlanPortDiscovery;
+use LibreNMS\Interfaces\Discovery\VrfDiscovery;
+use LibreNMS\Interfaces\Discovery\VrfPortDiscovery;
+use LibreNMS\Interfaces\Polling\MefPolling;
+use LibreNMS\Interfaces\Polling\MempoolsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\IcmpNetstatsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\IpForwardNetstatsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\IpNetstatsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\SnmpNetstatsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\TcpNetstatsPolling;
+use LibreNMS\Interfaces\Polling\Netstats\UdpNetstatsPolling;
+use LibreNMS\Interfaces\Polling\StpInstancePolling;
+use LibreNMS\Interfaces\Polling\StpPortPolling;
 use LibreNMS\OS\Generic;
+use LibreNMS\OS\Traits\Bgp4Mib;
+use LibreNMS\OS\Traits\BridgeMib;
+use LibreNMS\OS\Traits\EntityMib;
 use LibreNMS\OS\Traits\HostResources;
+use LibreNMS\OS\Traits\LldpMib;
+use LibreNMS\OS\Traits\MefUniEvcMib;
+use LibreNMS\OS\Traits\MplsVpnMib;
+use LibreNMS\OS\Traits\NetstatsPolling;
+use LibreNMS\OS\Traits\QBridgeMib;
 use LibreNMS\OS\Traits\UcdResources;
 use LibreNMS\OS\Traits\YamlMempoolsDiscovery;
 use LibreNMS\OS\Traits\YamlOSDiscovery;
+use LibreNMS\OS\Traits\YamlProcessorDiscovery;
+use LibreNMS\OS\Traits\YamlStorageDiscovery;
+use LibreNMS\Polling\PerDeviceMethodResults;
+use LibreNMS\Util\StringHelpers;
 
-class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
+class OS implements
+    BgpPeerDiscovery,
+    ProcessorDiscovery,
+    OSDiscovery,
+    MempoolsDiscovery,
+    MempoolsPolling,
+    StpInstanceDiscovery,
+    StpPortDiscovery,
+    EntityPhysicalDiscovery,
+    FdbTableDiscovery,
+    IcmpNetstatsPolling,
+    NeighborDiscovery,
+    IpNetstatsPolling,
+    IpForwardNetstatsPolling,
+    MefDiscovery,
+    MefPolling,
+    SnmpNetstatsPolling,
+    StorageDiscovery,
+    StpInstancePolling,
+    StpPortPolling,
+    TcpNetstatsPolling,
+    UdpNetstatsPolling,
+    VlanDiscovery,
+    VlanPortDiscovery,
+    VrfDiscovery,
+    VrfPortDiscovery
 {
     use HostResources {
         HostResources::discoverProcessors as discoverHrProcessors;
         HostResources::discoverMempools as discoverHrMempools;
+        HostResources::discoverStorage as discoverHrStorage;
     }
     use UcdResources {
         UcdResources::discoverProcessors as discoverUcdProcessors;
         UcdResources::discoverMempools as discoverUcdMempools;
+        UcdResources::discoverStorage as discoverUcdStorage;
     }
     use YamlOSDiscovery;
     use YamlMempoolsDiscovery;
+    use YamlProcessorDiscovery;
+    use YamlStorageDiscovery;
+    use NetstatsPolling;
+    use Bgp4Mib;
+    use BridgeMib;
+    use EntityMib;
+    use LldpMib;
+    use MefUniEvcMib;
+    use MplsVpnMib;
+    use QBridgeMib;
 
+    /**
+     * @var float|null
+     */
+    public $stpTimeFactor; // for stp time quirks
     private $device; // annoying use of references to make sure this is in sync with global $device variable
     private $graphs; // stores device graphs
     private $cache; // data cache
     private $pre_cache; // pre-fetch data cache
+    private ?PerDeviceMethodResults $methodResults = null;
+
+    protected ?string $entityVendorTypeMib = null;
 
     /**
      * OS constructor. Not allowed to be created directly.  Use OS::make()
-     *
-     * @param array $device
      */
-    private function __construct(&$device)
+    protected function __construct(array &$device)
     {
         $this->device = &$device;
         $this->graphs = [];
@@ -99,33 +182,84 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
     }
 
     /**
+     * The polling method results of the current poll or discovery
+     */
+    public function getMethodResults(): PerDeviceMethodResults
+    {
+        return $this->methodResults ??= new PerDeviceMethodResults($this->getDevice());
+    }
+
+    public function setMethodResults(PerDeviceMethodResults $methodResults): void
+    {
+        $this->methodResults = $methodResults;
+    }
+
+    /**
+     * The sources of a module's data for this device: the data sources of the polling methods,
+     * then this OS when it implements the interface, most of its data is read with SNMP.
+     *
+     * @template T of object
+     *
+     * @param  class-string<T>  $interface
+     * @return list<T>
+     */
+    public function dataSources(string $interface): array
+    {
+        $sources = $this->getMethodResults()->dataSources($interface);
+        $os = $this->dataSource(PollingMethodType::Snmp, $interface);
+
+        if ($os !== null) {
+            $sources[] = $os;
+        }
+
+        return $sources;
+    }
+
+    /**
+     * The source of a module's data from one polling method, for modules that prefer one method. SNMP data comes from this OS.
+     * Null when the method is not available or does not have data for the interface.
+     *
+     * @template T of object
+     *
+     * @param  class-string<T>  $interface
+     * @return T|null
+     */
+    public function dataSource(PollingMethodType $type, string $interface): ?object
+    {
+        if ($type !== PollingMethodType::Snmp) {
+            return $this->getMethodResults()->dataSource($type, $interface);
+        }
+
+        return $this instanceof $interface && $this->getMethodResults()->isAvailable($type) ? $this : null;
+    }
+
+    /**
      * Enable a graph for this device
      *
-     * @param string $name
+     * @param  string  $name
      */
     public function enableGraph($name)
     {
         $this->graphs[$name] = true;
     }
 
-    public function persistGraphs()
+    public function persistGraphs(bool $cleanup = true): void
     {
         $device = $this->getDevice();
         $graphs = collect(array_keys($this->graphs));
 
-        // delete extra graphs
-        $device->graphs->keyBy('graph')->collect()->except($graphs)->each->delete();
+        if ($cleanup) {
+            // delete extra graphs
+            $device->graphs->keyBy('graph')->collect()->except($graphs)->each->delete();
+        }
+
         // create missing graphs
-        $device->graphs()->saveMany($graphs->diff($device->graphs->pluck('graph'))->map(function ($graph) {
-            return new DeviceGraph(['graph' => $graph]);
-        }));
+        $device->graphs()->saveMany($graphs->diff($device->graphs->pluck('graph'))->map(fn ($graph) => new DeviceGraph(['graph' => $graph])));
     }
 
     public function preCache()
     {
-        if (is_null($this->pre_cache)) {
-            $this->pre_cache = YamlDiscovery::preCache($this);
-        }
+        $this->pre_cache ??= YamlDiscovery::preCache($this);
 
         return $this->pre_cache;
     }
@@ -135,10 +269,12 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
      * If the data is cached, return the cached data.
      * DO NOT use numeric oids with this function! The snmp result must contain only one oid.
      *
-     * @param string $oid textual oid
-     * @param string $mib mib for this oid
-     * @param string $snmpflags snmpflags for this oid
+     * @param  string  $oid  textual oid
+     * @param  string  $mib  mib for this oid
+     * @param  string  $snmpflags  snmpflags for this oid
      * @return array|null array indexed by the snmp index with the value as the data returned by snmp
+     *
+     * @deprecated Please use SnmpQuery instead
      */
     public function getCacheByIndex($oid, $mib = null, $snmpflags = '-OQUs')
     {
@@ -150,7 +286,7 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
 
         if (! isset($this->cache['cache_oid'][$oid])) {
             $data = snmpwalk_cache_oid($this->getDeviceArray(), $oid, [], $mib, null, $snmpflags);
-            $this->cache['cache_oid'][$oid] = array_map('current', $data);
+            $this->cache['cache_oid'][$oid] = array_map(current(...), $data);
         }
 
         return $this->cache['cache_oid'][$oid];
@@ -161,10 +297,12 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
      * If the data is cached, return the cached data.
      * DO NOT use numeric oids with this function! The snmp result must contain only one oid.
      *
-     * @param string $oid textual oid
-     * @param string $mib mib for this oid (optional)
-     * @param int $depth depth for snmpwalk_group (optional)
+     * @param  string  $oid  textual oid
+     * @param  string  $mib  mib for this oid (optional)
+     * @param  int  $depth  depth for snmpwalk_group (optional)
      * @return array|null array indexed by the snmp index with the value as the data returned by snmp
+     *
+     * @deprecated Use SnmpQuery
      */
     public function getCacheTable($oid, $mib = null, $depth = 1)
     {
@@ -174,9 +312,7 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
             return null;
         }
 
-        if (! isset($this->cache['group'][$depth][$oid])) {
-            $this->cache['group'][$depth][$oid] = snmpwalk_group($this->getDeviceArray(), $oid, $mib, $depth);
-        }
+        $this->cache['group'][$depth][$oid] ??= snmpwalk_group($this->getDeviceArray(), $oid, $mib, $depth);
 
         return $this->cache['group'][$depth][$oid];
     }
@@ -184,8 +320,10 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
     /**
      * Check if an OID has been cached
      *
-     * @param string $oid
+     * @param  string  $oid
      * @return bool
+     *
+     * @deprecated Only applies to getCacheByIndex(), use SnmpQuery::cache() instead
      */
     public function isCached($oid)
     {
@@ -196,32 +334,34 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
      * OS Factory, returns an instance of the OS for this device
      * If no specific OS is found, Try the OS group.
      * Otherwise, returns Generic
-     *
-     * @param array $device device array, must have os set
-     * @return OS
      */
-    public static function make(&$device)
+    public static function make(array &$device): OS
     {
-        $class = str_to_class($device['os'], 'LibreNMS\\OS\\');
-        d_echo('Attempting to initialize OS: ' . $device['os'] . PHP_EOL);
-        if (class_exists($class)) {
-            d_echo("OS initialized: $class\n");
+        if (isset($device['os'])) {
+            // Populate os_group
+            $device['os_group'] = LibrenmsConfig::get("os.{$device['os']}.group");
 
-            return new $class($device);
-        }
-
-        // If not a specific OS, check for a group one.
-        if (isset($device['os_group'])) {
-            $class = str_to_class($device['os_group'], 'LibreNMS\\OS\\Shared\\');
-            d_echo('Attempting to initialize OS: ' . $device['os_group'] . PHP_EOL);
+            $class = StringHelpers::toClass($device['os'], 'LibreNMS\\OS\\');
+            d_echo('Attempting to initialize OS: ' . $device['os'] . PHP_EOL);
             if (class_exists($class)) {
                 d_echo("OS initialized: $class\n");
 
                 return new $class($device);
             }
+
+            // If not a specific OS, check for a group one.
+            if ($os_group = LibrenmsConfig::get("os.{$device['os']}.group")) {
+                $class = StringHelpers::toClass($os_group, 'LibreNMS\\OS\\Shared\\');
+                d_echo("Attempting to initialize Group OS: $os_group\n");
+                if (class_exists($class)) {
+                    d_echo("OS initialized: $class\n");
+
+                    return new $class($device);
+                }
+            }
         }
 
-        d_echo("OS initialized as Generic\n");
+        d_echo("OS initialized as Generic ({$device['os']})\n");
 
         return new Generic($device);
     }
@@ -236,14 +376,14 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
         $name = $rf->getShortName();
         preg_match_all('/[A-Z][a-z]*/', $name, $segments);
 
-        return implode('-', array_map('strtolower', $segments[0]));
+        return implode('-', array_map(strtolower(...), $segments[0]));
     }
 
     /**
      * Poll a channel based OID, but return data in MHz
      *
-     * @param array $sensors
-     * @param callable $callback Function to modify the value before converting it to a frequency
+     * @param  array  $sensors
+     * @param  callable  $callback  Function to modify the value before converting it to a frequency
      * @return array
      */
     protected function pollWirelessChannelAsFrequency($sensors, $callback = null)
@@ -261,13 +401,15 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
 
         $data = [];
         foreach ($oids as $id => $oid) {
-            if (isset($callback)) {
-                $channel = call_user_func($callback, $snmp_data[$oid]);
-            } else {
-                $channel = $snmp_data[$oid];
-            }
+            if (isset($snmp_data[$oid])) {
+                if (isset($callback)) {
+                    $channel = call_user_func($callback, $snmp_data[$oid]);
+                } else {
+                    $channel = $snmp_data[$oid];
+                }
 
-            $data[$id] = WirelessSensor::channelToFrequency($channel);
+                $data[$id] = WirelessSensor::channelToFrequency($channel);
+            }
         }
 
         return $data;
@@ -275,19 +417,23 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns a Collection of Processor models that have been discovered
      *
-     * @return array Processors
+     * @return Collection<int, \App\Models\Processor>
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): Collection
     {
-        $processors = $this->discoverHrProcessors();
-
-        if (empty($processors)) {
-            $processors = $this->discoverUcdProcessors();
+        $processors = $this->discoverYamlProcessors();
+        if ($processors->isNotEmpty()) {
+            return $processors;
         }
 
-        return $processors;
+        $processors = $this->discoverHrProcessors();
+        if ($processors->isNotEmpty()) {
+            return collect($processors);
+        }
+
+        return $this->discoverUcdProcessors();
     }
 
     public function discoverMempools()
@@ -304,10 +450,51 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
         return $this->discoverUcdMempools();
     }
 
+    /**
+     * Read the OIDs set when the mempools were discovered.
+     */
+    public function pollMempools(EloquentCollection $mempools): EloquentCollection
+    {
+        $oids = $mempools->map->only(['mempool_perc_oid', 'mempool_used_oid', 'mempool_free_oid', 'mempool_total_oid'])
+            ->flatten()->filter()->unique()->values()->all();
+
+        if (empty($oids)) {
+            return $mempools;
+        }
+
+        $data = \SnmpQuery::numeric()->get($oids)->values();
+
+        return $mempools->each(function (Mempool $mempool) use ($data): void {
+            $mempool->fillUsage(
+                $data[(string) $mempool->mempool_used_oid] ?? null,
+                $data[(string) $mempool->mempool_total_oid] ?? null,
+                $data[(string) $mempool->mempool_free_oid] ?? null,
+                $data[(string) $mempool->mempool_perc_oid] ?? null
+            );
+        });
+    }
+
+    public function discoverStorage(): Collection
+    {
+        if ($this->hasYamlDiscovery('storage')) {
+            $storage = $this->discoverYamlStorage();
+            if ($storage->isNotEmpty()) {
+                return $storage;
+            }
+        }
+
+        $storage = $this->discoverHrStorage();
+        if ($storage->isNotEmpty()) {
+            return $storage;
+        }
+
+        return $this->discoverUcdStorage();
+    }
+
     public function getDiscovery($module = null)
     {
         if (! array_key_exists('dynamic_discovery', $this->device)) {
-            $file = base_path('/includes/definitions/discovery/' . $this->getName() . '.yaml');
+            $file = resource_path('definitions/os_discovery/' . $this->getName() . '.yaml');
             if (file_exists($file)) {
                 $this->device['dynamic_discovery'] = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
             }
@@ -320,8 +507,41 @@ class OS implements ProcessorDiscovery, OSDiscovery, MempoolsDiscovery
         return $this->device['dynamic_discovery'] ?? [];
     }
 
-    public function hasYamlDiscovery(string $module = null)
+    public function hasYamlDiscovery(?string $module = null): bool
     {
         return $module ? isset($this->getDiscovery()['modules'][$module]) : ! empty($this->getDiscovery());
+    }
+
+    /**
+     * Most devices support LLDP. OS that support other protocols should merge their neighbors in.
+     *
+     * @inheritDoc
+     */
+    public function discoverNeighbors(): Collection
+    {
+        return $this->discoverLldpNeighbors();
+    }
+
+    public function discoverVlans(): Collection
+    {
+        $vlans = $this->discoverIetfQBridgeMibVlans();
+        if ($vlans->isNotEmpty()) {
+            return $vlans;
+        }
+
+        return $this->discoverIeeeQBridgeMibVlans();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function discoverVlanPorts(Collection $vlans): Collection
+    {
+        $vlans = $this->discoverIetfQBridgeMibPorts();
+        if ($vlans->isNotEmpty()) {
+            return $vlans;
+        }
+
+        return $this->discoverIeeeQBridgeMibPorts();
     }
 }

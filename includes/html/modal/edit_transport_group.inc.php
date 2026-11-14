@@ -11,7 +11,6 @@
  * the source code distribution for details.
  */
 
-if (Auth::user()->hasGlobalAdmin()) {
     ?>
 <!--Modal for adding or updating a transport group -->
     <div class="modal fade" id="edit-transport-group" tabindex="-1" role="dialog"
@@ -83,13 +82,13 @@ if (Auth::user()->hasGlobalAdmin()) {
         // Get group-id of the clicked element
         var group_id = $(e.relatedTarget).data("group_id");
         $("#group_id").val(group_id);
-        
+
         // Reset form
         $(this).find("input[type=text]").val("");
         var $members = $("#members");
         $members.empty();
         $members.val(null).trigger('change');
-        
+
         if (group_id > 0) {
             $.ajax({
                 type: "POST",
@@ -140,17 +139,11 @@ if (Auth::user()->hasGlobalAdmin()) {
         width: "100%",
         placeholder: "Transport Name",
         ajax: {
-            url: 'ajax_list.php',
-            delay: 250,
-            data: function(params) {
-                return {
-                    type: "transports",
-                    search: params.term
-                }
-            }
+            url: '<?php echo route('ajax.select.alert-transport') ?>',
+            delay: 150
         }
     });
-    
+
     // Populate group id value
     $("#delete-transport-group").on("show.bs.modal", function (event) {
         group_id = $(event.relatedTarget).data("group_id");
@@ -158,13 +151,12 @@ if (Auth::user()->hasGlobalAdmin()) {
     });
 
     // Delete the transport group
-    $("#remove-transport-group").click('', function (event) {
+    $("#remove-transport-group").on("click", function (event) {
         event.preventDefault();
         var group_id = $("#delete_group_id").val();
         $.ajax({
-            type: "POST",
-            url: "ajax_form.php",
-            data: { type: "delete-transport-group", group_id: group_id},
+            type: "DELETE",
+            url: route('alert.transport-groups.destroy', {alert_transport_group: group_id}),
             dataType: "json",
             success: function(data) {
                 if (data.status == 'ok') {
@@ -177,11 +169,8 @@ if (Auth::user()->hasGlobalAdmin()) {
             },
             error: function() {
                 toastr.error("The alert transport could not be deleted.");
-            } 
+            }
         });
     });
-    
-    </script>
 
-    <?php
-}
+    </script>

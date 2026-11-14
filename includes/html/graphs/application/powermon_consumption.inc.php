@@ -31,15 +31,13 @@ below under LOCAL OPTIONS
 */
 
 $name = 'powermon';
-$app_id = $app['app_id'];
-
-$rrd_filename = Rrd::name($device['hostname'], ['app', $name, $app_id]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', $name, $app->app_id]);
 
 $ds_list[0]['vname'] = 'watts';
 $ds_list[0]['ds'] = 'watts-gauge';
 $ds_list[0]['filename'] = $rrd_filename;
 $ds_list[0]['descr'] = 'Average Power';
-$ds_list[0]['units_text'] = ' W';
+$ds_list[0]['unit_text'] = 'W';
 $ds_list[0]['colour'] = 'FF6600'; // orange
 $ds_list[0]['colour'] = 'F9F900'; // yellow
 $ds_list[0]['areacolour'] = 'FAFAB2'; // yellow
@@ -48,12 +46,8 @@ $ds_list[1]['vname'] = 'rate';
 $ds_list[1]['ds'] = 'rate';
 $ds_list[1]['filename'] = $rrd_filename;
 $ds_list[1]['descr'] = '  Total Cost';
-$ds_list[1]['units_text'] = '$';
+$ds_list[1]['unit_text'] = '$';
 $ds_list[1]['colour'] = '006600'; // money green
-
-if ($_GET['debug']) {
-    print_r($ds_list);
-}
 
 // COMMON OPTIONS
 
@@ -84,7 +78,7 @@ require 'includes/html/graphs/common.inc.php';
 //    $pad_to += '2';
 //}
 
-$rrd_options .= ' COMMENT:\s'; // spacer in legend
+$rrd_options[] = 'COMMENT:\s'; // spacer in legend
 
 $i = 0;
 foreach ($ds_list as $ds_item) {
@@ -102,13 +96,13 @@ foreach ($ds_list as $ds_item) {
         $cf = 'AVERAGE';
     }
 
-    $rrd_options .= ' DEF:' . "$vname=$filename:$ds:" . $cf;
+    $rrd_options[] = 'DEF:' . "$vname=$filename:$ds:" . $cf;
 
     // Units
-    if (isset($ds_item['units_text'])) {
-        $units_text = $ds_item['units_text'];
+    if (isset($ds_item['unit_text'])) {
+        $unit_text = $ds_item['unit_text'];
     } else {
-        $units_text = '';
+        $unit_text = '';
     }
 
     // Line Width
@@ -122,10 +116,10 @@ foreach ($ds_list as $ds_item) {
     if (isset($ds_item['colour'])) {
         $colour = $ds_item['colour'];
     } else {
-        if (! \LibreNMS\Config::get("graph_colours.$colours.$i")) {
+        if (! \App\Facades\LibrenmsConfig::get("graph_colours.$colours.$i")) {
             $i = 0;
         }
-        $colour = \LibreNMS\Config::get("graph_colours.$colours.$i");
+        $colour = \App\Facades\LibrenmsConfig::get("graph_colours.$colours.$i");
         $i++;
     }
 
@@ -139,38 +133,38 @@ foreach ($ds_list as $ds_item) {
     // Graph command
 
     if ($vname == 'watts') {
-        $rrd_options .= ' AREA:' . $vname . '#' . $areacolour;
-        $rrd_options .= " LINE{$ds_line_width}:{$vname}#{$colour}:'{$descr}'";
-        $rrd_options .= " GPRINT:{$vname}:AVERAGE:%12.{$float_precision}lf'{$units_text}'\l";
+        $rrd_options[] = 'AREA:' . $vname . '#' . $areacolour;
+        $rrd_options[] = "LINE{$ds_line_width}:{$vname}#{$colour}:{$descr}";
+        $rrd_options[] = "GPRINT:{$vname}:AVERAGE:%12.{$float_precision}lf {$unit_text}\l";
 
-        $rrd_options .= ' COMMENT:\s'; // spacer in legend
+        $rrd_options[] = 'COMMENT:\s'; // spacer in legend
         /*
                 // Watt Seconds
                 $descr = '  Total Consumed';
-                $units_text = ' Ws';
+                $unit_text = 'Ws';
                 $descr = rrdtool_escape($descr, $pad_to + 2);
-                $rrd_options .= " COMMENT:'{$descr}'";
-                $rrd_options .= ' VDEF:wattsecs=watts,TOTAL';
-                $rrd_options .= " GPRINT:wattsecs:%12.{$float_precision}lf'{$units_text}'\l";
+                $rrd_options[] = "COMMENT:{$descr}";
+                $rrd_options[] = 'VDEF:wattsecs=watts,TOTAL';
+                $rrd_options[] = "GPRINT:wattsecs:%12.{$float_precision}lf {$unit_text}\l";
         */
         // Kilowatt Hours
-        $units_text = ' kWh';
+        $unit_text = 'kWh';
         $float_precision = 2;
         $descr = '  Total Consumed';
         $descr = \LibreNMS\Data\Store\Rrd::fixedSafeDescr($descr, $pad_to + 2);
-        $rrd_options .= " COMMENT:'{$descr}'";
-        $rrd_options .= ' CDEF:series_a=watts,3600000,/';
-        $rrd_options .= ' VDEF:kilowatthours=series_a,TOTAL';
-        $rrd_options .= " GPRINT:kilowatthours:%12.{$float_precision}lf'{$units_text}'\l";
+        $rrd_options[] = "COMMENT:{$descr}";
+        $rrd_options[] = 'CDEF:series_a=watts,3600000,/';
+        $rrd_options[] = 'VDEF:kilowatthours=series_a,TOTAL';
+        $rrd_options[] = "GPRINT:kilowatthours:%12.{$float_precision}lf {$unit_text}\l";
     } elseif ($vname == 'rate') {
         // Consumption Charge
         $float_precision = 2;
         $descr = \LibreNMS\Data\Store\Rrd::fixedSafeDescr($descr, $pad_to + 7);
-        $rrd_options .= " COMMENT:'{$descr}{$currency_symbol}'";
-        $rrd_options .= " CDEF:series_b=watts,{$vname},*,3600000,/";
-        $rrd_options .= ' VDEF:total_cost=series_b,TOTAL';
-        $rrd_options .= " GPRINT:total_cost:%6.{$float_precision}lf'           @ average rate of'";
-        $rrd_options .= ' VDEF:average_rate=rate,AVERAGE';
-        $rrd_options .= " GPRINT:average_rate:%0.6lf' per kWh\l'";
+        $rrd_options[] = "COMMENT:{$descr}{$currency_symbol}";
+        $rrd_options[] = "CDEF:series_b=watts,{$vname},*,3600000,/";
+        $rrd_options[] = 'VDEF:total_cost=series_b,TOTAL';
+        $rrd_options[] = "GPRINT:total_cost:%6.{$float_precision}lf           @ average rate of";
+        $rrd_options[] = 'VDEF:average_rate=rate,AVERAGE';
+        $rrd_options[] = "GPRINT:average_rate:%0.6lf per kWh\l";
     }
 }

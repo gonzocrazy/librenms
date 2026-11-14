@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateUsersWidgetsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('users_widgets', function (Blueprint $table) {
+        Schema::create('users_widgets', function (Blueprint $table): void {
             $table->increments('user_widget_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('widget_id');
@@ -33,8 +33,8 @@ class CreateUsersWidgetsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('users_widgets');
     }
-}
+};

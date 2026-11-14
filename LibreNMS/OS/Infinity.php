@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Infinity.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,5 +31,5 @@ use LibreNMS\OS;
 
 class Infinity extends OS implements ProcessorDiscovery
 {
-    use OS\Traits\FrogfootResources;
+    use Traits\FrogfootResources;
 }

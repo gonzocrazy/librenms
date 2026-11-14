@@ -1,7 +1,5 @@
 <?php
 
-$class = 'temperature';
-$unit = '&deg;C';
-$graph_type = 'sensor_temperature';
+$class = \LibreNMS\Enum\SensorType::Temperature;
 
 require 'sensors.inc.php';

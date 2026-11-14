@@ -2,7 +2,7 @@
 
 require 'includes/html/graphs/common.inc.php';
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'drbd', $app['app_instance']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'drbd', $app->app_instance]);
 
 $array = [
     'lo' => 'Local I/O',
@@ -25,7 +25,7 @@ if (Rrd::checkRrdExists($rrd_filename)) {
         $i++;
     }
 } else {
-    echo "file missing: $file";
+    throw new \LibreNMS\Exceptions\RrdGraphException("No Data file $rrd_filename");
 }
 
 $colours = 'mixed';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * geist-watchdog.inc.php
  *
@@ -18,9 +19,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-if ($sensor_cache['geist_temp_unit'] === '0') {
+$temp_unit = SnmpQuery::cache()->get('GEIST-V4-MIB::temperatureUnits.0')->value();
+
+if ($temp_unit === '0') {
     $sensor_value = fahrenheit_to_celsius($sensor_value / 10) * 10;
 }

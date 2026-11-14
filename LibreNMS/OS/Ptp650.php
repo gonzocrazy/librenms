@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ptp650.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs<pdheinrichs@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessPowerDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRateDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessSsrDiscovery;
@@ -48,7 +51,7 @@ class Ptp650 extends OS implements
 
         return [
             new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
                 $transmit,
                 'ptp650-tx',
@@ -59,7 +62,7 @@ class Ptp650 extends OS implements
                 10
             ),
             new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
                 $receive,
                 'ptp650-rx',
@@ -88,7 +91,7 @@ class Ptp650 extends OS implements
 
         return [
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $receive,
                 'ptp650-rx-rate',
@@ -99,7 +102,7 @@ class Ptp650 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $transmit,
                 'ptp650-tx-rate',
@@ -110,7 +113,7 @@ class Ptp650 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $aggregate,
                 'ptp650-ag-rate',
@@ -121,7 +124,7 @@ class Ptp650 extends OS implements
                 1
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $txModulation,
                 'ptp650-tx-mod',
@@ -130,7 +133,7 @@ class Ptp650 extends OS implements
                 null
             ),
             new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
                 $rxModulation,
                 'ptp650-rx-mod',
@@ -153,7 +156,7 @@ class Ptp650 extends OS implements
 
         return [
             new WirelessSensor(
-                'ssr',
+                WirelessSensorType::Ssr,
                 $this->getDeviceId(),
                 $ssr,
                 'ptp650',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ComponentStatusController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,22 +27,22 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Component;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ComponentStatusController extends WidgetController
 {
-    protected $title = 'Component Status';
+    protected string $name = 'component-status';
     protected $defaults = [
         'device_group' => null,
     ];
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): string|View
     {
         $data = $this->getSettings();
         $status = [
@@ -62,20 +64,13 @@ class ComponentStatusController extends WidgetController
             ->select('status', DB::raw("count('status') as total"))
             ->groupBy('status')
             ->where('disabled', '!=', 0)
-            ->when($data['device_group'], function ($query) use ($data) {
-                return $query->inDeviceGroup($data['device_group']);
-            })
+            ->when($data['device_group'], fn ($query) => $query->inDeviceGroup($data['device_group']))
             ->get()->pluck('total', 'status')->toArray();
 
         foreach ($status as $key => $value) {
-            $status[$key]['total'] = isset($component_status[$key]) ? $component_status[$key] : 0;
+            $status[$key]['total'] = $component_status[$key] ?? 0;
         }
 
-        return view('widgets.component-status', compact('status'));
-    }
-
-    public function getSettingsView(Request $request)
-    {
-        return view('widgets.settings.component-status', $this->getSettings(true));
+        return view('widgets.component-status', ['status' => $status]);
     }
 }

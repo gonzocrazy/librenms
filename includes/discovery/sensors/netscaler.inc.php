@@ -1,45 +1,40 @@
 <?php
 
-echo ' NetScaler ';
+use LibreNMS\Enum\SensorType;
+use LibreNMS\Util\Oid;
+use LibreNMS\Util\ProgressList;
 
-echo ' Caching OIDs:';
+$progress = ProgressList::start('NetScaler caching OIDs');
 
-if (! is_array($ns_sensor_array)) {
+if (! isset($ns_sensor_array) || ! is_array($ns_sensor_array)) {
     $ns_sensor_array = [];
-    echo ' sysHealthCounterValue ';
+    $progress->add('sysHealthCounterValue');
     $ns_sensor_array = snmpwalk_cache_multi_oid($device, 'sysHealthCounterValue', $ns_sensor_array, 'NS-ROOT-MIB');
 }
+$progress->end();
 
 foreach ($ns_sensor_array as $descr => $data) {
     $current = $data['sysHealthCounterValue'];
 
-    $oid = '.1.3.6.1.4.1.5951.4.1.1.41.7.1.2.' . string_to_oid($descr);
+    $oid = '.1.3.6.1.4.1.5951.4.1.1.41.7.1.2.' . Oid::encodeString($descr);
 
-    if (strpos($descr, 'Temp') !== false) {
-        $divisor = 0;
-        $multiplier = 0;
-        $type = 'temperature';
-    } elseif (strpos($descr, 'Fan') !== false) {
-        $divisor = 0;
-        $multiplier = 0;
-        $type = 'fanspeed';
-    } elseif (strpos($descr, 'Volt') !== false) {
+    $divisor = 1;
+    $type = null;
+    if (str_contains((string) $descr, 'Temp')) {
+        $type = SensorType::Temperature;
+    } elseif (str_contains((string) $descr, 'Fan')) {
+        $type = SensorType::Fanspeed;
+    } elseif (str_contains((string) $descr, 'Volt')) {
         $divisor = 1000;
-        $multiplier = 0;
-        $type = 'voltage';
-    } elseif (strpos($descr, 'Vtt') !== false) {
+        $type = SensorType::Voltage;
+    } elseif (str_contains((string) $descr, 'Vtt')) {
         $divisor = 1000;
-        $multiplier = 0;
-        $type = 'voltage';
+        $type = SensorType::Voltage;
     }
 
-    if ($divisor) {
-        $current = ($current / $divisor);
-    }
-
-    if (is_numeric($current) && $type) {
+    if (is_numeric($current) && isset($type)) {
         discover_sensor(
-            $valid['sensor'],
+            null,
             $type,
             $device,
             $oid,
@@ -47,12 +42,7 @@ foreach ($ns_sensor_array as $descr => $data) {
             'netscaler-health',
             $descr,
             $divisor,
-            $multiplier,
-            null,
-            null,
-            null,
-            null,
-            $current
+            current: $current / $divisor
         );
     }
 }

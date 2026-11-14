@@ -1,0 +1,9 @@
+os: mrvld
+group: mrv
+text: 'MRV LambdaDriver'
+type: optical
+icon: mrv
+discovery:
+    -
+        sysDescr_regex:
+            - '/^LambdaDriver/'

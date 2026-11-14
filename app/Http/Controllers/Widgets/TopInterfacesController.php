@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TopInterfacesController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,7 +33,7 @@ use Illuminate\View\View;
 
 class TopInterfacesController extends WidgetController
 {
-    protected $title = 'Top Interfaces';
+    protected string $name = 'top-interfaces';
     protected $defaults = [
         'interface_count' => 5,
         'time_interval' => 15,
@@ -41,29 +43,23 @@ class TopInterfacesController extends WidgetController
     ];
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): string|View
     {
         $data = $this->getSettings();
 
-        $query = Port::hasAccess($request->user())->with(['device' => function ($query) {
-            $query->select('device_id', 'hostname', 'sysName', 'status', 'os');
+        $query = Port::hasAccess($request->user())->with(['device' => function ($query): void {
+            $query->select('device_id', 'hostname', 'sysName', 'status', 'os', 'display');
         }])
             ->isValid()
-            ->select('port_id', 'device_id', 'ifName', 'ifDescr', 'ifAlias')
+            ->select(['port_id', 'device_id', 'ifName', 'ifDescr', 'ifAlias'])
             ->groupBy('port_id', 'device_id', 'ifName', 'ifDescr', 'ifAlias')
             ->where('poll_time', '>', Carbon::now()->subMinutes($data['time_interval'])->timestamp)
             ->isUp()
-            ->when($data['device_group'], function ($query) use ($data) {
-                $query->inDeviceGroup($data['device_group']);
-            }, function ($query) {
-                $query->has('device');
-            })
-            ->when($data['port_group'], function ($query) use ($data) {
-                $query->inPortGroup($data['port_group']);
-            })
+            ->when($data['device_group'], fn ($query) => $query->inDeviceGroup($data['device_group']), fn ($query) => $query->has('device'))
+            ->when($data['port_group'], fn ($query) => $query->inPortGroup($data['port_group']))
             ->orderByRaw('SUM(LEAST(ifInOctets_rate, 9223372036854775807) + LEAST(ifOutOctets_rate, 9223372036854775807)) DESC')
             ->limit($data['interface_count']);
 
@@ -76,7 +72,7 @@ class TopInterfacesController extends WidgetController
         return view('widgets.top-interfaces', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.top-interfaces', $this->getSettings(true));
     }

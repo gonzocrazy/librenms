@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2015 Daniel Preussker <f0o@devilcode.org>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@
 
 /**
  * PagerDuty Generic-API Transport
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2015 f0o, LibreNMS
  * @license GPL
@@ -22,127 +24,95 @@
 
 namespace LibreNMS\Alert\Transport;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Request;
 use LibreNMS\Alert\Transport;
 use LibreNMS\Enum\AlertState;
-use Log;
-use Validator;
+use LibreNMS\Exceptions\AlertTransportDeliveryException;
+use LibreNMS\Util\Http;
 
 class Pagerduty extends Transport
 {
-    public static $integrationKey = '2fc7c9f3c8030e74aae6';
+    protected string $name = 'PagerDuty';
 
-    public function deliverAlert($obj, $opts)
+    public function deliverAlert(array $alert_data): bool
     {
-        if ($obj['state'] == AlertState::RECOVERED) {
-            $obj['event_type'] = 'resolve';
-        } elseif ($obj['state'] == AlertState::ACKNOWLEDGED) {
-            $obj['event_type'] = 'acknowledge';
+        $event_action = match ($alert_data['state']) {
+            AlertState::RECOVERED => 'resolve',
+            AlertState::ACKNOWLEDGED => 'acknowledge',
+            default => 'trigger'
+        };
+        $msg_raw = (string) $alert_data['msg'];
+        $decoded = json_decode($msg_raw, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            // Valid JSON: use as-is for custom_details
+            $custom_details = $decoded;
         } else {
-            $obj['event_type'] = 'trigger';
+            // Legacy behaviour: strip tags and split into non-empty lines
+            $safe_message = strip_tags($msg_raw) ?: 'Test';
+            $message = array_filter(explode("\n", $safe_message), fn ($value): bool => strlen((string) $value) > 0);
+            $custom_details = ['message' => $message];
         }
-
-        return $this->contactPagerduty($obj, $this->config);
-    }
-
-    /**
-     * @param array $obj
-     * @param array $config
-     * @return bool|string
-     */
-    public function contactPagerduty($obj, $config)
-    {
         $data = [
-            'routing_key'  => $config['service_key'],
-            'event_action' => $obj['event_type'],
-            'dedup_key'    => (string) $obj['alert_id'],
-            'payload'    => [
-                'custom_details'  => strip_tags($obj['msg']) ?: 'Test',
-                'device_groups'   => \DeviceCache::get($obj['device_id'])->groups->pluck('name'),
-                'source'   => $obj['hostname'],
-                'severity' => $obj['severity'],
-                'summary'  => ($obj['name'] ? $obj['name'] . ' on ' . $obj['hostname'] : $obj['title']),
+            'routing_key' => $this->config['service_key'],
+            'event_action' => $event_action,
+            'dedup_key' => (string) $alert_data['alert_id'],
+            'payload' => [
+                'custom_details' => $custom_details,
+                'group' => (string) \DeviceCache::get($alert_data['device_id'])->groups->pluck('name'),
+                'source' => $alert_data['hostname'],
+                'severity' => $alert_data['severity'],
+                'summary' => ($alert_data['title'] ?: $alert_data['name'] . ' on ' . $alert_data['hostname']),
+                'class' => $alert_data['type'],
             ],
         ];
 
-        $url = 'https://events.pagerduty.com/v2/enqueue';
-        $client = new Client();
+        // EU service region
+        $url = match ($this->config['region']) {
+            'EU' => 'https://events.eu.pagerduty.com/v2/enqueue',
+            'US' => 'https://events.pagerduty.com/v2/enqueue',
+            default => $this->config['custom-url'],
+        };
 
-        $request_opts = ['json' => $data];
-        $request_opts['proxy'] = get_proxy();
+        $res = Http::client()->post($url, $data);
 
-        try {
-            $result = $client->request('POST', $url, $request_opts);
-
-            if ($result->getStatusCode() == 202) {
-                return true;
-            }
-
-            return $result->getReasonPhrase();
-        } catch (GuzzleException $e) {
-            return 'Request to PagerDuty API failed. ' . $e->getMessage();
+        if ($res->successful()) {
+            return true;
         }
+
+        throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), implode(PHP_EOL, $custom_details), $data);
     }
 
-    public static function configTemplate()
+    public static function configTemplate(): array
     {
         return [
             'config' => [
                 [
-                    'title' => 'Authorize',
-                    'descr' => 'Alert with PagerDuty',
-                    'type'  => 'oauth',
-                    'icon'  => 'pagerduty-white.svg',
-                    'class' => 'btn-success',
-                    'url'   => 'https://connect.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                    'title' => 'Service Region',
+                    'name' => 'region',
+                    'descr' => 'Service Region of the PagerDuty account',
+                    'type' => 'select',
+                    'options' => [
+                        'EU' => 'EU',
+                        'US' => 'US',
+                        'Custom URL' => 'CUSTOM',
+                    ],
                 ],
                 [
-                    'title' => 'Account',
-                    'type'  => 'hidden',
-                    'name'  => 'account',
+                    'title' => 'Routing Key',
+                    'type' => 'text',
+                    'name' => 'service_key',
                 ],
                 [
-                    'title' => 'Service',
-                    'type'  => 'hidden',
-                    'name'  => 'service_name',
-                ],
-                [
-                    'title' => 'Integration Key',
-                    'type'  => 'text',
-                    'name'  => 'service_key',
+                    'title' => 'Custom API URL',
+                    'type' => 'text',
+                    'name' => 'custom-url',
+                    'descr' => 'Custom PagerDuty API URL',
                 ],
             ],
-            'validation' => [],
+            'validation' => [
+                'region' => 'in:EU,US,CUSTOM',
+                'custom-url' => 'url',
+            ],
         ];
-    }
-
-    public function handleOauth(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'account' => 'alpha_dash',
-            'service_key' => 'regex:/^[a-fA-F0-9]+$/',
-            'service_name' => 'string',
-        ]);
-
-        if ($validator->fails()) {
-            Log::error('Pagerduty oauth failed validation.', ['request' => $request->all()]);
-
-            return false;
-        }
-
-        $config = json_encode($request->only('account', 'service_key', 'service_name'));
-
-        if ($id = $request->get('id')) {
-            return (bool) dbUpdate(['transport_config' => $config], 'alert_transports', 'transport_id=?', [$id]);
-        } else {
-            return (bool) dbInsert([
-                'transport_name' => $request->get('service_name', 'PagerDuty'),
-                'transport_type' => 'pagerduty',
-                'is_default' => 0,
-                'transport_config' => $config,
-            ], 'alert_transports');
-        }
     }
 }

@@ -3,17 +3,17 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePortGroupPortTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::hasTable('port_group_port')) {
-            Schema::create('port_group_port', function (Blueprint $table) {
+            Schema::create('port_group_port', function (Blueprint $table): void {
                 $table->unsignedInteger('port_group_id')->unsigned()->index();
                 $table->unsignedInteger('port_id')->unsigned()->index();
                 $table->primary(['port_group_id', 'port_id']);
@@ -26,8 +26,8 @@ class CreatePortGroupPortTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('port_group_port');
     }
-}
+};

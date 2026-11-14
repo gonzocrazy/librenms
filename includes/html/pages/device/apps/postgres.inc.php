@@ -1,35 +1,37 @@
 <?php
 
-$databases = get_postgres_databases($device['device_id']);
-
 $link_array = [
-    'page'   => 'device',
+    'page' => 'device',
     'device' => $device['device_id'],
-    'tab'    => 'apps',
-    'app'    => 'postgres',
+    'tab' => 'apps',
+    'app' => 'postgres',
 ];
+
+if (isset($vars['database'])) {
+    $vars['database'] = htmlspecialchars($vars['database']);
+}
 
 print_optionbar_start();
 
 echo generate_link('Total', $link_array);
 echo '| DBs:';
-$db_int = 0;
-while (isset($databases[$db_int])) {
-    $db = $databases[$db_int];
+$databases = $app->data['databases'] ?? [];
+sort($databases);
+foreach ($databases as $index => $db) {
+    $db = htmlspecialchars((string) $db);
+
     $label = $db;
+    $link = generate_link($label, $link_array, ['database' => $db]);
 
-    if ($vars['database'] == $db) {
-        $label = '>>' . $db . '<<';
+    $link = $vars['database'] == $db
+        ? '<span class="pagemenu-selected">' . $link . '</span>'
+        : $link;
+
+    echo $link;
+
+    if ($index < (count($databases) - 1)) {
+        echo ', ';
     }
-
-    $db_int++;
-
-    $append = '';
-    if (isset($databases[$db_int])) {
-        $append = ', ';
-    }
-
-    echo generate_link($label, $link_array, ['database'=>$db]) . $append;
 }
 
 print_optionbar_end();
@@ -47,7 +49,7 @@ foreach ($graphs as $key => $text) {
     $graph_type = $key;
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['id'] = $app['app_id'];
     $graph_array['type'] = 'application_' . $key;
 

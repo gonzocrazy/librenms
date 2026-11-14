@@ -2,16 +2,16 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SerializeConfig extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        DB::table('config')->get()->each(function ($config) {
+        DB::table('config')->get()->each(function ($config): void {
             $value = $config->config_value;
 
             if (filter_var($value, FILTER_VALIDATE_INT)) {
@@ -33,9 +33,9 @@ class SerializeConfig extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        DB::table('config')->get()->each(function ($config) {
+        DB::table('config')->get()->each(function ($config): void {
             $value = json_decode($config->config_value);
             $value = is_bool($value) ? var_export($value, true) : (string) $value;
 
@@ -44,4 +44,4 @@ class SerializeConfig extends Migration
                 ->update(['config_value' => $value]);
         });
     }
-}
+};

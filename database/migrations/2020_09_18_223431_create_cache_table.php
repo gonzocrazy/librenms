@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCacheTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('cache', function ($table) {
+        Schema::create('cache', function ($table): void {
             $table->string('key')->unique();
             $table->text('value');
             $table->integer('expiration');
@@ -24,8 +24,8 @@ class CreateCacheTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('cache');
     }
-}
+};

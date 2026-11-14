@@ -10,11 +10,11 @@
                     "version": "dmr-3.05.00.0007",
                     "hardware": "TB9300/TB7300",
                     "features": null,
+                    "location": "<private>",
                     "os": "tait-infra93",
                     "type": "network",
                     "serial": "18271180",
-                    "icon": "tait.png",
-                    "location": "<private>"
+                    "icon": "tait.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -254,9 +240,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "false",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -266,15 +249,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -361,9 +340,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 100,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -373,15 +349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "000dca01733e",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -462,7 +434,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 196608,
                     "processor_oid": ".1.3.6.1.2.1.25.3.3.1.2.196608",
                     "processor_index": "196608",
@@ -587,63 +558,40 @@
         "discovery": {
             "storage": [
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "36",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/dev/shm",
                     "storage_size": 55951360,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 8192,
-                    "storage_free": 0,
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.36",
+                    "storage_free": 55943168,
+                    "storage_free_oid": null,
                     "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 },
                 {
-                    "storage_mib": "hrstorage",
+                    "type": "hrstorage",
                     "storage_index": "39",
                     "storage_type": "hrStorageFixedDisk",
                     "storage_descr": "/var/volatile",
                     "storage_size": 12582912,
+                    "storage_size_oid": null,
                     "storage_units": 4096,
                     "storage_used": 9191424,
-                    "storage_free": 0,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
+                    "storage_used_oid": ".1.3.6.1.2.1.25.2.3.1.6.39",
+                    "storage_free": 3391488,
+                    "storage_free_oid": null,
+                    "storage_perc": 73,
+                    "storage_perc_oid": null,
+                    "storage_perc_warn": 60
                 }
             ]
         },
-        "poller": {
-            "storage": [
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "36",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/dev/shm",
-                    "storage_size": 55951360,
-                    "storage_units": 4096,
-                    "storage_used": 8192,
-                    "storage_free": 55943168,
-                    "storage_perc": 0,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                },
-                {
-                    "storage_mib": "hrstorage",
-                    "storage_index": "39",
-                    "storage_type": "hrStorageFixedDisk",
-                    "storage_descr": "/var/volatile",
-                    "storage_size": 12582912,
-                    "storage_units": 4096,
-                    "storage_used": 9191424,
-                    "storage_free": 3391488,
-                    "storage_perc": 73,
-                    "storage_perc_warn": 60,
-                    "storage_deleted": 0
-                }
-            ]
-        }
+        "poller": "matches discovery"
     },
     "sensors": {
         "discovery": {
@@ -657,6 +605,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "PA Tx Voltage Standing Wave Ratio (VSWR)",
                     "group": "Power Amplifier",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.1,
@@ -670,6 +619,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -681,6 +631,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Output current that  PMU is supplying to the subrack",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1000,
                     "sensor_multiplier": 1,
                     "sensor_current": 5.93,
@@ -694,6 +645,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -705,6 +657,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "RSSI logical ch 1 (dBm)",
                     "group": "Receiver",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": -127.75,
@@ -718,6 +671,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -729,6 +683,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "RSSI logical ch 2 (dBm)",
                     "group": "Receiver",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": -127.68,
@@ -742,6 +697,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -753,6 +709,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "RSSI (dBm)",
                     "group": "Receiver",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": -88.88,
@@ -766,6 +723,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -777,6 +735,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Receive Frequency (Hz)",
                     "group": "Receiver",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 456687500,
@@ -790,6 +749,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -801,6 +761,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Transmit Frequency (Hz)",
                     "group": "Transmitter",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 466687500,
@@ -814,6 +775,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -825,6 +787,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "PA output (W)",
                     "group": "Power Amplifier",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 25,
@@ -838,6 +801,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -849,6 +813,7 @@
                     "sensor_type": "alarmSummaryBaseStation",
                     "sensor_descr": "BS Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -862,6 +827,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryBaseStation"
                 },
                 {
@@ -873,6 +839,7 @@
                     "sensor_type": "alarmSummaryCustomAlarms",
                     "sensor_descr": "Custom Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -886,6 +853,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryCustomAlarms"
                 },
                 {
@@ -897,6 +865,7 @@
                     "sensor_type": "alarmSummaryFrontPanel",
                     "sensor_descr": "Front Pannel Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -910,6 +879,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryFrontPanel"
                 },
                 {
@@ -921,6 +891,7 @@
                     "sensor_type": "alarmSummaryMajor",
                     "sensor_descr": "Major Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -934,6 +905,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryMajor"
                 },
                 {
@@ -945,6 +917,7 @@
                     "sensor_type": "alarmSummaryMinor",
                     "sensor_descr": "Minor Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -958,6 +931,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryMinor"
                 },
                 {
@@ -969,6 +943,7 @@
                     "sensor_type": "alarmSummaryPowerAmplifier",
                     "sensor_descr": "Power Amplifier (PA) Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -982,6 +957,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryPowerAmplifier"
                 },
                 {
@@ -993,6 +969,7 @@
                     "sensor_type": "alarmSummaryPowerManagementUnit",
                     "sensor_descr": "Power Management Unit (PMU) Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1006,6 +983,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryPowerManagementUnit"
                 },
                 {
@@ -1017,6 +995,7 @@
                     "sensor_type": "alarmSummaryReciter",
                     "sensor_descr": "Reciter Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1030,6 +1009,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummaryReciter"
                 },
                 {
@@ -1041,6 +1021,7 @@
                     "sensor_type": "alarmSummarySystem",
                     "sensor_descr": "System Summary Alarm",
                     "group": "AlarmSummary",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1054,6 +1035,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "alarmSummarySystem"
                 },
                 {
@@ -1065,6 +1047,7 @@
                     "sensor_type": "fpAlarmFan1",
                     "sensor_descr": "Fan1 alarm",
                     "group": "FrontPanelAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1078,6 +1061,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fpAlarmFan1"
                 },
                 {
@@ -1089,6 +1073,7 @@
                     "sensor_type": "fpAlarmFan2",
                     "sensor_descr": "Fan2 alarm",
                     "group": "FrontPanelAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1102,6 +1087,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fpAlarmFan2"
                 },
                 {
@@ -1113,6 +1099,7 @@
                     "sensor_type": "fpAlarmFan3",
                     "sensor_descr": "Fan3 alarm",
                     "group": "FrontPanelAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1126,6 +1113,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fpAlarmFan3"
                 },
                 {
@@ -1137,6 +1125,7 @@
                     "sensor_type": "fpAlarmInvalidFirmware",
                     "sensor_descr": "FP Invalid Firmware",
                     "group": "FrontPanelAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1150,6 +1139,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fpAlarmInvalidFirmware"
                 },
                 {
@@ -1161,6 +1151,7 @@
                     "sensor_type": "fpAlarmNoFPDetected",
                     "sensor_descr": "No FrontPanel Detected alarm",
                     "group": "FrontPanelAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1174,6 +1165,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "fpAlarmNoFPDetected"
                 },
                 {
@@ -1185,6 +1177,7 @@
                     "sensor_type": "healthNetworkConnLogChan1State",
                     "sensor_descr": "State of Logical Ch 1",
                     "group": "DMRHealth",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1198,6 +1191,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "healthNetworkConnLogChan1State"
                 },
                 {
@@ -1209,6 +1203,7 @@
                     "sensor_type": "healthNetworkConnLogChan2State",
                     "sensor_descr": "State of Logical Ch 2",
                     "group": "DMRHealth",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1222,6 +1217,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "healthNetworkConnLogChan2State"
                 },
                 {
@@ -1233,6 +1229,7 @@
                     "sensor_type": "healthRunMode",
                     "sensor_descr": "DMR BS Health Status",
                     "group": "DMRHealth",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1246,6 +1243,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "healthRunMode"
                 },
                 {
@@ -1257,6 +1255,7 @@
                     "sensor_type": "linkInfoCtrlProtocolStatus",
                     "sensor_descr": "Status of the BS",
                     "group": "LinkInfo",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1270,6 +1269,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "linkInfoCtrlProtocolStatus"
                 },
                 {
@@ -1281,6 +1281,7 @@
                     "sensor_type": "paAlarmCurrentImbalance",
                     "sensor_descr": "PA Current imbalance alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1294,6 +1295,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmCurrentImbalance"
                 },
                 {
@@ -1305,6 +1307,7 @@
                     "sensor_type": "paAlarmDriverCurrentHigh",
                     "sensor_descr": "PA Driver current high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1318,6 +1321,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmDriverCurrentHigh"
                 },
                 {
@@ -1329,6 +1333,7 @@
                     "sensor_type": "paAlarmDriverTemperatureHigh",
                     "sensor_descr": "PA Driver temp high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1342,6 +1347,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmDriverTemperatureHigh"
                 },
                 {
@@ -1353,6 +1359,7 @@
                     "sensor_type": "paAlarmFinal1CurrentHigh",
                     "sensor_descr": "PA Final 1 current high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1366,6 +1373,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmFinal1CurrentHigh"
                 },
                 {
@@ -1377,6 +1385,7 @@
                     "sensor_type": "paAlarmFinal1TemperatureHigh",
                     "sensor_descr": "PA Final1 Temp high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1390,6 +1399,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmFinal1TemperatureHigh"
                 },
                 {
@@ -1401,6 +1411,7 @@
                     "sensor_type": "paAlarmFinal2CurrentHigh",
                     "sensor_descr": "PA Final 2 current high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1414,6 +1425,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmFinal2CurrentHigh"
                 },
                 {
@@ -1425,6 +1437,7 @@
                     "sensor_type": "paAlarmFinal2TemperatureHigh",
                     "sensor_descr": "PA Final2 Temp high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1438,6 +1451,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmFinal2TemperatureHigh"
                 },
                 {
@@ -1449,6 +1463,7 @@
                     "sensor_type": "paAlarmForwardPowerLow",
                     "sensor_descr": "PA Forward power low alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1462,6 +1477,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmForwardPowerLow"
                 },
                 {
@@ -1473,6 +1489,7 @@
                     "sensor_type": "paAlarmInvalidCalibration",
                     "sensor_descr": "Invalid PA calibration alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1486,6 +1503,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmInvalidCalibration"
                 },
                 {
@@ -1497,6 +1515,7 @@
                     "sensor_type": "paAlarmInvalidFirmware",
                     "sensor_descr": "PA firmware invalid alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1510,6 +1529,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmInvalidFirmware"
                 },
                 {
@@ -1521,6 +1541,7 @@
                     "sensor_type": "paAlarmNoPADetected",
                     "sensor_descr": "PA not detected by Reciter",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1534,6 +1555,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmNoPADetected"
                 },
                 {
@@ -1545,6 +1567,7 @@
                     "sensor_type": "paAlarmPowerFoldback",
                     "sensor_descr": "PA Power foldback alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1558,6 +1581,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmPowerFoldback"
                 },
                 {
@@ -1569,6 +1593,7 @@
                     "sensor_type": "paAlarmReversePowerHigh",
                     "sensor_descr": "PA Reverse power high alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1582,6 +1607,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmReversePowerHigh"
                 },
                 {
@@ -1593,6 +1619,7 @@
                     "sensor_type": "paAlarmShutdownImminent",
                     "sensor_descr": "PA Shutdown alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1606,6 +1633,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmShutdownImminent"
                 },
                 {
@@ -1617,6 +1645,7 @@
                     "sensor_type": "paAlarmSupplyVoltageHigh",
                     "sensor_descr": "PA Supply voltage low alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1630,6 +1659,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmSupplyVoltageHigh"
                 },
                 {
@@ -1641,6 +1671,7 @@
                     "sensor_type": "paAlarmSupplyVoltageLow",
                     "sensor_descr": "PA Supply voltage low alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1654,6 +1685,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmSupplyVoltageLow"
                 },
                 {
@@ -1665,6 +1697,7 @@
                     "sensor_type": "paAlarmVSWRFault",
                     "sensor_descr": "PA VSWR alarm",
                     "group": "PAAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1678,6 +1711,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "paAlarmVSWRFault"
                 },
                 {
@@ -1689,6 +1723,7 @@
                     "sensor_type": "pmuAlarmBatteryProtect",
                     "sensor_descr": "PMU battery protect alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1702,6 +1737,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmBatteryProtect"
                 },
                 {
@@ -1713,6 +1749,7 @@
                     "sensor_type": "pmuAlarmBatteryVoltageHigh",
                     "sensor_descr": "PMU High Battery voltage alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1726,6 +1763,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmBatteryVoltageHigh"
                 },
                 {
@@ -1737,6 +1775,7 @@
                     "sensor_type": "pmuAlarmBatteryVoltageLow",
                     "sensor_descr": "PMU Low Battery voltage alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1750,6 +1789,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmBatteryVoltageLow"
                 },
                 {
@@ -1761,6 +1801,7 @@
                     "sensor_type": "pmuAlarmCurrentOutHigh",
                     "sensor_descr": "PMU high current alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1774,6 +1815,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmCurrentOutHigh"
                 },
                 {
@@ -1785,6 +1827,7 @@
                     "sensor_type": "pmuAlarmInvalidFirmware",
                     "sensor_descr": "PMU firmware invalid alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1798,6 +1841,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmInvalidFirmware"
                 },
                 {
@@ -1809,6 +1853,7 @@
                     "sensor_type": "pmuAlarmMainsFailure",
                     "sensor_descr": "PMU Mains supply alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1822,6 +1867,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmMainsFailure"
                 },
                 {
@@ -1833,6 +1879,7 @@
                     "sensor_type": "pmuAlarmNoPMUDetected",
                     "sensor_descr": "PMU not detected alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1846,6 +1893,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmNoPMUDetected"
                 },
                 {
@@ -1857,6 +1905,7 @@
                     "sensor_type": "pmuAlarmSelfTestFailure",
                     "sensor_descr": "PMU Mains supply alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1870,6 +1919,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmSelfTestFailure"
                 },
                 {
@@ -1881,6 +1931,7 @@
                     "sensor_type": "pmuAlarmShutdownImminent",
                     "sensor_descr": "PMU shutdown imminent alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1894,6 +1945,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmShutdownImminent"
                 },
                 {
@@ -1905,6 +1957,7 @@
                     "sensor_type": "pmuAlarmTemperatureHigh",
                     "sensor_descr": "PMU high temp alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1918,6 +1971,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmTemperatureHigh"
                 },
                 {
@@ -1929,6 +1983,7 @@
                     "sensor_type": "pmuAlarmVoltageOutHigh",
                     "sensor_descr": "PMU Output high voltage alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1942,6 +1997,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmVoltageOutHigh"
                 },
                 {
@@ -1953,6 +2009,7 @@
                     "sensor_type": "pmuAlarmVoltageOutLow",
                     "sensor_descr": "PMU Output voltage low alarm",
                     "group": "PMUAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1966,6 +2023,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuAlarmVoltageOutLow"
                 },
                 {
@@ -1977,6 +2035,7 @@
                     "sensor_type": "pmuStateAuxOutState",
                     "sensor_descr": "Auxiliary power output state",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1990,31 +2049,8 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuStateAuxOutState"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.3570.2.2.2.1.2.4.2.2.0",
-                    "sensor_index": "pmuStateBatteryInState.0",
-                    "sensor_type": "pmuStateBatteryInState",
-                    "sensor_descr": "PMU DC power input state",
-                    "group": "PMUState",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 0,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": "pmuStateBatteryInState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -2025,6 +2061,7 @@
                     "sensor_type": "pmuStateBusConnect",
                     "sensor_descr": "DC supply to the PMU state",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -2038,6 +2075,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuStateBusConnect"
                 },
                 {
@@ -2049,6 +2087,7 @@
                     "sensor_type": "pmuStateMainsInState",
                     "sensor_descr": "PMU AC power input state",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2062,6 +2101,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuStateMainsInState"
                 },
                 {
@@ -2073,6 +2113,7 @@
                     "sensor_type": "pmuStateOutStatus",
                     "sensor_descr": "PMU power supply to the PA state",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2086,6 +2127,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "pmuStateOutStatus"
                 },
                 {
@@ -2097,6 +2139,7 @@
                     "sensor_type": "rctAlarm25MHzSynthOutOfLock",
                     "sensor_descr": "Synthesizer 25 MHz out of lock alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2110,6 +2153,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarm25MHzSynthOutOfLock"
                 },
                 {
@@ -2121,6 +2165,7 @@
                     "sensor_type": "rctAlarm6144MHzSynthOutOfLock",
                     "sensor_descr": "Synthesizer 61.44 MHz out of lock alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2134,6 +2179,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarm6144MHzSynthOutOfLock"
                 },
                 {
@@ -2145,6 +2191,7 @@
                     "sensor_type": "rctAlarmInvalidChannelSelected",
                     "sensor_descr": "Channel invalid alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2158,6 +2205,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmInvalidChannelSelected"
                 },
                 {
@@ -2169,6 +2217,7 @@
                     "sensor_type": "rctAlarmInvalidConfiguration",
                     "sensor_descr": "Reciter hardware configuration invalid alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2182,6 +2231,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmInvalidConfiguration"
                 },
                 {
@@ -2193,6 +2243,7 @@
                     "sensor_type": "rctAlarmOverTemperature",
                     "sensor_descr": "Temperature high alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2206,6 +2257,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmOverTemperature"
                 },
                 {
@@ -2217,6 +2269,7 @@
                     "sensor_type": "rctAlarmReceiverSynch",
                     "sensor_descr": "Receiver unsynchronized alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2230,6 +2283,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmReceiverSynch"
                 },
                 {
@@ -2241,6 +2295,7 @@
                     "sensor_type": "rctAlarmRxCalibrationInvalid",
                     "sensor_descr": "Reciter receiver calibration invalid alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2254,6 +2309,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmRxCalibrationInvalid"
                 },
                 {
@@ -2265,6 +2321,7 @@
                     "sensor_type": "rctAlarmRxSynthOutOfLock",
                     "sensor_descr": "Receiver synthesizer alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2278,6 +2335,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmRxSynthOutOfLock"
                 },
                 {
@@ -2289,6 +2347,7 @@
                     "sensor_type": "rctAlarmSimulcastSynch",
                     "sensor_descr": "Synch to common time ref for simulcast",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2302,6 +2361,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmSimulcastSynch"
                 },
                 {
@@ -2313,6 +2373,7 @@
                     "sensor_type": "rctAlarmTxCalibrationInvalid",
                     "sensor_descr": "Transmitter calibration invalid alarm",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2326,6 +2387,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmTxCalibrationInvalid"
                 },
                 {
@@ -2337,6 +2399,7 @@
                     "sensor_type": "rctAlarmTxFSynthOutOfLock",
                     "sensor_descr": "TxF synthesizer unable to lock to freq conf",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2350,6 +2413,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmTxFSynthOutOfLock"
                 },
                 {
@@ -2361,6 +2425,7 @@
                     "sensor_type": "rctAlarmTxRSynthOutOfLock",
                     "sensor_descr": "TxR synthesizer unable to lock on to the freq",
                     "group": "ReciterAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2374,6 +2439,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "rctAlarmTxRSynthOutOfLock"
                 },
                 {
@@ -2385,6 +2451,7 @@
                     "sensor_type": "systemAlarm1PPSAbsent",
                     "sensor_descr": "PPS Absent",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2398,6 +2465,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarm1PPSAbsent"
                 },
                 {
@@ -2409,6 +2477,7 @@
                     "sensor_type": "systemAlarmAmbientTempHigh",
                     "sensor_descr": "Ambient temperature high alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2422,6 +2491,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmAmbientTempHigh"
                 },
                 {
@@ -2433,6 +2503,7 @@
                     "sensor_type": "systemAlarmAmbientTempLow",
                     "sensor_descr": "Ambient temperature low alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2446,6 +2517,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmAmbientTempLow"
                 },
                 {
@@ -2457,6 +2529,7 @@
                     "sensor_type": "systemAlarmCartesianLoopUnstable",
                     "sensor_descr": "PA cartesiaon loop alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2470,6 +2543,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmCartesianLoopUnstable"
                 },
                 {
@@ -2481,6 +2555,7 @@
                     "sensor_type": "systemAlarmDuplicateNodePriority",
                     "sensor_descr": "BS Duplicate node priority",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2494,6 +2569,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmDuplicateNodePriority"
                 },
                 {
@@ -2505,6 +2581,7 @@
                     "sensor_type": "systemAlarmExternalRefAbsent",
                     "sensor_descr": "External freq ref absent alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2518,6 +2595,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmExternalRefAbsent"
                 },
                 {
@@ -2529,6 +2607,7 @@
                     "sensor_type": "systemAlarmFallbackControlled",
                     "sensor_descr": "BS controlled by Embedded Node fallback mode",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2542,6 +2621,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmFallbackControlled"
                 },
                 {
@@ -2553,6 +2633,7 @@
                     "sensor_type": "systemAlarmNTPSynchronisation",
                     "sensor_descr": "BS NTP unsynchronized",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -2566,6 +2647,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmNTPSynchronisation"
                 },
                 {
@@ -2577,6 +2659,7 @@
                     "sensor_type": "systemAlarmQoSJitter",
                     "sensor_descr": "QoS jitter alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2590,6 +2673,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmQoSJitter"
                 },
                 {
@@ -2601,6 +2685,7 @@
                     "sensor_type": "systemAlarmQoSLostPackets",
                     "sensor_descr": "QoS lost packets alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2614,6 +2699,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmQoSLostPackets"
                 },
                 {
@@ -2625,6 +2711,7 @@
                     "sensor_type": "systemAlarmQoSTransmitBuffer",
                     "sensor_descr": "QoS Transmit Buffer alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -2638,6 +2725,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmQoSTransmitBuffer"
                 },
                 {
@@ -2649,6 +2737,7 @@
                     "sensor_type": "systemAlarmTxRCableAbsent",
                     "sensor_descr": "PA feedback cable to reciter TxR alarm",
                     "group": "SystemAlarms",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2662,6 +2751,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "systemAlarmTxRCableAbsent"
                 },
                 {
@@ -2673,6 +2763,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Reciter Temperature (C)",
                     "group": "Reciter",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 42,
@@ -2686,6 +2777,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2697,6 +2789,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Voltage of the DC (battery) PS to the PMU",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -2710,6 +2803,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -2721,6 +2815,7 @@
                     "sensor_type": "tait-infra93",
                     "sensor_descr": "Current voltage of the PMU output(s) to subrack (nominal 28V)",
                     "group": "PMUState",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 28.07,
@@ -2734,6 +2829,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -2741,2168 +2837,1888 @@
                 {
                     "state_name": "alarmSummaryBaseStation",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryBaseStation",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryBaseStation",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryBaseStation",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryCustomAlarms",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryCustomAlarms",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryCustomAlarms",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryCustomAlarms",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryFrontPanel",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryFrontPanel",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryFrontPanel",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryFrontPanel",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryMajor",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryMajor",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryMajor",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "alarmSummaryMajor",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryMinor",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryMinor",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryMinor",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryMinor",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryPowerAmplifier",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryPowerAmplifier",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryPowerAmplifier",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryPowerAmplifier",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryPowerManagementUnit",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryPowerManagementUnit",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryPowerManagementUnit",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryPowerManagementUnit",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryReciter",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummaryReciter",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummaryReciter",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummaryReciter",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummarySystem",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "alarmSummarySystem",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "alarmSummarySystem",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "alarmSummarySystem",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan1",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan1",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fpAlarmFan1",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "fpAlarmFan1",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan2",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan2",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fpAlarmFan2",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "fpAlarmFan2",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan3",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmFan3",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fpAlarmFan3",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "fpAlarmFan3",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmInvalidFirmware",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmInvalidFirmware",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fpAlarmInvalidFirmware",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "fpAlarmInvalidFirmware",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmNoFPDetected",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "fpAlarmNoFPDetected",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "fpAlarmNoFPDetected",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "fpAlarmNoFPDetected",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "inactive",
-                    "state_draw_graph": 1,
                     "state_value": 0,
-                    "state_generic_value": 1
+                    "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "idle",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "traffic",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "control",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "test",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "poll",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan1State",
                     "state_descr": "invalid",
-                    "state_draw_graph": 1,
                     "state_value": 255,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "inactive",
-                    "state_draw_graph": 1,
                     "state_value": 0,
-                    "state_generic_value": 1
+                    "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "idle",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "traffic",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "control",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "test",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "poll",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthNetworkConnLogChan2State",
                     "state_descr": "invalid",
-                    "state_draw_graph": 1,
                     "state_value": 255,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "healthRunMode",
                     "state_descr": "offline",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "healthRunMode",
                     "state_descr": "online",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "healthRunMode",
                     "state_descr": "unknown",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "unconnected",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "deprecatedUnconnected",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "standby",
-                    "state_draw_graph": 1,
                     "state_value": 2,
-                    "state_generic_value": 1
+                    "state_generic_value": 3
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "dmr-aligned",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "dmr-offset",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "dmr-two-slot-data",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "dmr-hibernate",
-                    "state_draw_graph": 1,
                     "state_value": 6,
-                    "state_generic_value": 1
+                    "state_generic_value": 3
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "analogue",
-                    "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "test-mode",
-                    "state_draw_graph": 1,
                     "state_value": 8,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "linkInfoCtrlProtocolStatus",
                     "state_descr": "dmr-tier2-aligned",
-                    "state_draw_graph": 1,
                     "state_value": 9,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmCurrentImbalance",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmCurrentImbalance",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmCurrentImbalance",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmCurrentImbalance",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmDriverCurrentHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmDriverCurrentHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmDriverCurrentHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmDriverCurrentHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmDriverTemperatureHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmDriverTemperatureHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmDriverTemperatureHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmDriverTemperatureHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal1CurrentHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal1CurrentHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmFinal1CurrentHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmFinal1CurrentHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal1TemperatureHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal1TemperatureHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmFinal1TemperatureHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmFinal1TemperatureHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal2CurrentHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal2CurrentHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmFinal2CurrentHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmFinal2CurrentHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal2TemperatureHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmFinal2TemperatureHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmFinal2TemperatureHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmFinal2TemperatureHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmForwardPowerLow",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmForwardPowerLow",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmForwardPowerLow",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmForwardPowerLow",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmInvalidCalibration",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmInvalidCalibration",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmInvalidCalibration",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "paAlarmInvalidCalibration",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmInvalidFirmware",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmInvalidFirmware",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmInvalidFirmware",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "paAlarmInvalidFirmware",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmNoPADetected",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmNoPADetected",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmNoPADetected",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "paAlarmNoPADetected",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmPowerFoldback",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmPowerFoldback",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmPowerFoldback",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmPowerFoldback",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmReversePowerHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmReversePowerHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmReversePowerHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmReversePowerHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmShutdownImminent",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmShutdownImminent",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmShutdownImminent",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "paAlarmShutdownImminent",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageLow",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageLow",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageLow",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmSupplyVoltageLow",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmVSWRFault",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "paAlarmVSWRFault",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "paAlarmVSWRFault",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "paAlarmVSWRFault",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryProtect",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryProtect",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmBatteryProtect",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmBatteryProtect",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageLow",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageLow",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageLow",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmBatteryVoltageLow",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmCurrentOutHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmCurrentOutHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmCurrentOutHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmCurrentOutHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmInvalidFirmware",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmInvalidFirmware",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmInvalidFirmware",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmInvalidFirmware",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmMainsFailure",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmMainsFailure",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmMainsFailure",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmMainsFailure",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmNoPMUDetected",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmNoPMUDetected",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmNoPMUDetected",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmNoPMUDetected",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmSelfTestFailure",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmSelfTestFailure",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmSelfTestFailure",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmSelfTestFailure",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmShutdownImminent",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmShutdownImminent",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmShutdownImminent",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmShutdownImminent",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmTemperatureHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmTemperatureHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmTemperatureHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "pmuAlarmTemperatureHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutLow",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutLow",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutLow",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "pmuAlarmVoltageOutLow",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuStateAuxOutState",
                     "state_descr": "bad",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "pmuStateAuxOutState",
                     "state_descr": "good",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuStateAuxOutState",
                     "state_descr": "not fitted",
-                    "state_draw_graph": 1,
-                    "state_value": 2,
-                    "state_generic_value": 3
-                },
-                {
-                    "state_name": "pmuStateBatteryInState",
-                    "state_descr": "bad",
-                    "state_draw_graph": 1,
-                    "state_value": 0,
-                    "state_generic_value": 1
-                },
-                {
-                    "state_name": "pmuStateBatteryInState",
-                    "state_descr": "good",
-                    "state_draw_graph": 1,
-                    "state_value": 1,
-                    "state_generic_value": 0
-                },
-                {
-                    "state_name": "pmuStateBatteryInState",
-                    "state_descr": "not fitted",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuStateBusConnect",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuStateBusConnect",
                     "state_descr": "not connected",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuStateMainsInState",
                     "state_descr": "bad",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "pmuStateMainsInState",
                     "state_descr": "good",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuStateMainsInState",
                     "state_descr": "not fitted",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "pmuStateOutStatus",
                     "state_descr": "bad",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "pmuStateOutStatus",
                     "state_descr": "good",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "pmuStateOutStatus",
                     "state_descr": "not fitted",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarm25MHzSynthOutOfLock",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarm25MHzSynthOutOfLock",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarm25MHzSynthOutOfLock",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarm25MHzSynthOutOfLock",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarm6144MHzSynthOutOfLock",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarm6144MHzSynthOutOfLock",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarm6144MHzSynthOutOfLock",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarm6144MHzSynthOutOfLock",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmInvalidChannelSelected",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmInvalidChannelSelected",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmInvalidChannelSelected",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmInvalidChannelSelected",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmInvalidConfiguration",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmInvalidConfiguration",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmInvalidConfiguration",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmInvalidConfiguration",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmOverTemperature",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmOverTemperature",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmOverTemperature",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rctAlarmOverTemperature",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmReceiverSynch",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmReceiverSynch",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmReceiverSynch",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rctAlarmReceiverSynch",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmRxCalibrationInvalid",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmRxCalibrationInvalid",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmRxCalibrationInvalid",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmRxCalibrationInvalid",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmRxSynthOutOfLock",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmRxSynthOutOfLock",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmRxSynthOutOfLock",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmRxSynthOutOfLock",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmSimulcastSynch",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmSimulcastSynch",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmSimulcastSynch",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "rctAlarmSimulcastSynch",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxCalibrationInvalid",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxCalibrationInvalid",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmTxCalibrationInvalid",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmTxCalibrationInvalid",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxFSynthOutOfLock",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxFSynthOutOfLock",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmTxFSynthOutOfLock",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmTxFSynthOutOfLock",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxRSynthOutOfLock",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "rctAlarmTxRSynthOutOfLock",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "rctAlarmTxRSynthOutOfLock",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "rctAlarmTxRSynthOutOfLock",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarm1PPSAbsent",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarm1PPSAbsent",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarm1PPSAbsent",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemAlarm1PPSAbsent",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmAmbientTempHigh",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmAmbientTempHigh",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmAmbientTempHigh",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmAmbientTempHigh",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmAmbientTempLow",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmAmbientTempLow",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmAmbientTempLow",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmAmbientTempLow",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmCartesianLoopUnstable",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmCartesianLoopUnstable",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmCartesianLoopUnstable",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemAlarmCartesianLoopUnstable",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmDuplicateNodePriority",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmDuplicateNodePriority",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmDuplicateNodePriority",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmDuplicateNodePriority",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmExternalRefAbsent",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmExternalRefAbsent",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmExternalRefAbsent",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemAlarmExternalRefAbsent",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmFallbackControlled",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmFallbackControlled",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmFallbackControlled",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmFallbackControlled",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmNTPSynchronisation",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmNTPSynchronisation",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmNTPSynchronisation",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmNTPSynchronisation",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSJitter",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSJitter",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmQoSJitter",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmQoSJitter",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSLostPackets",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSLostPackets",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmQoSLostPackets",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemAlarmQoSLostPackets",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSTransmitBuffer",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmQoSTransmitBuffer",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmQoSTransmitBuffer",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "systemAlarmQoSTransmitBuffer",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmTxRCableAbsent",
                     "state_descr": "unavailable",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "systemAlarmTxRCableAbsent",
                     "state_descr": "cleared",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "systemAlarmTxRCableAbsent",
                     "state_descr": "raised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "systemAlarmTxRCableAbsent",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 }
             ]
         },
         "poller": "matches discovery"
+    },
+    "entity-physical": {
+        "discovery": {
+            "entPhysical": [
+                {
+                    "entPhysicalIndex": 10,
+                    "entPhysicalDescr": "Chassis",
+                    "entPhysicalClass": "chassis",
+                    "entPhysicalName": "Chassis",
+                    "entPhysicalHardwareRev": null,
+                    "entPhysicalFirmwareRev": null,
+                    "entPhysicalSoftwareRev": null,
+                    "entPhysicalAlias": null,
+                    "entPhysicalAssetID": null,
+                    "entPhysicalIsFRU": "false",
+                    "entPhysicalModelName": "Infra93",
+                    "entPhysicalVendorType": null,
+                    "entPhysicalSerialNum": null,
+                    "entPhysicalContainedIn": 0,
+                    "entPhysicalParentRelPos": 0,
+                    "entPhysicalMfgName": "TAIT",
+                    "entPhysicalMfgDate": null,
+                    "ifIndex": null
+                }
+            ]
+        },
+        "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.5.52.83",
+                    "ipv4_prefixlen": 28,
+                    "context_name": "",
+                    "ipv4_network": "10.5.52.80/28",
+                    "ifIndex": 2
+                },
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 8,
+                    "context_name": "",
+                    "ipv4_network": "127.0.0.0/8",
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

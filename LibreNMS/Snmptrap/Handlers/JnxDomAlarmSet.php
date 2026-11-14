@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JnxDomAlarmSet.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Neil Kahle <nkahle@kanren.net>
  */
@@ -25,9 +27,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class JnxDomAlarmSet implements SnmptrapHandler
 {
@@ -35,8 +37,8 @@ class JnxDomAlarmSet implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -44,6 +46,6 @@ class JnxDomAlarmSet implements SnmptrapHandler
         $currentAlarm = $trap->getOidData($trap->findOid('JUNIPER-DOM-MIB::jnxDomCurrentAlarms'));
         $ifDescr = $trap->getOidData($trap->findOid('IF-MIB::ifDescr'));
         $alarmList = JnxDomAlarmId::getAlarms($currentAlarm);
-        Log::event("DOM alarm set for interface $ifDescr. Current alarm(s): $alarmList", $device->device_id, 'trap', 5);
+        $trap->log("DOM alarm set for interface $ifDescr. Current alarm(s): $alarmList", Severity::Error);
     }
 }

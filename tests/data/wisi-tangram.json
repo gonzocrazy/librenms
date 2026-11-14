@@ -10,11 +10,11 @@
                     "version": "3.2.8",
                     "hardware": "GT01W",
                     "features": null,
+                    "location": "<private>",
                     "os": "wisi-tangram",
                     "type": "network",
                     "serial": "<private>",
-                    "icon": "wisi.png",
-                    "location": "<private>"
+                    "icon": "wisi.png"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Management port",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -147,9 +140,6 @@
                     "ifSpeed": 1000000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -159,15 +149,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "Management port",
                     "ifPhysAddress": "000398090c7c",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -256,6 +242,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Internal Current",
+                    "category": null,
                     "sensor_divisor": 1000,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.677,
@@ -269,6 +256,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -280,6 +268,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Internal Current",
+                    "category": null,
                     "sensor_divisor": 1000,
                     "sensor_multiplier": 1,
                     "sensor_current": 0.903,
@@ -293,6 +282,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -304,6 +294,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan1 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8400,
@@ -317,6 +308,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -328,6 +320,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan2 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8460,
@@ -341,6 +334,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -352,6 +346,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan3 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8460,
@@ -365,6 +360,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -376,6 +372,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan4 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8220,
@@ -389,6 +386,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -400,6 +398,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan5 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8400,
@@ -413,6 +412,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -424,6 +424,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan6 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 11040,
@@ -437,6 +438,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -448,6 +450,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan7 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 11340,
@@ -461,6 +464,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -472,6 +476,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "fan8 of 8",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 8040,
@@ -485,6 +490,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -496,6 +502,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Power Supply",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 29,
@@ -509,6 +516,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -520,6 +528,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Power Supply",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 32,
@@ -533,6 +542,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -544,6 +554,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Unit temp",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 31,
@@ -557,6 +568,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -568,6 +580,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "GT552110",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 29,
@@ -581,6 +594,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -592,6 +606,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Unit temp",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 31,
@@ -605,6 +620,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -616,6 +632,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Unit temp",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 32,
@@ -629,6 +646,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -640,6 +658,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "GT11-Board",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 38,
@@ -653,6 +672,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -664,6 +684,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "GT552110",
                     "group": "Chassis",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 32,
@@ -677,6 +698,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -688,6 +710,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "External Voltage",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 120.6,
@@ -701,6 +724,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -712,6 +736,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "External Voltage",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 121.2,
@@ -725,6 +750,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -736,6 +762,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Internal Voltage",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 120.6,
@@ -749,6 +776,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -760,6 +788,7 @@
                     "sensor_type": "wisi-tangram",
                     "sensor_descr": "Power Supply (GT552110)",
                     "group": "Internal Voltage",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 120.6,
@@ -773,11 +802,24 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "10.10.128.60",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "10.10.128.0/24",
+                    "ifIndex": 1
+                }
+            ]
+        }
     }
 }

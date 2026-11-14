@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Netscaler.php
  *
@@ -25,14 +26,16 @@
 
 namespace LibreNMS\OS;
 
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
 
 class Netscaler extends \LibreNMS\OS implements OSPolling
 {
-    public function pollOS()
+    public function pollOS(DataStorageInterface $datastore): void
     {
-        echo ' IP';
+        Log::info('IP:');
 
         // These are at the start of large trees that we don't want to walk the entirety of, so we snmp_get_multi them
         $oids_gauge = [
@@ -153,11 +156,11 @@ class Netscaler extends \LibreNMS\OS implements OSPolling
 
         $fields = [];
         foreach ($oids as $oid) {
-            $fields[$oid] = is_numeric($data[0][$oid]) ? ':' . $data[0][$oid] : 'U';
+            $fields[$oid] = $data[0][$oid] ?? null;
         }
 
-        $tags = compact('rrd_def');
-        data_update($this->getDeviceArray(), 'netscaler-stats-tcp', $tags, $fields);
+        $tags = ['rrd_def' => $rrd_def];
+        $datastore->put($this->getDeviceArray(), 'netscaler-stats-tcp', $tags, $fields);
 
         $this->enableGraph('netscaler_tcp_conn');
         $this->enableGraph('netscaler_tcp_bits');

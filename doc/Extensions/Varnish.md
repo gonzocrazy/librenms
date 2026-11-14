@@ -1,6 +1,3 @@
-source: Extensions/Varnish.md
-path: blob/master/doc/
-
 # Varnish Installation Guide
 
 This document explains how to install Varnish Reverse Proxy for LibreNMS.
@@ -12,17 +9,19 @@ cache it directs the request to the HTTP Server. This type of HTTP
 caching is called a reverse proxy server. Caching your HTTP server can
 decrease page load times significantly.
 
-# Simplified block diagram of an Apache HTTP server with Varnish 4.0 Reverse Proxy
+## Architecture
 
-![Block Diagram 1](/img/varnish_block.png)
+Simplified block diagram of an Apache HTTP server with Varnish 4.0 Reverse Proxy
 
-# CentOS 7 Varnish Installation
+![Block Diagram 1](../img/varnish_block.png)
 
-In this example we will assume your Apache 2.4.X HTTP server is working and
+## CentOS 7 Varnish Installation
+
+This example assumes a working Apache 2.4.X HTTP server and
 configured to process HTTP requests on port 80.  If not, please see
-[Installing LibreNMS](../Installation/Installation-CentOS-7-Apache.md)
+[Installing LibreNMS](../Installation/Install-LibreNMS.md)
 
-# Install Varnish 4.0 RPM
+## Install Varnish 4.0 RPM
 
 - Enable the Varnish CentOS 7 repo and install
 
@@ -39,7 +38,7 @@ By default Varnish listens for HTTP requests on port 6081.
 firewall-cmd --zone=public --add-port=6081/tcp
 ```
 
-# Test Varnish
+## Test Varnish
 
 - Start Varnish
 
@@ -48,7 +47,8 @@ systemctl start varnish
 ```
 
 Using a web browser navigate to <server ip addr>:6081 or
-127.0.0.1:6081. You should see a Varnish error message, this shows
+127.0.0.1:6081. A Varnish error message then appears. This message
+shows
 that Varnish is working. Example error message:
 
 ```ssh
@@ -64,7 +64,7 @@ Varnish cache server
 
 ```
 
-# Edit Varnish Parameters
+## Edit Varnish Parameters
 
 Now we need to configure Varnish to listen to HTTP requests on port 80 and
 relay those requests to the Apache HTTP server on port 8080 (see block diagram).
@@ -75,7 +75,7 @@ relay those requests to the Apache HTTP server on port 8080 (see block diagram).
 systemctl stop varnish
 ```
 
-- Create a back-up of varnish.params just in case you make a mistake.
+- Create a backup of `varnish.params`. This backup protects you against a mistake.
 
 ```bash
 cp /etc/varnish/varnish.params /etc/varnish/varnish.params.bak
@@ -135,11 +135,11 @@ VARNISH_GROUP=varnish
 DAEMON_OPTS="-p thread_pool_min=5 -p thread_pool_max=500 -p thread_pool_timeout=300"
 ```
 
-# Configure Apache for Varnish
+## Configure Apache for Varnish
 
 Edit librenms.conf and modify the Apache Virtual Host listening port.
 
-- Modify:`<VirtualHost *:80>` to: `<VirtualHost *:8080>`
+- Modify: `<VirtualHost *:80>` to `<VirtualHost *:8080>`
 
 ```bash
 vim /etc/httpd/conf.d/librenms.conf
@@ -147,7 +147,7 @@ vim /etc/httpd/conf.d/librenms.conf
 
 Varnish can not share a port with Apache. Change the Apache listening port to 8080.
 
-- Modify:`Listen 80` to:`Listen 8080`
+- Modify: `Listen 80` to `Listen 8080`
 
 ```bash
 vim /etc/httpd/conf/httpd.conf
@@ -260,11 +260,11 @@ sub vcl_deliver {
 firewall-cmd --reload
 ```
 
-Varnish caching does not take effect immediately.  You will need to
+Varnish caching does not start immediately. You must
 browse the LibreNMS website to build up the cache.
 
 Use the command `varnishstat` to monitor Varnish caching.  Over time
-you should see 'MAIN.cache_hit' and 'MAIN.client_req' increase.  With
+'MAIN.cache_hit' and 'MAIN.client_req' then increase. With
 the above VCL the hit to request ratio is approximately 84%.
 
 - Session based VCL (coming soon)

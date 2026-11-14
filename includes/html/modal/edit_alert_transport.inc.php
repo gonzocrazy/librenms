@@ -11,10 +11,9 @@
  * the source code distribution for details.
  */
 
-use LibreNMS\Config;
+use LibreNMS\Alert\Transport;
 
-if (Auth::user()->hasGlobalAdmin()) {
-    ?>
+?>
 <!--Modal for adding or updating an alert transport -->
     <div class="modal fade" id="edit-alert-transport" tabindex="-1" role="dialog"
          aria-labelledby="Edit-transport" aria-hidden="true">
@@ -37,22 +36,14 @@ if (Auth::user()->hasGlobalAdmin()) {
                         </div>
                         <div class="form-group" title="The type of transport.">
                             <label for='transport-choice' class='col-sm-3 col-md-2 control-label'>Transport type: </label>
-                            <div class="col-sm-3">
-                                <select name='transport-choice' id='transport-choice' class='form-control'>
+                            <div class="col-sm-9 col-md-10">
+                                <select name='transport-choice' id='transport-choice' class='form-control' style="width: auto">
     <?php
 
 // Create list of transport
-    $transport_dir = Config::get('install_dir') . '/LibreNMS/Alert/Transport';
-    $transports_list = [];
-    foreach (scandir($transport_dir) as $transport) {
-        $transport = strstr($transport, '.', true);
-        if (empty($transport)) {
-            continue;
-        }
-        $transports_list[] = $transport;
-    }
-    foreach ($transports_list as $transport) {
-        echo '<option value="' . strtolower($transport) . '-form">' . $transport . '</option>';
+    $transports_list = Transport::list();
+    foreach ($transports_list as $transport => $name) {
+        echo '<option value="' . htmlentities((string) $transport) . '-form">' . htmlentities((string) $name) . '</option>';
     } ?>
                                 </select>
                             </div>
@@ -67,28 +58,28 @@ if (Auth::user()->hasGlobalAdmin()) {
     <?php
 
     $switches = []; // store names of bootstrap switches
-    foreach ($transports_list as $transport) {
-        $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
+    foreach ($transports_list as $transport => $name) {
+        $class = Transport::getClass($transport);
 
         if (! method_exists($class, 'configTemplate')) {
             // Skip since support has not been added
             continue;
         }
 
-        echo '<form method="post" role="form" id="' . strtolower($transport) . '-form" class="form-horizontal transport">';
+        echo '<form method="post" role="form" id="' . htmlentities((string) $transport) . '-form" class="form-horizontal transport">';
         echo csrf_field();
-        echo '<input type="hidden" name="transport-type" id="transport-type" value="' . strtolower($transport) . '">';
+        echo '<input type="hidden" name="transport-type" value="' . htmlentities((string) $transport) . '">';
 
         $tmp = call_user_func($class . '::configTemplate');
 
         foreach ($tmp['config'] as $item) {
             if ($item['type'] !== 'hidden') {
-                echo '<div class="form-group" title="' . $item['descr'] . '">';
-                echo '<label for="' . $item['name'] . '" class="col-sm-3 col-md-2 control-label">' . $item['title'] . ': </label>';
+                echo '<div class="form-group" title="' . htmlentities($item['descr'] ?? '') . '">';
+                echo '<label for="' . htmlentities((string) $item['name']) . '" class="col-sm-3 col-md-2 control-label">' . htmlentities((string) $item['title']) . ': </label>';
                 if ($item['type'] == 'text' || $item['type'] == 'password') {
                     echo '<div class="col-sm-9 col-md-10">';
-                    echo '<input type="' . $item['type'] . '" id="' . $item['name'] . '" name="' . $item['name'] . '" class="form-control" ';
-                    if ($item['required']) {
+                    echo '<input type="' . htmlentities((string) $item['type']) . '" id="' . htmlentities((string) $item['name']) . '" name="' . htmlentities((string) $item['name']) . '" class="form-control" ';
+                    if (! empty($item['required'])) {
                         echo 'required>';
                     } else {
                         echo '>';
@@ -96,33 +87,33 @@ if (Auth::user()->hasGlobalAdmin()) {
                     echo '</div>';
                 } elseif ($item['type'] == 'checkbox') {
                     echo '<div class="col-sm-2">';
-                    echo '<input type="checkbox" name="' . $item['name'] . '" id="' . $item['name'] . '">';
+                    echo '<input type="checkbox" name="' . htmlentities((string) $item['name']) . '" id="' . htmlentities((string) $item['name']) . '">';
                     echo '</div>';
-                    $switches[$item['name']] = $item['default'];
+                    $switches[$item['name']] = htmlentities((string) $item['default']);
                 } elseif ($item['type'] == 'select') {
                     echo '<div class="col-sm-3">';
-                    echo '<select name="' . $item['name'] . '" id="' . $item['name'] . '" class="form-control">';
+                    echo '<select name="' . htmlentities((string) $item['name']) . '" id="' . htmlentities((string) $item['name']) . '" class="form-control">';
                     foreach ($item['options'] as $descr => $opt) {
-                        echo '<option value="' . $opt . '">' . $descr . '</option>';
+                        echo '<option value="' . htmlentities((string) $opt) . '">' . htmlentities((string) $descr) . '</option>';
                     }
                     echo '</select>';
                     echo '</div>';
                 } elseif ($item['type'] === 'textarea') {
                     echo '<div class="col-sm-9 col-md-10">';
-                    echo '<textarea name="' . $item['name'] . '" id="' . $item['name'] . '" class="form-control" placeholder="' . $item['descr'] . '">';
+                    echo '<textarea name="' . htmlentities((string) $item['name']) . '" id="' . htmlentities((string) $item['name']) . '" class="form-control" placeholder="' . htmlentities((string) $item['descr']) . '">';
                     echo '</textarea>';
                     echo '</div>';
                 } elseif ($item['type'] === 'oauth') {
-                    $class = isset($item['class']) ? $item['class'] : 'btn-success';
+                    $class = $item['class'] ?? 'btn-success';
                     $callback = urlencode(url()->current() . '/?oauthtransport=' . $transport);
                     $url = $item['url'] . $callback;
 
-                    echo '<a class="btn btn-oauth ' . $class . '"';
-                    echo '" href="' . $url . '" data-base-url="' . $url . '">';
+                    echo '<a class="btn btn-oauth ' . htmlentities((string) $class) . '"';
+                    echo '" href="' . htmlentities($url) . '" data-base-url="' . htmlentities($url) . '">';
                     if (isset($item['icon'])) {
                         echo '<img src="' . asset('images/transports/' . $item['icon']) . '"  width="24" height="24"> ';
                     }
-                    echo $item['descr'];
+                    echo htmlentities((string) $item['descr']);
                     echo '</a>';
                 }
                 echo '</div>';
@@ -172,11 +163,11 @@ if (Auth::user()->hasGlobalAdmin()) {
     <script>
         // Scripts related to editing/updating alert transports
 
-        // Display different form on selection 
-        $("#transport-choice").change(function (){
+        // Display different form on selection
+        $("#transport-choice").on("change", function (){
             $(".transport").hide();
             $("#" + $(this).val()).show().find("input:text").val("");
-         
+
         });
 
         $("#edit-alert-transport").on("show.bs.modal", function(e) {
@@ -195,7 +186,7 @@ if (Auth::user()->hasGlobalAdmin()) {
                         toastr.error("Failed to process alert transport");
                     }
                 });
-            
+
             } else {
             // Resetting to default
                 $("#name").val("");
@@ -203,7 +194,7 @@ if (Auth::user()->hasGlobalAdmin()) {
                 $(".transport").hide();
                 $("#" + $("#transport-choice").val()).show().find("input:text").val("");
                 $("#is_default").bootstrapSwitch('state', false);
-                
+
                 // Turn on all switches in form
                 var switches = <?php echo json_encode($switches); ?>;
                 $.each(switches, function(name, state) {
@@ -221,7 +212,7 @@ if (Auth::user()->hasGlobalAdmin()) {
             $("#is_default").bootstrapSwitch('state', transport.is_default);
             $(".transport").hide();
             transport_form.show().find("input:text").val("");
-             
+
             // Populate the field values
             transport.details.forEach(function(config) {
                 var $field = transport_form.find("#" + config.name);
@@ -233,7 +224,7 @@ if (Auth::user()->hasGlobalAdmin()) {
             });
         }
 
-        $(".btn-oauth").click(function (e) {
+        $(".btn-oauth").on("click", function (e) {
             this.href = $(this).data('base-url') + '%26id=' + $("#transport_id").val();
         });
 
@@ -244,7 +235,7 @@ if (Auth::user()->hasGlobalAdmin()) {
             //Combine form data (general and transport specific)
             data = $("form.transports-form").serializeArray();
             data = data.concat($("#" + $("#transport-choice").val()).serializeArray());
-            
+
             if (data !== null) {
                 //post data to ajax form
                 $.ajax({
@@ -279,13 +270,12 @@ if (Auth::user()->hasGlobalAdmin()) {
         });
 
         // Delete the alert transport
-        $("#remove-alert-transport").click('', function(event) {
+        $("#remove-alert-transport").on("click", function(event) {
             event.preventDefault();
             var transport_id = $("#delete_transport_id").val();
             $.ajax({
-                type: "POST",
-                url: "ajax_form.php",
-                data: { type: "delete-alert-transport", transport_id: transport_id },
+                type: "DELETE",
+                url: route('alert.transports.destroy', {transport: transport_id}),
                 dataType: "json",
                 success: function(data) {
                     if (data.status == 'ok') {
@@ -303,6 +293,3 @@ if (Auth::user()->hasGlobalAdmin()) {
         });
 
     </script>
-
-    <?php
-}

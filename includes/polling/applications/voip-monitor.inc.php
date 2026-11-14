@@ -3,22 +3,16 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'voip-monitor';
-$app_id = $app['app_id'];
-
-echo "$name, app_id=$app_id ";
 
 if (! empty($agent_data[$name])) {
     $rawdata = $agent_data[$name];
 } else {
-    $options = '-Oqv';
-    $mib = 'NET-SNMP-EXTEND-MIB';
-
     $oid = '.1.3.6.1.4.1.8072.1.3.2.3.1.2.7.118.111.105.112.109.111.110';
-    $rawdata = snmp_get($device, $oid, $options, $mib);
+    $rawdata = SnmpQuery::get($oid)->value();
 }
 
 // Format Data
-$lines = explode("\n", $rawdata);
+$lines = explode("\n", (string) $rawdata);
 
 $voip = [];
 
@@ -28,8 +22,6 @@ foreach ($lines as $line) {
 }
 
 unset($lines);
-
-$rrd_name = ['app', $name, $app_id];
 
 $rrd_def = RrdDefinition::make()
     ->addDataset('cpu', 'GAUGE', 0, 100)
@@ -42,8 +34,13 @@ $fields = [
     'openfiles' => (int) $voip['Open files'],
 ];
 
-$tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
+$tags = [
+    'name' => $name,
+    'app_id' => $app->app_id,
+    'rrd_name' => ['app', $name, $app->app_id],
+    'rrd_def' => $rrd_def,
+];
 
-data_update($device, 'app', $tags, $fields);
+app('Datastore')->put($device, 'app', $tags, $fields);
 
 update_application($app, $rawdata, $fields);

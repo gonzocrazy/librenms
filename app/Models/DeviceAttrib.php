@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DeviceAttrib.php
  *
@@ -18,11 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
 
 class DeviceAttrib extends DeviceRelatedModel
 {
@@ -31,4 +35,14 @@ class DeviceAttrib extends DeviceRelatedModel
     public $timestamps = false;
     protected $fillable = ['attrib_type', 'attrib_value'];
 //    protected $casts = ['attrib_value' => 'array'];
+
+    /**
+     * @param  Builder<DeviceAttrib>  $query
+     * @param  string|string[]  $type
+     * @return Builder<DeviceAttrib>
+     */
+    protected function scopeOfType(Builder $query, string|array $type): Builder
+    {
+        return $query->whereIn('attrib_type', (array) $type);
+    }
 }

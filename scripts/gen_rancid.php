@@ -11,6 +11,8 @@
 * the source code distribution for details.
 */
 
+use App\Models\Device;
+
 $init_modules = [];
 require realpath(__DIR__ . '/..') . '/includes/init.php';
 
@@ -32,6 +34,7 @@ $rancid_map['edgeos'] = 'edgerouter';
 $rancid_map['edgeswitch'] = 'edgemax';
 $rancid_map['f5'] = 'f5';
 $rancid_map['fortigate'] = 'fortigate';
+$rancid_map['fortiswitch'] = 'fortigate';
 $rancid_map['ftos'] = 'force10';
 $rancid_map['ios'] = 'cisco';
 $rancid_map['iosxe'] = 'cisco';
@@ -51,14 +54,20 @@ $rancid_map['radlan'] = 'at';
 $rancid_map['ciscowlc'] = 'cisco-wlc8';
 $rancid_map['comware'] = 'h3c';
 $rancid_map['panos'] = 'paloalto';
+$rancid_map['fs-switch'] = 'cisco';
+$rancid_map['vyos'] = 'vyos';
+$rancid_map['mrv-od'] = 'mrv';
 
-foreach (dbFetchRows("SELECT `hostname`,`os`,`disabled`,`status` FROM `devices` WHERE `ignore` = 0 AND `type` != '' GROUP BY `hostname`") as $devices) {
-    if (isset($rancid_map[$devices['os']])) {
+foreach (Device::query()->where('ignore', 0)->where('type', '!=', '')->groupBy('hostname')->get() as $devices) {
+    if (isset($rancid_map[$devices->os])) {
         $status = 'up';
-        if ($devices['disabled']) {
+        if (! $devices->status) {
             $status = 'down';
         }
-        echo $devices['hostname'] . ';' . $rancid_map[$devices['os']] . ';' . $status . PHP_EOL;
+        if ($devices->disabled) {
+            $status = 'down';
+        }
+        echo $devices->hostname . ';' . $rancid_map[$devices->os] . ';' . $status . PHP_EOL;
     }
 }
 echo '# EOF ' . PHP_EOL;

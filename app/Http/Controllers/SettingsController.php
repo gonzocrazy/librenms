@@ -2,28 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\View\SettingPresenter;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use LibreNMS\Util\DynamicConfig;
+use LibreNMS\Util\DynamicConfigItem;
 
-class SettingsController extends Controller
+class SettingsController
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      *
-     * @param DynamicConfig $dynamicConfig
-     * @param string $tab
-     * @param string $section
+     * The setting can be given on its own (settings/snmp.timeout) or after the tab and section
+     *
+     * @param  DynamicConfig  $dynamicConfig
+     * @param  string  $tab
+     * @param  string  $section
+     * @param  string  $setting
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index(DynamicConfig $dynamicConfig, $tab = 'global', $section = '')
+    public function index(DynamicConfig $dynamicConfig, $tab = 'alerting', $section = '', $setting = '')
     {
+        $this->authorize('settings.view');
+
+        $items = $dynamicConfig->all()
+            ->filter(fn (DynamicConfigItem $item) => $item->isValid() && $item->getGroup() && $item->getSection());
+
+        if ($section === '' && $items->has($tab)) {
+            $setting = $tab;
+        }
+
+        // the setting determines which tab and section to open
+        $target = $items->get($setting);
+        if ($target instanceof DynamicConfigItem) {
+            $tab = $target->getGroup();
+            $section = $target->getSection();
+        } else {
+            $setting = '';
+        }
+
         $data = [
             'active_tab' => $tab,
             'active_section' => $section,
-            'groups' => $dynamicConfig->getGroups()->reject(function ($group) {
-                return $group == 'global';
-            })->values(),
+            'active_setting' => $setting,
+            'groups' => $this->buildGroups($items),
+            'settings' => $items->map(fn (DynamicConfigItem $item) => SettingPresenter::present($item->toArray())),
         ];
 
         return view('settings.index', $data);
@@ -32,27 +58,29 @@ class SettingsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param DynamicConfig $config
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param  DynamicConfig  $config
+     * @param  Request  $request
+     * @param  string  $id
+     * @return JsonResponse
      */
     public function update(DynamicConfig $config, Request $request, $id)
     {
-        $value = $request->get('value');
+        $this->authorize('settings.update');
+
+        $value = $request->input('value');
 
         if (! $config->isValidSetting($id)) {
             return $this->jsonResponse($id, ':id is not a valid setting', null, 400);
         }
 
-        $current = \LibreNMS\Config::get($id);
+        $current = \App\Facades\LibrenmsConfig::get($id);
         $config_item = $config->get($id);
 
         if (! $config_item->checkValue($value)) {
             return $this->jsonResponse($id, $config_item->getValidationMessage($value), $current, 400);
         }
 
-        if (\LibreNMS\Config::persist($id, $value)) {
+        if (\App\Facades\LibrenmsConfig::persist($id, $value)) {
             return $this->jsonResponse($id, "Successfully set $id", $value);
         }
 
@@ -62,12 +90,14 @@ class SettingsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DynamicConfig $config
-     * @param  string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param  DynamicConfig  $config
+     * @param  string  $id
+     * @return JsonResponse
      */
     public function destroy(DynamicConfig $config, $id)
     {
+        $this->authorize('settings.update');
+
         if (! $config->isValidSetting($id)) {
             return $this->jsonResponse($id, ':id is not a valid setting', null, 400);
         }
@@ -83,22 +113,34 @@ class SettingsController extends Controller
     }
 
     /**
-     * List all settings (excluding hidden ones and ones that don't have metadata)
+     * Build the sorted tab/section/setting structure
      *
-     * @param DynamicConfig $config
-     * @return JsonResponse
+     * @param  \Illuminate\Support\Collection<string, DynamicConfigItem>  $items
+     * @return list<array{name: string, text: string, sections: list<array{name: string, text: string, description: ?string, settings: list<string>}>}>
      */
-    public function listAll(DynamicConfig $config)
+    private function buildGroups($items): array
     {
-        return response()->json($config->all()->filter->isValid());
+        return $items->groupBy(fn (DynamicConfigItem $item) => $item->getGroup())
+            ->map(fn ($groupItems, $group) => [
+                'name' => (string) $group,
+                'text' => SettingPresenter::translateOrNull("settings.groups.$group") ?? (string) $group,
+                'sections' => $groupItems->groupBy(fn (DynamicConfigItem $item) => $item->getSection())
+                    ->map(fn ($sectionItems, $section) => [
+                        'name' => (string) $section,
+                        'text' => SettingPresenter::translateOrNull("settings.sections.$group.$section.name") ?? (string) $section,
+                        'description' => SettingPresenter::translateOrNull("settings.sections.$group.$section.description"),
+                        'settings' => $sectionItems->sortBy(fn (DynamicConfigItem $item) => $item['order'] ?? PHP_INT_MAX)
+                            ->map(fn (DynamicConfigItem $item) => $item->getName())->values()->all(),
+                    ])->sortBy('text', SORT_NATURAL | SORT_FLAG_CASE)->values()->all(),
+            ])->sortBy('text', SORT_NATURAL | SORT_FLAG_CASE)->values()->all();
     }
 
     /**
-     * @param string $id
-     * @param string $message
-     * @param mixed $value
-     * @param int $status
-     * @return \Illuminate\Http\JsonResponse
+     * @param  string  $id
+     * @param  string  $message
+     * @param  mixed  $value
+     * @param  int  $status
+     * @return JsonResponse
      */
     protected function jsonResponse($id, $message, $value = null, $status = 200)
     {

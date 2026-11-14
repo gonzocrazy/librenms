@@ -2,13 +2,15 @@
 
 if ($vars['id']) {
     $sla = dbFetchRow('SELECT `tag`, `sla_nr`,`rtt_type` FROM `slas` WHERE `sla_id` = ?', [$vars['id']]);
-    $name = 'SLA #' . $sla['sla_nr'] . ' - ' . \LibreNMS\Config::get("sla_type_labels.{$sla['rtt_type']}", ucfirst($sla['rtt_type']));
+    $key = "modules.slas.types.{$sla['rtt_type']}";
+    $translation = trans($key);
+    $name = 'SLA #' . $sla['sla_nr'] . ' - ' . ($translation === $key ? ucfirst((string) $sla['rtt_type']) : $translation);
     if ($sla['tag']) {
-        $name .= ': ' . $sla['tag'];
+        $name .= ': ' . e($sla['tag']);
     }
 
     if ($sla['owner']) {
-        $name .= ' (Owner: ' . $sla['owner'] . ')';
+        $name .= ' (Owner: ' . e($sla['owner']) . ')';
     }
 
     if ($sla['opstatus'] == 2) {
@@ -25,7 +27,7 @@ if ($vars['id']) {
     include 'sla/rtt.inc.php';
 
     // Load the per-type SLA metrics
-    $rtt_type = basename($sla['rtt_type']);
+    $rtt_type = basename((string) $sla['rtt_type']);
     if (file_exists("includes/html/pages/device/sla/$rtt_type.inc.php")) {
         include "includes/html/pages/device/sla/$rtt_type.inc.php";
     }
@@ -40,8 +42,9 @@ if ($vars['id']) {
     $sla_types = ['all' => 'All'];
     foreach ($slas as $sla) {
         $sla_type = $sla['rtt_type'];
-
-        $sla_types[$sla_type] = ! in_array($sla_type, $sla_types) ? \LibreNMS\Config::get("sla_type_labels.$sla_type", 'Unknown') : ucfirst($sla_type);
+        $key = "modules.slas.types.{$sla_type}";
+        $translation = trans($key);
+        $sla_types[$sla_type] = $translation === $key ? ucfirst((string) $sla_type) : $translation;
     }
     asort($sla_types);
 
@@ -118,7 +121,7 @@ if ($vars['id']) {
         }
 
         // These Types have more graphs. Display a sub-page
-        if (($sla['rtt_type'] == 'jitter') || ($sla['rtt_type'] == 'icmpjitter')) {
+        if (($sla['rtt_type'] == 'jitter') || ($sla['rtt_type'] == 'icmpjitter') || ($sla['rtt_type'] == 'IcmpEcho') || ($sla['rtt_type'] == 'IcmpTimeStamp') || ($sla['rtt_type'] == 'icmpAppl')) {
             $name = '<a href="' . \LibreNMS\Util\Url::generate($vars, ['tab' => 'slas', 'id' => $sla['sla_id']]) . '">' . $name . '</a>';
         } else {
             $name = htmlentities($name);
@@ -135,7 +138,7 @@ if ($vars['id']) {
         $graph_array['device'] = $device['device_id'];
         $graph_array['height'] = '100';
         $graph_array['width'] = '215';
-        $graph_array['to'] = \LibreNMS\Config::get('time.now');
+        $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
         $graph_array['type'] = 'device_sla';
         $graph_array['id'] = $sla['sla_id'];
         echo '<div class="panel panel-default ' . $danger . '">

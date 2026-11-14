@@ -1,9 +1,30 @@
-source: API/System.md
-path: blob/master/doc/
+### `ping`
+
+A simple endpoint for the availability of the API.
+
+Route: `/api/v0/ping`
+
+Input:
+
+-
+
+Example:
+
+```curl
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/ping
+```
+
+Output:
+
+```json
+{
+    "message": "pong"
+}
+```
 
 ### `system`
 
-Display Librenms instance information.
+It shows the information of the LibreNMS instance.
 
 Route: `/api/v0/system`
 
@@ -14,7 +35,7 @@ Input:
 Example:
 
 ```curl
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/system
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/system
 ```
 
 Output:
@@ -30,7 +51,7 @@ Output:
             "local_branch": "master",
             "db_schema": 249,
             "php_ver": "7.2.2",
-            "mysql_ver": "5.5.56-MariaDB",
+            "database_ver": "MariaDB 5.5.56-MariaDB",
             "rrdtool_ver": "1.4.8",
             "netsnmp_ver": "NET-SNMP 5.7.2"
         }

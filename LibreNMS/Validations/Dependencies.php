@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dependencies.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,9 +37,9 @@ class Dependencies extends BaseValidation
      * Validate this module.
      * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
      *
-     * @param Validator $validator
+     * @param  Validator  $validator
      */
-    public function validate(Validator $validator)
+    public function validate(Validator $validator): void
     {
         if (EnvHelper::librenmsDocker()) {
             $validator->ok('Installed from the official Docker image; no Composer required');
@@ -46,13 +48,13 @@ class Dependencies extends BaseValidation
         }
 
         // if git is not installed, do not assume composer is either
-        if (! Git::repoPresent()) {
+        if (! Git::make()->repoPresent()) {
             $validator->ok('Installed from package; no Composer required');
 
             return;
         }
 
-        $composer_output = trim(shell_exec($validator->getBaseDir() . '/scripts/composer_wrapper.php --version'));
+        $composer_output = trim(shell_exec("'" . $validator->getBaseDir() . "/scripts/composer_wrapper.php' --version"));
         $found = preg_match(
             '/Composer.*(\d+\.\d+\.\d+(-RC\d*|-beta\d?|-alpha\d+)?)/',
             $composer_output,
@@ -67,7 +69,7 @@ class Dependencies extends BaseValidation
             $validator->ok('Composer Version: ' . $matches[1]);
         }
 
-        $dep_check = shell_exec($validator->getBaseDir() . '/scripts/composer_wrapper.php install --no-dev --dry-run');
+        $dep_check = shell_exec("'" . $validator->getBaseDir() . "/scripts/composer_wrapper.php' install --no-dev --dry-run");
         preg_match_all('/Installing ([^ ]+\/[^ ]+) \(/', $dep_check, $dep_missing);
         if (! empty($dep_missing[0])) {
             $result = ValidationResult::fail('Missing dependencies!', $validator->getBaseDir() . '/scripts/composer_wrapper.php install --no-dev');

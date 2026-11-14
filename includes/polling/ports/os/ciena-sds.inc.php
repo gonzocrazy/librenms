@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ciena-sds.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Dan Baker, Lancaster-Lebanon IU13
  */
 
@@ -36,6 +38,11 @@ if (in_array($device['hardware'], $bad_HC_counter_devices)) {
         // PM interface indices are different than regular interface indices.
         // PM index for port 1/1 -- 1000001
         // if index for port 1/1 --  100001
+
+        // Ignore ports with index of example 61.1000001
+        if (Str::contains($index, '.')) {
+            continue;
+        }
 
         $nms_index = $index - 900000;
 

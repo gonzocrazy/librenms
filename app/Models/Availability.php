@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Availability.php
  *
@@ -18,16 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Availability extends Model
 {
+    use HasFactory;
     public $timestamps = false;
     protected $table = 'availability';
+    protected $primaryKey = 'availability_id';
+    protected $fillable = [
+        'device_id',
+        'duration',
+        'availability_perc',
+    ];
 }

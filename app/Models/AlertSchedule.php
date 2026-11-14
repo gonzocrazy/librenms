@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AlertSchedule.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,12 +29,13 @@ namespace App\Models;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Date;
-use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\AlertScheduleStatus;
+use LibreNMS\Enum\MaintenanceBehavior;
 
 /**
  * @method static \Database\Factories\AlertScheduleFactory factory(...$parameters)
@@ -45,7 +48,7 @@ class AlertSchedule extends Model
     protected $table = 'alert_schedule';
     protected $primaryKey = 'schedule_id';
     protected $appends = ['start_recurring_dt', 'end_recurring_dt', 'start_recurring_hr', 'end_recurring_hr', 'status'];
-    protected $fillable = ['title', 'notes', 'recurring'];
+    protected $fillable = ['title', 'notes', 'recurring', 'behavior'];
 
     private $timezone;
     private $days = [
@@ -64,10 +67,24 @@ class AlertSchedule extends Model
         $this->timezone = config('app.timezone');
     }
 
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'behavior' => MaintenanceBehavior::class,
+        ];
+    }
+
     // ---- Accessors/Mutators ----
 
     public function getRecurringDayAttribute()
     {
+        if (empty($this->attributes['recurring_day'])) {
+            return [];
+        }
+
         return explode(',', str_replace(array_values($this->days), array_keys($this->days), $this->attributes['recurring_day']));
     }
 
@@ -170,33 +187,34 @@ class AlertSchedule extends Model
 
     public function scopeIsActive($query)
     {
-        return $query->where(function ($query) {
+        return $query->where(function ($query): void {
             $now = CarbonImmutable::now('UTC');
+            $localDayNum = CarbonImmutable::now()->format('N');
             $query->where('start', '<=', $now)
                 ->where('end', '>=', $now)
-                ->where(function ($query) use ($now) {
+                ->where(function ($query) use ($now, $localDayNum): void {
                     $query->where('recurring', 0) // Non recurring simply between start and end
-                    ->orWhere(function ($query) use ($now) {
+                    ->orWhere(function ($query) use ($now, $localDayNum): void {
                         $query->where('recurring', 1)
                             // Check the time is after the start date and before the end date, or end date is not set
-                            ->where(function ($query) use ($now) {
-                                $query->where(function ($query) use ($now) {
+                            ->where(function ($query) use ($now): void {
+                                $query->where(function ($query) use ($now): void {
                                     // normal, inside one day
                                     $query->whereTime('start', '<', DB::raw('time(`end`)'))
                                         ->whereTime('start', '<=', $now->toTimeString())
                                         ->whereTime('end', '>', $now->toTimeString());
-                                })->orWhere(function ($query) use ($now) {
+                                })->orWhere(function ($query) use ($now): void {
                                     // outside, spans days
                                     $query->whereTime('start', '>', DB::raw('time(`end`)'))
-                                        ->where(function ($query) use ($now) {
-                                            $query->whereTime('end', '<=', $now->toTimeString())
-                                                ->orWhereTime('start', '>', $now->toTimeString());
+                                        ->where(function ($query) use ($now): void {
+                                            $query->whereTime('start', '<=', $now->toTimeString())
+                                                ->orWhereTime('end', '>', $now->toTimeString());
                                         });
                                 });
                             })
                             // Check we are on the correct day of the week
-                            ->where(function ($query) use ($now) {
-                                $query->where('recurring_day', 'like', $now->format('%N%'))
+                            ->where(function ($query) use ($localDayNum): void {
+                                $query->where('recurring_day', 'like', "%{$localDayNum}%")
                                     ->orWhereNull('recurring_day');
                             });
                     });
@@ -205,23 +223,31 @@ class AlertSchedule extends Model
     }
 
     // ---- Define Relationships ----
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\App\Models\Device, $this>
+     */
     public function devices(): MorphToMany
     {
-        return $this->morphedByMany(\App\Models\Device::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
+        return $this->morphedByMany(Device::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\App\Models\DeviceGroup, $this>
+     */
     public function deviceGroups(): MorphToMany
     {
-        return $this->morphedByMany(\App\Models\DeviceGroup::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
+        return $this->morphedByMany(DeviceGroup::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\App\Models\Location, $this>
+     */
     public function locations(): MorphToMany
     {
-        return $this->morphedByMany(\App\Models\Location::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
+        return $this->morphedByMany(Location::class, 'alert_schedulable', 'alert_schedulables', 'schedule_id', 'alert_schedulable_id');
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return ($this->recurring ?
             'Recurring Alert Schedule (' . implode(',', $this->recurring_day) . ') ' :

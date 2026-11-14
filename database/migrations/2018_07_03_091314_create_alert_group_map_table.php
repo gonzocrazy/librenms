@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAlertGroupMapTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('alert_group_map', function (Blueprint $table) {
+        Schema::create('alert_group_map', function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('rule_id');
             $table->unsignedInteger('group_id');
@@ -25,8 +25,8 @@ class CreateAlertGroupMapTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('alert_group_map');
     }
-}
+};

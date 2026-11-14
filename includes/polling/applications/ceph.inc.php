@@ -3,12 +3,18 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'ceph';
+
 if (! empty($agent_data['app'][$name])) {
     $ceph_data = $agent_data['app'][$name];
-    $app_id = $app['app_id'];
+} else {
+    $ceph_data = SnmpQuery::get('NET-SNMP-EXTEND-MIB::nsExtendOutputFull."' . $name . '"')->value();
+    $ceph_data = preg_replace('/^.+\n/', '', (string) $ceph_data);
+    $ceph_data = str_replace("<<<app-ceph>>>\n", '', $ceph_data);
+}
 
+if (isset($ceph_data)) {
     $metrics = [];
-    foreach (explode('<', $ceph_data) as $section) {
+    foreach (explode('<', (string) $ceph_data) as $section) {
         if (empty($section)) {
             continue;
         }
@@ -25,8 +31,6 @@ if (! empty($agent_data['app'][$name])) {
                     continue;
                 }
                 [$pool,$ops,$wrbytes,$rbytes] = explode(':', $line);
-                $rrd_name = ['app', $name, $app_id, 'pool', $pool];
-
                 echo "Ceph Pool: $pool, IOPS: $ops, Wr bytes: $wrbytes, R bytes: $rbytes\n";
                 $fields = [
                     'ops' => $ops,
@@ -34,8 +38,14 @@ if (! empty($agent_data['app'][$name])) {
                     'rbytes' => $rbytes,
                 ];
                 $metrics["pool_$pool"] = $fields;
-                $tags = compact('name', 'app_id', 'pool', 'rrd_name', 'rrd_def');
-                data_update($device, 'app', $tags, $fields);
+                $tags = [
+                    'name' => $name,
+                    'app_id' => $app->app_id,
+                    'pool' => $pool,
+                    'rrd_name' => ['app', $name, $app->app_id, 'pool', $pool],
+                    'rrd_def' => $rrd_def,
+                ];
+                app('Datastore')->put($device, 'app', $tags, $fields);
             }
         } elseif ($section == 'osdperformance') {
             $rrd_def = RrdDefinition::make()
@@ -47,16 +57,20 @@ if (! empty($agent_data['app'][$name])) {
                     continue;
                 }
                 [$osd,$apply,$commit] = explode(':', $line);
-                $rrd_name = ['app', $name, $app_id, 'osd', $osd];
-
                 echo "Ceph OSD: $osd, Apply: $apply, Commit: $commit\n";
                 $fields = [
                     'apply_ms' => $apply,
                     'commit_ms' => $commit,
                 ];
                 $metrics["osd_$osd"] = $fields;
-                $tags = compact('name', 'app_id', 'osd', 'rrd_name', 'rrd_def');
-                data_update($device, 'app', $tags, $fields);
+                $tags = [
+                    'name' => $name,
+                    'app_id' => $app->app_id,
+                    'osd' => $osd,
+                    'rrd_name' => ['app', $name, $app->app_id, 'osd', $osd],
+                    'rrd_def' => $rrd_def,
+                ];
+                app('Datastore')->put($device, 'app', $tags, $fields);
             }
         } elseif ($section == 'df') {
             $rrd_def = RrdDefinition::make()
@@ -69,8 +83,6 @@ if (! empty($agent_data['app'][$name])) {
                     continue;
                 }
                 [$df,$avail,$used,$objects] = explode(':', $line);
-                $rrd_name = ['app', $name, $app_id, 'df', $df];
-
                 echo "Ceph Pool DF: $df, Avail: $avail, Used: $used, Objects: $objects\n";
                 $fields = [
                     'avail' => $avail,
@@ -78,8 +90,14 @@ if (! empty($agent_data['app'][$name])) {
                     'objects' => $objects,
                 ];
                 $metrics["df_$df"] = $fields;
-                $tags = compact('name', 'app_id', 'df', 'rrd_name', 'rrd_def');
-                data_update($device, 'app', $tags, $fields);
+                $tags = [
+                    'name' => $name,
+                    'app_id' => $app->app_id,
+                    'df' => $df,
+                    'rrd_name' => ['app', $name, $app->app_id, 'df', $df],
+                    'rrd_def' => $rrd_def,
+                ];
+                app('Datastore')->put($device, 'app', $tags, $fields);
             }
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * raritan-pdu.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
@@ -26,12 +28,3 @@ $pre_cache['raritan_inletTable'] = snmpwalk_group($device, 'inletTable', 'PDU-MI
 
 echo 'inletPoleTable ';
 $pre_cache['raritan_inletPoleTable'] = snmpwalk_group($device, 'inletPoleTable', 'PDU-MIB', 2);
-
-echo 'inletLabel ';
-$pre_cache['raritan_inletLabel'] = snmpwalk_cache_oid($device, 'inletLabel', [], 'PDU2-MIB');
-
-echo 'externalSensors';
-$pre_cache['raritan_extSensorConfig'] = snmpwalk_cache_oid($device, 'externalSensorConfigurationTable', [], 'PDU2-MIB');
-
-echo 'externalSensorMeasurementsTable';
-$pre_cache['raritan_extSensorMeasure'] = snmpwalk_cache_oid($device, 'externalSensorMeasurementsTable', [], 'PDU2-MIB');

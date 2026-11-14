@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LegacyUserProvider.php
  *
@@ -18,47 +19,54 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Providers;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\User;
-use DB;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Hashing\Hasher as HasherContract;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use LibreNMS\Authentication\LegacyAuth;
+use LibreNMS\Authentication\MysqlAuthorizer;
 use LibreNMS\Exceptions\AuthenticationException;
+use LibreNMS\Util\Debug;
 use Log;
 use Request;
 use Session;
-use Toastr;
 
 class LegacyUserProvider implements UserProvider
 {
     /**
      * Retrieve a user by their unique identifier.
      *
-     * @param  mixed $identifier
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @param  mixed  $identifier
+     * @return Authenticatable|null
      */
     public function retrieveById($identifier)
     {
-        return User::find($identifier);
+        try {
+            return User::find($identifier);
+        } catch (QueryException) {
+            return null;
+        }
     }
 
     /**
      * Retrieve a user by their legacy auth specific identifier.
      *
-     * @param  int $identifier
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @param  int  $identifier
+     * @return Authenticatable|null
      */
     public function retrieveByLegacyId($identifier)
     {
-        error_reporting(0);
         $legacy_user = LegacyAuth::get()->getUser($identifier);
-        error_reporting(-1);
 
         return $this->retrieveByCredentials(['username' => $legacy_user['username'] ?? null]);
     }
@@ -66,22 +74,26 @@ class LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by their unique identifier and "remember me" token.
      *
-     * @param  mixed $identifier
-     * @param  string $token
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @param  mixed  $identifier
+     * @param  string  $token
+     * @return Authenticatable|null
      */
-    public function retrieveByToken($identifier, $token)
+    public function retrieveByToken($identifier, $token): ?Authenticatable
     {
-        $user = new User();
-        $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
+        try {
+            $user = new User();
+            $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
 
-        if (! $user) {
+            if (! $user) {
+                return null;
+            }
+        } catch (QueryException) {
             return null;
         }
 
         $rememberToken = $user->getRememberToken();
         if ($rememberToken && hash_equals($rememberToken, $token)) {
-            if (LegacyAuth::get()->userExists($user->username)) {
+            if ($this->isLocalFallbackUser($user) || LegacyAuth::get()->userExists($user->username)) {
                 return $user;
             }
         }
@@ -92,11 +104,11 @@ class LegacyUserProvider implements UserProvider
     /**
      * Update the "remember me" token for the given user in storage.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  string $token
+     * @param  Authenticatable  $user
+     * @param  string  $token
      * @return void
      */
-    public function updateRememberToken(Authenticatable $user, $token)
+    public function updateRememberToken(Authenticatable $user, $token): void
     {
         /** @var User $user */
         $user->setRememberToken($token);
@@ -109,15 +121,13 @@ class LegacyUserProvider implements UserProvider
     /**
      * Validate a user against the given credentials.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  array $credentials
+     * @param  Authenticatable  $user
+     * @param  array  $credentials
      * @return bool
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        error_reporting(0);
-
-        $authorizer = LegacyAuth::get();
+        $authorizer = $user instanceof User && $this->isLocalFallbackUser($user) ? MysqlAuthorizer::asFallback() : LegacyAuth::get();
 
         try {
             // try authentication methods
@@ -126,89 +136,134 @@ class LegacyUserProvider implements UserProvider
             }
 
             if (empty($credentials['username']) || ! $authorizer->authenticate($credentials)) {
-                throw new AuthenticationException('Invalid Credentials');
+                throw new AuthenticationException();
             }
 
             return true;
         } catch (AuthenticationException $ae) {
-            global $debug;
-
             $auth_message = $ae->getMessage();
-            if ($debug) {
+            if (Debug::isEnabled()) {
                 $auth_message .= '<br /> ' . $ae->getFile() . ': ' . $ae->getLine();
             }
-            \Toastr::error($auth_message);
+            toast()->error($auth_message);
 
-            $username = $username ?? Session::get('username', $credentials['username']);
+            $username = Session::get('username', $credentials['username']);
 
             DB::table('authlog')->insert(['user' => $username, 'address' => Request::ip(), 'result' => $auth_message]);
-        } finally {
-            error_reporting(-1);
         }
 
         return false;
     }
 
+    private function localFallbackEnabled(): bool
+    {
+        // external auth (http-auth, sso, ...) already identified the user, there is no password to check
+        return LibrenmsConfig::get('auth_fallback_local')
+            && LegacyAuth::getType() !== 'mysql'
+            && ! LegacyAuth::get()->authIsExternal();
+    }
+
+    private function isLocalFallbackUser(User $user): bool
+    {
+        return $user->auth_type === 'mysql' && $this->localFallbackEnabled();
+    }
+
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param  array $credentials
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @param  array  $credentials
+     * @return Authenticatable|null
      */
     public function retrieveByCredentials(array $credentials)
     {
-        error_reporting(0);
-
         $auth = LegacyAuth::get();
         $type = LegacyAuth::getType();
-
-        // ldap based auth we should bind before using, otherwise searches may fail due to anonymous bind
-        if (method_exists($auth, 'bind')) {
-            $auth->bind($credentials);
-        }
-
         $username = $credentials['username'] ?? null;
-        $auth_id = $auth->getUserid($username);
-        $new_user = $auth->getUser($auth_id);
+        $localFallback = $this->localFallbackEnabled();
 
-        error_reporting(-1);
+        $auth_id = null;
+        $new_user = null;
+        $auth_error = null;
 
-        if (empty($new_user)) {
-            // some legacy auth create users in the authenticate method, if it doesn't exist yet, lets try authenticate (Laravel calls retrieveByCredentials first)
-            try {
-                error_reporting(0);
-
-                $auth->authenticate($credentials);
-                $auth_id = $auth->getUserid($username);
-                $new_user = $auth->getUser($auth_id);
-
-                error_reporting(-1);
-            } catch (AuthenticationException $ae) {
-                Toastr::error($ae->getMessage());
+        try {
+            // ldap based auth we should bind before using, otherwise searches may fail due to anonymous bind
+            if (method_exists($auth, 'bind')) {
+                $auth->bind($credentials);
             }
+
+            $auth_id = $auth->getUserid($username);
+            $new_user = $auth->getUser($auth_id);
 
             if (empty($new_user)) {
-                Log::error("Auth Error ($type): No user ($auth_id) [$username] from " . Request::ip());
-
-                return null;
+                // some legacy auth create users in the authenticate method, if it doesn't exist yet, lets try authenticate (Laravel calls retrieveByCredentials first)
+                try {
+                    $auth->authenticate($credentials);
+                    $auth_id = $auth->getUserid($username);
+                    $new_user = $auth->getUser($auth_id);
+                } catch (AuthenticationException $ae) {
+                    $auth_error = $ae->getMessage();
+                }
             }
+        } catch (\Throwable $e) {
+            if (! $localFallback) {
+                throw $e;
+            }
+            // an unreachable server can surface as any error type
+            Log::error("Auth Error ($type): lookup of [$username] failed, trying local users", ['exception' => $e]);
+        }
+
+        if (empty($new_user)) {
+            $local = $localFallback ? User::where('auth_type', 'mysql')->firstWhere('username', $username) : null;
+            if ($local) {
+                return $local;
+            }
+
+            if ($auth_error !== null) {
+                toast()->error($auth_error);
+            }
+            Log::error("Auth Error ($type): No user ($auth_id) [$username] from " . Request::ip());
+
+            return null;
         }
 
         unset($new_user['user_id']);
 
         // remove null fields
-        $new_user = array_filter($new_user, function ($var) {
-            return ! is_null($var);
-        });
+        $new_user = array_filter($new_user, fn ($var) => ! is_null($var));
 
         // always create an entry in the users table, but separate by type
         $user = User::thisAuth()->firstOrNew(['username' => $username], $new_user);
         /** @var User $user */
         $user->fill($new_user); // fill all attributes
         $user->auth_type = $type; // doing this here in case it was null (legacy)
-        $user->auth_id = $auth_id;
+        $user->auth_id = (string) $auth_id;
         $user->save();
 
+        // create and update roles, if provided
+        $roles = $auth->getRoles($user->username);
+        if ($roles !== false) {
+            $user->syncRoles($roles);
+        }
+
         return $user;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function rehashPasswordIfRequired(Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false)
+    {
+        // TODO: NEEDS TO BE VERIFIED CORRECT SOLUTION
+        if (! $user instanceof User || ! isset($credentials['password']) || empty($user->getAuthPassword())) {
+            return;
+        }
+        $hasher = app(HasherContract::class);
+
+        if (! $hasher->needsRehash($user->getAuthPassword()) && ! $force) {
+            return;
+        }
+
+        $user->setAttribute($user->getAuthPasswordName(), $hasher->make($credentials['password']));
+        $user->save();
     }
 }

@@ -12,7 +12,9 @@
  * the source code distribution for details.
  */
 
-if (\Auth::user()->hasGlobalAdmin()) {
+use LibreNMS\Enum\MaintenanceBehavior;
+
+$default_behavior = MaintenanceBehavior::fromConfig();
     ?>
 
 <div class="modal fade bs-example-modal-sm" id="schedule-maintenance" tabindex="-1" role="dialog" aria-labelledby="Create" aria-hidden="true">
@@ -31,40 +33,38 @@ if (\Auth::user()->hasGlobalAdmin()) {
                 <form method="post" role="form" id="sched-form" class="form-horizontal schedule-maintenance-form">
                     <?php echo csrf_field() ?>
                     <input type="hidden" name="schedule_id" id="schedule_id">
-                    <input type="hidden" name="type" id="type" value="schedule-maintenance">
-                    <input type="hidden" name="sub_type" id="sub_type" value="new-maintenance">
                     <div class="row">
                         <div class="col-md-12">
                             <span id="response"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="title" class="col-sm-4 control-label">Title <exp>*</exp>: </label>
+                        <label for="title" class="col-sm-4 control-label">Title <exp>*</exp> </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="title" name="title" placeholder="Maintenance title">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="notes" class="col-sm-4 control-label">Notes: </label>
+                        <label for="notes" class="col-sm-4 control-label">Notes </label>
                         <div class="col-sm-8">
                             <textarea class="form-control" id="notes" name="notes" placeholder="Maintenance notes"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="recurring" class="col-sm-4 control-label">Recurring <strong class="text-danger">*</strong>: </label>
+                        <label for="recurring" class="col-sm-4 control-label">Recurring </label>
                         <div class="col-sm-8">
                             <input type="checkbox" id="recurring" name="recurring" data-size="small" data-on-text="Yes" data-off-text="No" onChange="recurring_switch();" value=0 />
                         </div>
                     </div>
                     <div id="norecurringgroup">
                         <div class="form-group">
-                            <label for="start" class="col-sm-4 control-label">Start <exp>*</exp>: </label>
+                            <label for="start" class="col-sm-4 control-label">Start <exp>*</exp> </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="start" name="start" value="" data-date-format="YYYY-MM-DD HH:mm">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="end" class="col-sm-4 control-label">End <exp>*</exp>: </label>
+                            <label for="end" class="col-sm-4 control-label">End <exp>*</exp> </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="end" name="end" value="" data-date-format="YYYY-MM-DD HH:mm">
                             </div>
@@ -72,31 +72,31 @@ if (\Auth::user()->hasGlobalAdmin()) {
                     </div>
                     <div id="recurringgroup" style="display:none;">
                         <div class="form-group">
-                            <label for="start_recurring_dt" class="col-sm-4 control-label">Start date <exp>*</exp>: </label>
+                            <label for="start_recurring_dt" class="col-sm-4 control-label">Start date <exp>*</exp> </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="start_recurring_dt" name="start_recurring_dt" value="" data-date-format="YYYY-MM-DD">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="end_recurring_dt" class="col-sm-4 control-label">End date: </label>
+                            <label for="end_recurring_dt" class="col-sm-4 control-label">End date </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="end_recurring_dt" name="end_recurring_dt" value="" data-date-format="YYYY-MM-DD">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="start_recurring_hr" class="col-sm-4 control-label">Start hour <exp>*</exp>: </label>
+                            <label for="start_recurring_hr" class="col-sm-4 control-label">Start hour <exp>*</exp> </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="start_recurring_hr" name="start_recurring_hr" value="" data-date-format="HH:mm">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="end_recurring_hr" class="col-sm-4 control-label">End hour <exp>*</exp>: </label>
+                            <label for="end_recurring_hr" class="col-sm-4 control-label">End hour <exp>*</exp> </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control date" id="end_recurring_hr" name="end_recurring_hr" value="" data-date-format="HH:mm">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="recurring_day" class="col-sm-4 control-label">Only on weekday: </label>
+                            <label for="recurring_day" class="col-sm-4 control-label">Only on weekday </label>
                             <div class="col-sm-8">
                                 <div style="float: left;"><label><input type="checkbox" style="width: 20px;" class="form-control" name="recurring_day[]" value="1" />Mo</label></div>
                                 <div style="float: left;padding-left: 20px;"><label><input type="checkbox" style="width: 20px;" class="form-control" name="recurring_day[]" value="2" />Tu</label></div>
@@ -109,7 +109,19 @@ if (\Auth::user()->hasGlobalAdmin()) {
                         </div>
                     </div>
                     <div class="form-group">
-                         <label for='maps' class='col-sm-4 control-label'>Map To <exp>*</exp>: </label>
+                        <label for='behavior' class='col-sm-4 control-label'>Behavior <exp>*</exp> </label>
+                        <div class="col-sm-8">
+                            <select id="behavior" name="behavior" class="form-control">
+<?php foreach (MaintenanceBehavior::cases() as $behavior): ?>
+                                <option value='<?= $behavior->value ?>' <?= $behavior === $default_behavior ? 'selected' : '' ?>>
+                                    <?= htmlentities($behavior->descr()) ?>
+                                </option>
+<?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <label for='maps' class='col-sm-4 control-label'>Map To <exp>*</exp> </label>
                         <div class="col-sm-8">
                             <select id="maps" name="maps[]" class="form-control" multiple="multiple"></select>
                         </div>
@@ -157,9 +169,8 @@ $('#schedule-maintenance').on('show.bs.modal', function (event) {
         $('#sched-form').hide();
         $('#sched-spinner').show();
         $.ajax({
-            type: "POST",
-            url: "ajax_form.php",
-            data: { type: "schedule-maintenance", sub_type: "parse-maintenance", schedule_id: schedule_id },
+            type: "GET",
+            url: route('alert-schedule.show', {alert_schedule: schedule_id}),
             dataType: "json",
             success: function(output) {
                 var maps = $('#maps');
@@ -176,12 +187,9 @@ $('#schedule-maintenance').on('show.bs.modal', function (event) {
 
                 $('#title').val(output['title']);
                 $('#notes').val(output['notes']);
+                $('#behavior').find('option[value="'+output['behavior']+'"]').prop('selected', true);
                 if (output['recurring'] == 0){
-                    var start = $('#start').data("DateTimePicker");
-                    if (output['start']) {
-                        start.minDate(moment(output['start']));
-                    }
-                    start.date(moment(output['start']));
+                    $('#start').data("DateTimePicker").date(moment(output['start']));
                     $('#end').data("DateTimePicker").date(moment(output['end']));
 
                     $('#norecurringgroup').show();
@@ -254,30 +262,33 @@ function recurring_switch() {
     }
 }
 
-$('#sched-submit').click('', function(e) {
+$('#sched-submit').on("click", function(e) {
     e.preventDefault();
     // parse start/end to ISO8601
-    var formData = $('form.schedule-maintenance-form').serializeArray();
-    formData.find(input => input.name === 'start').value = $('#start').data("DateTimePicker").date().format();
-    formData.find(input => input.name === 'end').value = $('#end').data("DateTimePicker").date().format();
+    var schedule_id = $('#schedule_id').val();
+    var formData = $('form.schedule-maintenance-form').serializeArray().filter(input => input.name !== 'schedule_id');
+    formData.find(input => input.name === 'start').value = moment($('#start').val(), 'YYYY-MM-DD HH:mm').format();
+    formData.find(input => input.name === 'end').value = moment($('#end').val(), 'YYYY-MM-DD HH:mm').format();
     $.ajax({
-        type: "POST",
-        url: "ajax_form.php",
-        data: formData,
+        type: schedule_id > 0 ? "PUT" : "POST",
+        url: schedule_id > 0 ? route('alert-schedule.update', {alert_schedule: schedule_id}) : route('alert-schedule.store'),
+        data: $.param(formData),
         dataType: "json",
         success: function(data){
-            if(data.status == 'ok') {
-                $("#message").html('<div id="schedulemsg" class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+data.message+'</div>');
-                window.setTimeout(function() { $('#schedulemsg').fadeOut().slideUp(); } , 5000);
-                $("#schedule-maintenance").modal('hide');
-                $("#schedulemodal-alert").remove();
-                $("#alert-schedule").bootgrid('reload');
-            } else {
-                $("#response").html('<div id="schedulemodal-alert" class="alert alert-danger">'+data.message+'</div>');
-            }
+            $("#message").html('<div id="schedulemsg" class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+data.message+'</div>');
+            window.setTimeout(function() { $('#schedulemsg').fadeOut().slideUp(); } , 5000);
+            $("#schedule-maintenance").modal('hide');
+            $("#schedulemodal-alert").remove();
+            $("#alert-schedule").bootgrid('reload');
         },
-        error: function(){
-            $("#response").html('<div id="schedulemodal-alert" class="alert alert-danger">An error occurred.</div>');
+        error: function(jqXHR){
+            var message = 'An error occurred.';
+            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
+                message = Object.values(jqXHR.responseJSON.errors).flat().map(m => $('<div>').text(m).html()).join('<br />');
+            } else if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                message = $('<div>').text(jqXHR.responseJSON.message).html();
+            }
+            $("#response").html('<div id="schedulemodal-alert" class="alert alert-danger">' + message + '</div>');
         }
     });
 });
@@ -286,14 +297,8 @@ $("#maps").select2({
     width: '100%',
     placeholder: "Devices, Groups or Locations",
     ajax: {
-        url: 'ajax_list.php',
-        delay: 250,
-        data: function (params) {
-            return {
-                type: 'devices_groups_locations',
-                search: params.term
-            };
-        }
+        url: '<?php echo route('ajax.select.devices-groups-locations'); ?>',
+        delay: 150
     }
 });
 
@@ -412,5 +417,3 @@ $(function () {
 
 $("[name='recurring']").bootstrapSwitch();
 </script>
-    <?php
-}

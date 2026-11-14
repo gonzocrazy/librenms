@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Mempools.php
  *
@@ -25,58 +26,104 @@
 
 namespace LibreNMS\Modules;
 
+use App\Models\Device;
 use App\Models\Mempool;
-use App\Observers\MempoolObserver;
+use App\Observers\ModuleModelObserver;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use LibreNMS\DB\SyncsModels;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Interfaces\Discovery\MempoolsDiscovery;
 use LibreNMS\Interfaces\Module;
 use LibreNMS\Interfaces\Polling\MempoolsPolling;
+use LibreNMS\Interfaces\RemovesMethodData;
 use LibreNMS\OS;
 use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\Util\Number;
-use Log;
 
-class Mempools implements Module
+class Mempools implements Module, RemovesMethodData
 {
     use SyncsModels;
 
-    public function discover(OS $os)
+    /**
+     * @inheritDoc
+     */
+    public function dependencies(): array
     {
-        if ($os instanceof MempoolsDiscovery) {
-            $mempools = $os->discoverMempools()->filter(function (Mempool $mempool) {
-                if ($mempool->isValid()) {
-                    return true;
-                }
-                Log::debug("Rejecting Mempool $mempool->mempool_index $mempool->mempool_descr: Invalid total value");
-
-                return false;
-            });
-            $this->calculateAvailable($mempools);
-
-            MempoolObserver::observe('\App\Models\Mempool');
-            $this->syncModels($os->getDevice(), 'mempools', $mempools);
-
-            echo PHP_EOL;
-            $mempools->each(function ($mempool) {
-                $this->printMempool($mempool);
-            });
-        }
+        return [];
     }
 
-    public function poll(OS $os)
+    /**
+     * In order of preference, SNMP knows more about the device than the agent, so its mempools are preferred.
+     */
+    public function pollingMethods(Device $device): array
     {
-        $mempools = $os->getDevice()->mempools;
+        return [PollingMethodType::Snmp, PollingMethodType::UnixAgent];
+    }
 
-        if ($mempools->isEmpty()) {
-            return;
+    public function shouldDiscover(OS $os): bool
+    {
+        return $this->preferredMethod($os) !== null;
+    }
+
+    /**
+     * Mempools come from one method: the most preferred enabled method that has mempools for this device.
+     * Its mempools replace those of other methods, so a device polled by several methods has no duplicates.
+     * Methods after one that is down are not tried, so mempools do not move to another method while it is down.
+     * When no method has mempools, the existing ones are kept, so an incomplete agent output does not remove them.
+     */
+    public function discover(OS $os): void
+    {
+        foreach ($this->enabledMethods($os->getDevice()) as $type) {
+            if (! $os->getMethodResults()->isAvailable($type)) {
+                break;
+            }
+
+            $mempools = $this->discoverValid($os, $type);
+            if ($mempools->isNotEmpty()) {
+                // check if linux or similar and calculate available ram
+                $this->calculateAvailable($mempools);
+
+                ModuleModelObserver::observe(Mempool::class);
+                $this->syncModelsFromMethod($os->getDevice(), 'mempools', $type, $mempools);
+
+                Log::info('');
+                $mempools->each($this->printMempool(...));
+
+                return;
+            }
         }
 
-        $os instanceof MempoolsPolling
-            ? $os->pollMempools($mempools)
-            : $this->defaultPolling($os, $mempools);
+        Log::info('No mempools found, keeping existing mempools');
+    }
 
-        $this->calculateAvailable($mempools)->each(function (Mempool $mempool) use ($os) {
+    /**
+     * Methods are only checked when the device has mempools from an enabled method.
+     */
+    public function shouldPoll(OS $os): bool
+    {
+        $methods = $this->enabledMethods($os->getDevice());
+
+        return $os->getDevice()->mempools->contains(fn (Mempool $mempool): bool => in_array($mempool->polling_method, $methods, true));
+    }
+
+    /**
+     * Each mempool is polled by the method that discovered it, mempools of unavailable methods are skipped.
+     */
+    public function poll(OS $os, DataStorageInterface $datastore): void
+    {
+        $polled = new EloquentCollection;
+
+        foreach ($os->getDevice()->mempools->groupBy(fn (Mempool $mempool): string => $mempool->polling_method->value) as $type => $mempools) {
+            $source = $os->dataSource(PollingMethodType::from($type), MempoolsPolling::class);
+            if ($source !== null) {
+                $polled = $polled->merge($source->pollMempools($mempools));
+            }
+        }
+
+        $this->calculateAvailable($polled)->each(function (Mempool $mempool) use ($os, $datastore): void {
             $this->printMempool($mempool);
 
             if (empty($mempool->mempool_class)) {
@@ -103,46 +150,86 @@ class Mempools implements Module
                 'free' => $mempool->mempool_free,
             ];
 
-            data_update($os->getDeviceArray(), 'mempool', $tags, $fields);
+            $datastore->put($os->getDeviceArray(), 'mempool', $tags, $fields);
         });
     }
 
     /**
-     * @param OS $os
-     * @param \Illuminate\Support\Collection $mempools
-     * @return \Illuminate\Support\Collection
+     * The valid mempools of a method.
+     *
+     * @return Collection<int, Mempool>
      */
-    private function defaultPolling($os, $mempools)
+    private function discoverValid(OS $os, PollingMethodType $type): Collection
     {
-        // fetch all data
-        $oids = $mempools->map->only(['mempool_perc_oid', 'mempool_used_oid', 'mempool_free_oid', 'mempool_total_oid'])
-            ->flatten()->filter()->unique()->values()->all();
-        $data = snmp_get_multi_oid($os->getDeviceArray(), $oids);
+        return ($os->dataSource($type, MempoolsDiscovery::class)?->discoverMempools() ?? new Collection)->filter(function (Mempool $mempool) {
+            if ($mempool->isValid()) {
+                return true;
+            }
 
-        $mempools->each(function (Mempool $mempool) use ($data) {
-            $mempool->fillUsage(
-                $data[$mempool->mempool_used_oid] ?? null,
-                $data[$mempool->mempool_total_oid] ?? null,
-                $data[$mempool->mempool_free_oid] ?? null,
-                $data[$mempool->mempool_perc_oid] ?? null
-            );
+            $reason = 'Not enough data';
+            if ($mempool->mempool_total <= 0) {
+                $reason = "Invalid total value $mempool->mempool_total";
+            }
+
+            Log::debug("Rejecting Mempool $mempool->mempool_index $mempool->mempool_descr: $reason");
+            Log::info('x');
+
+            return false;
         });
-
-        return $mempools;
     }
 
-    public function cleanup(OS $os)
+    /**
+     * The most preferred enabled method, null when it is not available.
+     * Does not fall back to other methods, so mempools are kept while the preferred method is down.
+     */
+    private function preferredMethod(OS $os): ?PollingMethodType
     {
-        $os->getDevice()->mempools()->delete();
+        $type = $this->enabledMethods($os->getDevice())[0] ?? null;
+
+        return $type !== null && $os->getMethodResults()->isAvailable($type) ? $type : null;
+    }
+
+    /**
+     * @return list<PollingMethodType>
+     */
+    private function enabledMethods(Device $device): array
+    {
+        return array_values(array_filter($this->pollingMethods($device), $device->polling()->isEnabled(...)));
+    }
+
+    public function dataExists(Device $device): bool
+    {
+        return $device->mempools()->exists();
+    }
+
+    public function removeMethodData(Device $device, PollingMethodType $type): void
+    {
+        $device->mempools()->where('polling_method', $type)->delete();
+    }
+
+    public function cleanup(Device $device): int
+    {
+        return $device->mempools()->delete();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dump(Device $device, string $type): ?array
+    {
+        return [
+            'mempools' => $device->mempools()->orderBy('mempool_type')->orderBy('mempool_id')
+                ->get()->map->makeHidden(['device_id', 'mempool_id', 'polling_method']), // test data is all snmp
+        ];
     }
 
     /**
      * Calculate available memory.  This is free + buffers + cached.
      *
-     * @param  \Illuminate\Support\Collection  $mempools
-     * @return \Illuminate\Support\Collection|void
+     * @param  Collection  $mempools
+     * @return Collection
      */
-    private function calculateAvailable(Collection $mempools)
+    private function calculateAvailable(Collection $mempools): Collection
     {
         if ($mempools->count() > 2) { // optimization
             $system = null;
@@ -176,24 +263,27 @@ class Mempools implements Module
             }
 
             if ($system !== null) {
-                $old = Number::formatBi($system->mempool_free, 2, 3, 'iB');
-                $system->fillUsage(($system->mempool_used - $buffers - $cached) / $system->mempool_precision, $system->mempool_total / $system->mempool_precision);
-                $new = Number::formatBi($system->mempool_free, 2, 3, 'iB');
-                Log::debug("Free memory adjusted by availability calculation: {$old} -> {$new}\n");
+                $old = Number::formatBi($system->mempool_free);
+                $available_used = $system->mempool_used - $buffers - $cached;
+                if ($available_used >= 0) {
+                    $system->fillUsage($available_used, $system->mempool_total, multiplier: 1);
+                    $new = Number::formatBi($system->mempool_free);
+                    Log::debug("Free memory adjusted by availability calculation: {$old} -> {$new}\n");
+                }
             }
         }
 
         return $mempools;
     }
 
-    private function printMempool(Mempool $mempool)
+    private function printMempool(Mempool $mempool): void
     {
-        echo "$mempool->mempool_type [$mempool->mempool_class]: $mempool->mempool_descr: $mempool->mempool_perc%";
+        $status = "$mempool->mempool_descr ($mempool->mempool_class): $mempool->mempool_perc%";
         if ($mempool->mempool_total != 100) {
-            $used = Number::formatBi($mempool->mempool_used, 2, 3, 'iB');
-            $total = Number::formatBi($mempool->mempool_total, 2, 3, 'iB');
-            echo "  {$used} / {$total}";
+            $used = Number::formatBi($mempool->mempool_used);
+            $total = Number::formatBi($mempool->mempool_total);
+            $status .= "  $used / $total";
         }
-        echo PHP_EOL;
+        Log::info($status);
     }
 }

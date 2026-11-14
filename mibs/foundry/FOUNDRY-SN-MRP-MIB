@@ -6,19 +6,22 @@ IMPORTS
     InterfaceIndex
       FROM IF-MIB
     DisplayString
-      FROM RFC1213-MIB;
+      FROM SNMPv2-TC;
 
 snMetroRing MODULE-IDENTITY
-    LAST-UPDATED "200705160000Z" -- May 16, 2007
-    ORGANIZATION "Foundry Networks, Inc"
+    LAST-UPDATED "201708070000Z" -- Aug7, 2017
+    ORGANIZATION "Ruckus Wireless, Inc."
     CONTACT-INFO
             ""
     DESCRIPTION
             "Management Information Base module for metro ring
             configuration and statistics."
-    REVISION     "200705160000Z" -- May 16, 2007
+    REVISION     "201708070000Z" -- Aug 7, 2017
     DESCRIPTION
             ""
+    REVISION     "201708070000Z" -- Aug 7, 2017
+    DESCRIPTION
+             "Modified Organization"
    ::= { iso(1) org(3) dod(6) internet(1) private(4) enterprises(1) foundry(1991) products(1) switch(1) snSwitch(3) 29 }
 
 snMetroRingGlobalObjects OBJECT IDENTIFIER ::= { snMetroRing 1 }

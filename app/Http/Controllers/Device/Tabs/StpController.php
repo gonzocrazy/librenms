@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StpController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,7 +27,9 @@
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
+use Illuminate\Http\Request;
 use LibreNMS\Interfaces\UI\DeviceTab;
+use LibreNMS\Util\Url;
 
 class StpController implements DeviceTab
 {
@@ -49,8 +53,30 @@ class StpController implements DeviceTab
         return __('STP');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
-        return [];
+        $stpInstances = $device->stpInstances->sortBy('vlan');
+        // Get first available VLAN from instances (or default to 1 if no instances)
+        $active_vlan = Url::parseOptions('vlan') ?? $stpInstances->first()->vlan ?? 1;
+
+        $vlanOptions = $stpInstances->pluck('vlan')->mapWithKeys(function ($vlan) use ($device) {
+            if (empty($vlan)) {
+                $vlan = 1;
+            }
+
+            return [$vlan => [
+                'text' => $vlan,
+                'link' => Url::deviceUrl($device, ['tab' => 'stp', 'vlan' => $vlan]),
+            ]];
+        });
+
+        return [
+            'vlans' => $vlanOptions->all(),
+            'vlan' => $active_vlan,
+            'device_id' => $device->device_id,
+            'stpInstances' => $stpInstances->filter(fn ($instance) => $active_vlan == 1 && $instance->vlan == null || $instance->vlan == $active_vlan),
+            'stpPorts' => $device->stpPorts()->where('vlan', $active_vlan)->when($active_vlan == 1, fn ($query) => $query->orWhereNull('vlan'))->exists(),
+            'bootgridUrl' => url('/ajax/table/'),
+        ];
     }
 }

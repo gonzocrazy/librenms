@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -7,6 +8,7 @@
  * the source code distribution for details.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 LibreNMS
  * @author     Pavle Obradovic <pobradovic08@gmail.com>
  */
@@ -41,6 +43,6 @@ $colours_in = 'purples';
 $multiplier = '1';
 $colours_out = 'oranges';
 
-$args['nototal'] = 1;
+$nototal = 1;
 
 include 'includes/html/graphs/generic_multi_seperated.inc.php';

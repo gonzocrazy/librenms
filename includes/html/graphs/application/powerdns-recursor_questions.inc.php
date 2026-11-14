@@ -1,4 +1,5 @@
 <?php
+
 /**
  * powerdns-recursor_questions.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,41 +28,37 @@ include 'powerdns-recursor.inc.php';
 $colours = 'mixed';
 $unit_text = 'Questions/sec';
 
-if (Rrd::checkRrdExists($rrd_filename)) {
-    $rrd_list = [
-        [
-            'filename' => $rrd_filename,
-            'ds' => 'questions',
-            'descr' => 'Total Questions',
-            'area' => true,
-        ],
-        [
-            'filename' => $rrd_filename,
-            'ds' => 'ipv6-questions',
-            'descr' => 'IPv6 Questions',
-            'area' => true,
-        ],
-        [
-            'filename' => $rrd_filename,
-            'ds' => 'tcp-questions',
-            'descr' => 'TCP Questions',
-            'area' => true,
-        ],
-        [
-            'filename' => $rrd_filename,
-            'ds' => 'over-capacity-drops',
-            'descr' => 'Over Capacity Drops',
-            'area' => true,
-        ],
-        [
-            'filename' => $rrd_filename,
-            'ds' => 'policy-drops',
-            'descr' => 'Policy Drops',
-            'area' => true,
-        ],
-    ];
-} else {
-    echo "file missing: $rrd_filename";
-}
+$rrd_list = [
+    [
+        'filename' => $rrd_filename,
+        'ds' => 'questions',
+        'descr' => 'Total Questions',
+        'area' => true,
+    ],
+    [
+        'filename' => $rrd_filename,
+        'ds' => 'ipv6-questions',
+        'descr' => 'IPv6 Questions',
+        'area' => true,
+    ],
+    [
+        'filename' => $rrd_filename,
+        'ds' => 'tcp-questions',
+        'descr' => 'TCP Questions',
+        'area' => true,
+    ],
+    [
+        'filename' => $rrd_filename,
+        'ds' => 'over-capacity-drops',
+        'descr' => 'Over Capacity Drops',
+        'area' => true,
+    ],
+    [
+        'filename' => $rrd_filename,
+        'ds' => 'policy-drops',
+        'descr' => 'Policy Drops',
+        'area' => true,
+    ],
+];
 
 require 'includes/html/graphs/generic_multi_line.inc.php';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Categorizer.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,17 +28,13 @@ namespace LibreNMS\Util;
 
 class Categorizer
 {
-    protected $items;
     protected $categorized = [];
     protected $categories = [];
     protected $skippable;
 
-    public function __construct($items = [])
+    public function __construct(protected $items = [])
     {
-        $this->skippable = function ($item) {
-            return false;
-        };
-        $this->items = $items;
+        $this->skippable = (fn ($item) => false);
     }
 
     public function addCategory(string $category, callable $function)

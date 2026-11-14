@@ -10,11 +10,11 @@
                     "version": "06",
                     "hardware": "Eaton 5PX 3000",
                     "features": null,
+                    "location": "<private>",
                     "os": "eaton-mgeups",
                     "type": "power",
                     "serial": "G4294C3232",
-                    "icon": "eaton.svg",
-                    "location": "<private>"
+                    "icon": "eaton.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "LOOPBACK",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -254,9 +240,6 @@
                     "ifSpeed": 0,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -266,15 +249,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "LOOPBACK",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -361,9 +340,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -373,15 +349,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "002085f51e2c",
-                    "ifHardType": null,
                     "ifLastChange": 230,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -470,10 +442,11 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery charge remaining",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 100,
-                    "sensor_limit": 101,
+                    "sensor_limit": null,
                     "sensor_limit_warn": null,
                     "sensor_limit_low": 15,
                     "sensor_limit_low_warn": 50,
@@ -483,6 +456,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -494,6 +468,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 7.8,
@@ -507,6 +482,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -518,6 +494,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -531,6 +508,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -542,6 +520,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -555,6 +534,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -566,6 +546,7 @@
                     "sensor_type": "eaton-mgeups",
                     "sensor_descr": "Remaining time",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2594,
@@ -579,6 +560,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -590,6 +572,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -603,6 +586,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -614,6 +598,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 50,
@@ -627,6 +612,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -638,6 +624,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Bypass",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -651,6 +638,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -662,6 +650,7 @@
                     "sensor_type": "eaton-mgeups",
                     "sensor_descr": "Environment",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 15,
@@ -675,6 +664,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -686,6 +676,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Percentage load",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 59,
@@ -699,6 +690,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -710,6 +702,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -723,6 +716,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -734,6 +728,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1593,
@@ -747,6 +742,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -758,6 +754,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Time on battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 60,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -771,6 +768,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -782,6 +780,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Estimated battery time remaining",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 43,
@@ -795,6 +794,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -806,6 +806,7 @@
                     "sensor_type": "upsBatteryStatusState",
                     "sensor_descr": "Battery Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -819,6 +820,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsBatteryStatusState"
                 },
                 {
@@ -830,6 +832,7 @@
                     "sensor_type": "upsmgBatteryChargerFault",
                     "sensor_descr": "Battery Charger Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -843,6 +846,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgBatteryChargerFault"
                 },
                 {
@@ -854,6 +858,7 @@
                     "sensor_type": "upsmgBatteryFaultBattery",
                     "sensor_descr": "Battery Fault",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -867,6 +872,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgBatteryFaultBattery"
                 },
                 {
@@ -878,6 +884,7 @@
                     "sensor_type": "upsmgBatteryLowBattery",
                     "sensor_descr": "Battery Charge Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -891,6 +898,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgBatteryLowBattery"
                 },
                 {
@@ -902,6 +910,7 @@
                     "sensor_type": "upsmgBatteryLowCondition",
                     "sensor_descr": "Battery Condition",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -915,6 +924,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgBatteryLowCondition"
                 },
                 {
@@ -926,6 +936,7 @@
                     "sensor_type": "upsmgBatteryReplacement",
                     "sensor_descr": "Battery Replacement Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -939,6 +950,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgBatteryReplacement"
                 },
                 {
@@ -950,6 +962,7 @@
                     "sensor_type": "upsmgInputBadStatus",
                     "sensor_descr": "Input Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -963,6 +976,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgInputBadStatus"
                 },
                 {
@@ -974,6 +988,7 @@
                     "sensor_type": "upsmgInputLineFailCause",
                     "sensor_descr": "Input Line Fail Cause",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -987,6 +1002,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgInputLineFailCause"
                 },
                 {
@@ -998,6 +1014,7 @@
                     "sensor_type": "upsmgOutputInverterOff",
                     "sensor_descr": "UPS Inverter Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -1011,6 +1028,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputInverterOff"
                 },
                 {
@@ -1022,6 +1040,7 @@
                     "sensor_type": "upsmgOutputOnBattery",
                     "sensor_descr": "Input Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1035,6 +1054,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputOnBattery"
                 },
                 {
@@ -1046,6 +1066,7 @@
                     "sensor_type": "upsmgOutputOnByPass",
                     "sensor_descr": "Bypass Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1059,6 +1080,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputOnByPass"
                 },
                 {
@@ -1070,6 +1092,7 @@
                     "sensor_type": "upsmgOutputOverLoad",
                     "sensor_descr": "Output OverLoad",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1083,6 +1106,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputOverLoad"
                 },
                 {
@@ -1094,6 +1118,7 @@
                     "sensor_type": "upsmgOutputOverTemp",
                     "sensor_descr": "Over Temperature",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1107,6 +1132,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputOverTemp"
                 },
                 {
@@ -1118,6 +1144,7 @@
                     "sensor_type": "upsmgOutputUtilityOff",
                     "sensor_descr": "Utility Status",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -1131,6 +1158,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsmgOutputUtilityOff"
                 },
                 {
@@ -1142,6 +1170,7 @@
                     "sensor_type": "upsOutputSourceState",
                     "sensor_descr": "Output Source",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -1155,41 +1184,19 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "upsOutputSourceState"
                 },
                 {
                     "sensor_deleted": 0,
                     "sensor_class": "temperature",
                     "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.534.1.6.5.0",
-                    "sensor_index": "xupsEnvRemoteTemp.0",
+                    "sensor_oid": ".1.3.6.1.4.1.534.1.6.1.0",
+                    "sensor_index": "xupsEnvAmbientTemp.0",
                     "sensor_type": "eaton-mgeups",
-                    "sensor_descr": "Environment",
+                    "sensor_descr": "Ambient",
                     "group": null,
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 33,
-                    "sensor_limit": 53,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": 23,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "state_name": null
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "temperature",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.2.1.33.1.2.7.0",
-                    "sensor_index": "0",
-                    "sensor_type": "rfc1628",
-                    "sensor_descr": "Battery",
-                    "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1203,6 +1210,59 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
+                    "state_name": null
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "temperature",
+                    "poller_type": "snmp",
+                    "sensor_oid": ".1.3.6.1.4.1.534.1.6.5.0",
+                    "sensor_index": "xupsEnvRemoteTemp.0",
+                    "sensor_type": "eaton-mgeups",
+                    "sensor_descr": "Remote",
+                    "group": null,
+                    "category": null,
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_current": 33,
+                    "sensor_limit": 53,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": 23,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_prev": null,
+                    "user_func": null,
+                    "rrd_type": "GAUGE",
+                    "state_name": null
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "temperature",
+                    "poller_type": "snmp",
+                    "sensor_oid": ".1.3.6.1.2.1.33.1.2.7.0",
+                    "sensor_index": "0",
+                    "sensor_type": "rfc1628",
+                    "sensor_descr": "Battery",
+                    "group": null,
+                    "category": null,
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_current": 0,
+                    "sensor_limit": 20,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": -10,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_prev": null,
+                    "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1214,6 +1274,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Output",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 229,
@@ -1227,6 +1288,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1238,6 +1300,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Battery",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 81,
@@ -1251,6 +1314,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1262,6 +1326,7 @@
                     "sensor_type": "rfc1628",
                     "sensor_descr": "Input",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 229,
@@ -1275,6 +1340,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -1282,278 +1348,259 @@
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Low",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsBatteryStatusState",
                     "state_descr": "Depleted",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryChargerFault",
                     "state_descr": "Fault",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryChargerFault",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgBatteryFaultBattery",
                     "state_descr": "Fault",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryFaultBattery",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgBatteryLowBattery",
                     "state_descr": "Low Battery",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryLowBattery",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgBatteryLowCondition",
                     "state_descr": "Low Condition",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryLowCondition",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgBatteryReplacement",
                     "state_descr": "To be replaced",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgBatteryReplacement",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgInputBadStatus",
                     "state_descr": "Bad Status",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgInputBadStatus",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgInputLineFailCause",
                     "state_descr": "No Failure",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgInputLineFailCause",
                     "state_descr": "Tolerance Volt. Out",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgInputLineFailCause",
                     "state_descr": "Tolerance Freq. Out",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgInputLineFailCause",
                     "state_descr": "No Voltage",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputInverterOff",
                     "state_descr": "Inverter Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputInverterOff",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgOutputOnBattery",
                     "state_descr": "On Battery",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputOnBattery",
                     "state_descr": "On Input Power",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgOutputOnByPass",
                     "state_descr": "On ByPass",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputOnByPass",
                     "state_descr": "Not Active",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgOutputOverLoad",
                     "state_descr": "Yes",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputOverLoad",
                     "state_descr": "No",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgOutputOverTemp",
                     "state_descr": "Over Temperature",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputOverTemp",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsmgOutputUtilityOff",
                     "state_descr": "No Voltage",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsmgOutputUtilityOff",
                     "state_descr": "Output OK",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Other",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "None",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Normal",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Bypass",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Battery",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Booster",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "upsOutputSourceState",
                     "state_descr": "Reducer",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 2
                 }
             ]
         },
         "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 32,
+                    "context_name": "",
+                    "ipv4_network": null,
+                    "ifIndex": 1
+                },
+                {
+                    "ipv4_address": "192.168.254.7",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "192.168.254.0/24",
+                    "ifIndex": 2
+                }
+            ]
+        }
     }
 }

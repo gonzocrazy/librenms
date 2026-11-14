@@ -1,4 +1,5 @@
 <?php
+
 /**
  * JnxBgpM2BackwardTransition.php
  *
@@ -22,6 +23,7 @@
  * state to a lower numbered state.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -29,6 +31,7 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
 use LibreNMS\Util\IP;
@@ -40,8 +43,8 @@ class JnxBgpM2BackwardTransition implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -60,7 +63,7 @@ class JnxBgpM2BackwardTransition implements SnmptrapHandler
         $bgpPeer->bgpPeerState = $peerState;
 
         if ($bgpPeer->isDirty('bgpPeerState')) {
-            Log::event("BGP Peer $peerAddr is now in the $peerState state", $device->device_id, 'trap', 5);
+            $trap->log("BGP Peer $peerAddr is now in the $peerState state", Severity::Error);
         }
 
         $bgpPeer->save();

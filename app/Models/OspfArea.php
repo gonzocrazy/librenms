@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OspfArea.php
  *
@@ -18,14 +19,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class OspfArea extends DeviceRelatedModel
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $fillable = [
         'device_id',
@@ -41,4 +48,13 @@ class OspfArea extends DeviceRelatedModel
         'ospfAreaSummary',
         'ospfAreaStatus',
     ];
+
+    /**
+     * @return HasMany<OspfPort, $this>
+     */
+    public function ports(): HasMany
+    {
+        return $this->hasMany(OspfPort::class, 'ospfIfAreaId', 'ospfAreaId')
+            ->whereColumn('ospf_ports.device_id', 'ospf_areas.device_id');
+    }
 }

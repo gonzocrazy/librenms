@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GraphController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,6 +28,7 @@ namespace App\Http\Controllers\Select;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -34,20 +37,20 @@ use LibreNMS\Util\StringHelpers;
 
 class GraphController extends Controller
 {
-    private $rules = [
+    private array $rules = [
         'limit' => 'int',
         'page' => 'int',
         'term' => 'nullable|string',
         'device' => 'nullable|int',
     ];
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
         $this->validate($request, $this->rules);
 
         $data = [];
-        $search = $request->get('term');
-        $device_id = $request->get('device');
+        $search = $request->input('term', '');
+        $device_id = $request->input('device');
         $device = $device_id ? Device::find($device_id) : null;
 
         foreach (Graph::getTypes() as $type) {
@@ -56,9 +59,7 @@ class GraphController extends Controller
             if ($graphs->isNotEmpty()) {
                 $data[] = [
                     'text' => StringHelpers::niceCase($type),
-                    'children' => $graphs->map(function ($graph) use ($type) {
-                        return $this->formatGraph($type, $graph);
-                    })->values(),
+                    'children' => $graphs->map(fn ($graph) => $this->formatGraph($type, $graph))->values(),
                 ];
             }
         }
@@ -69,13 +70,12 @@ class GraphController extends Controller
             'core' => 'Core',
             'custom' => 'Custom',
             'ports' => 'Manual Ports',
+            'sensors' => 'Manual Sensors',
         ]), 'aggregators', $search);
         if ($aggregators->isNotEmpty()) {
             $data[] = [
                 'text' => 'Aggregators',
-                'children' => $aggregators->map(function ($text, $id) {
-                    return compact('id', 'text');
-                })->values(),
+                'children' => $aggregators->map(fn ($text, $id) => ['id' => $id, 'text' => $text])->values(),
             ];
         }
 
@@ -85,9 +85,17 @@ class GraphController extends Controller
         if ($billing->isNotEmpty()) {
             $data[] = [
                 'text' => 'Bill',
-                'children' => $billing->map(function ($text, $id) {
-                    return compact('id', 'text');
-                })->values(),
+                'children' => $billing->map(fn ($text, $id) => ['id' => $id, 'text' => $text])->values(),
+            ];
+        }
+
+        $customoid = $this->filterTypeGraphs(collect([
+            'customoid_customoid' => 'CustomOID Graph',
+        ]), 'customoid', $search);
+        if ($customoid->isNotEmpty()) {
+            $data[] = [
+                'text' => 'CustomOID',
+                'children' => $customoid->map(fn ($text, $id) => ['id' => $id, 'text' => $text])->values(),
             ];
         }
 
@@ -97,33 +105,24 @@ class GraphController extends Controller
         ]);
     }
 
-    private function formatGraph($top, $graph)
+    /**
+     * @return array{id: int|string, text: string, icon?: string}
+     */
+    private function formatGraph(string $top, string $graph): array
     {
-        $text = $graph;
-        if (Str::contains('_', $graph)) {
-            [$type, $subtype] = explode('_', $graph, 2);
-        } else {
-            $type = $graph;
-            $subtype = '';
-        }
-
-        if (! Graph::isMibGraph($type, $subtype)) {
-            $text = ucwords($top . ' ' . str_replace(['_', '-'], ' ', $text));
-        }
-
         return [
             'id' => $top . '_' . $graph,
-            'text' => $text,
+            'text' => ucwords($top . ' ' . str_replace(['_', '-'], ' ', $graph)),
         ];
     }
 
     /**
-     * @param Collection $graphs
-     * @param string $type
-     * @param string $search
-     * @return Collection
+     * @param  Collection<string, string>  $graphs
+     * @param  string  $type
+     * @param  string  $search
+     * @return Collection<string, string>
      */
-    private function filterTypeGraphs($graphs, $type, $search)
+    private function filterTypeGraphs(Collection $graphs, string $type, string $search): Collection
     {
         $search = strtolower($search);
 
@@ -135,15 +134,11 @@ class GraphController extends Controller
                 // search matches type, show all unless there are more terms.
                 if (! empty($terms)) {
                     $sub_search = array_shift($terms);
-                    $graphs = $graphs->filter(function ($graph) use ($sub_search) {
-                        return Str::contains(strtolower($graph), $sub_search);
-                    });
+                    $graphs = $graphs->filter(fn ($graph) => Str::contains(strtolower((string) $graph), $sub_search));
                 }
             } else {
                 // if the type matches, don't filter the sub values
-                $graphs = $graphs->filter(function ($graph) use ($search) {
-                    return Str::contains(strtolower($graph), $search);
-                });
+                $graphs = $graphs->filter(fn ($graph) => Str::contains(strtolower((string) $graph), $search));
             }
         }
 

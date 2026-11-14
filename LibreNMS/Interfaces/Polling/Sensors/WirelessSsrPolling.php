@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WirelessSsrPolling.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs <pdheinrichs@gmail.com>
  */
@@ -30,7 +32,7 @@ interface WirelessSsrPolling
      * Poll wireless SSR in dB
      * The returned array should be sensor_id => value pairs
      *
-     * @param array $sensors Array of sensors needed to be polled
+     * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessSsr(array $sensors);

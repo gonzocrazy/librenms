@@ -3,18 +3,18 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddForeignKeysToServiceTemplatesDeviceTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('service_templates_device', function (Blueprint $table) {
-            $table->foreign('service_template_id')->references('id')->on('service_templates')->onUpdate('RESTRICT')->onDelete('CASCADE');
-            $table->foreign('device_id')->references('device_id')->on('devices')->onUpdate('RESTRICT')->onDelete('CASCADE');
+        Schema::table('service_templates_device', function (Blueprint $table): void {
+            $table->foreign('service_template_id')->references('id')->on('service_templates')->onUpdate('restrict')->onDelete('cascade');
+            $table->foreign('device_id')->references('device_id')->on('devices')->onUpdate('restrict')->onDelete('cascade');
         });
     }
 
@@ -23,13 +23,13 @@ class AddForeignKeysToServiceTemplatesDeviceTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        if (\LibreNMS\DB\Eloquent::getDriver() !== 'sqlite') {
-            Schema::table('service_templates_device', function (Blueprint $table) {
+        if (LibreNMS\DB\Eloquent::getDriver() !== 'sqlite') {
+            Schema::table('service_templates_device', function (Blueprint $table): void {
                 $table->dropForeign('service_templates_device_service_template_id_foreign');
                 $table->dropForeign('service_templates_device_device_id_foreign');
             });
         }
     }
-}
+};

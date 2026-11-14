@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePseudowiresTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('pseudowires', function (Blueprint $table) {
+        Schema::create('pseudowires', function (Blueprint $table): void {
             $table->increments('pseudowire_id');
             $table->unsignedInteger('device_id');
             $table->unsignedInteger('port_id');
@@ -33,8 +33,8 @@ class CreatePseudowiresTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('pseudowires');
     }
-}
+};

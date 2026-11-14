@@ -1,4 +1,5 @@
 <?php
+
 /**
  * init.php
  *
@@ -18,20 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 /**
- * @param array $modules Which modules to initialize
+ * @param  array  $modules  Which modules to initialize
  */
 
-use LibreNMS\Authentication\LegacyAuth;
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
+use LibreNMS\Util\Debug;
+use LibreNMS\Util\Laravel;
 
-global $vars, $console_color;
-
-error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
@@ -55,14 +55,7 @@ if (! function_exists('module_selected')) {
 // function only files
 require_once $install_dir . '/includes/common.php';
 require_once $install_dir . '/includes/dbFacile.php';
-require_once $install_dir . '/includes/datastore.inc.php';
-require_once $install_dir . '/includes/billing.php';
-require_once $install_dir . '/includes/syslog.php';
-if (module_selected('mocksnmp', $init_modules)) {
-    require_once $install_dir . '/tests/mocks/mock.snmp.inc.php';
-} elseif (! in_array($install_dir . '/tests/mocks/mock.snmp.inc.php', get_included_files())) {
-    require_once $install_dir . '/includes/snmp.inc.php';
-}
+require_once $install_dir . '/includes/snmp.inc.php';
 require_once $install_dir . '/includes/services.inc.php';
 require_once $install_dir . '/includes/functions.php';
 require_once $install_dir . '/includes/rewrites.php';
@@ -79,22 +72,15 @@ if (module_selected('polling', $init_modules)) {
     require_once $install_dir . '/includes/polling/functions.inc.php';
 }
 
-if (module_selected('alerts', $init_modules)) {
-    require_once $install_dir . '/LibreNMS/Alert/RunAlerts.php';
-}
-
 // Boot Laravel
 if (module_selected('web', $init_modules)) {
-    \LibreNMS\Util\Laravel::bootWeb(module_selected('auth', $init_modules));
+    Laravel::bootWeb(module_selected('auth', $init_modules));
 } else {
-    \LibreNMS\Util\Laravel::bootCli();
+    Laravel::bootCli();
 }
-
-set_debug(false); // disable debug initially (hides legacy errors too)
+Debug::set($debug ?? false); // override laravel configured settings (hides legacy errors too)
 
 if (! module_selected('nodb', $init_modules)) {
-    \LibreNMS\DB\Eloquent::boot();
-
     if (! \LibreNMS\DB\Eloquent::isConnected()) {
         echo "Could not connect to database, check logs/librenms.log.\n";
 
@@ -103,43 +89,15 @@ if (! module_selected('nodb', $init_modules)) {
             echo "Check the install docs for more info: https://docs.librenms.org/Installation/\n";
         }
 
-        exit;
+        exit(1);
     }
 }
+\LibreNMS\DB\Eloquent::setStrictMode(false); // disable strict mode for legacy code...
 
-// Display config.php errors instead of http 500
-$display_bak = ini_get('display_errors');
-ini_set('display_errors', 1);
-
-// Load config if not already loaded (which is the case if inside Laravel)
-if (! Config::has('install_dir')) {
-    Config::load();
-}
-
-// set display_errors back
-ini_set('display_errors', $display_bak);
-
-if (is_numeric(Config::get('php_memory_limit')) && Config::get('php_memory_limit') > 128) {
-    ini_set('memory_limit', Config::get('php_memory_limit') . 'M');
-}
-
-try {
-    LegacyAuth::get();
-} catch (Exception $exception) {
-    print_error('ERROR: no valid auth_mechanism defined!');
-    echo $exception->getMessage() . PHP_EOL;
-    exit();
-}
-
-if (module_selected('discovery', $init_modules) && ! \LibreNMS\Util\OS::updateCache(false)) {
-    // OS::loadAllDefinitions() is called by update_os_cache() if updated, no need to call twice
-    \LibreNMS\Util\OS::loadAllDefinitions(false, true);
-} elseif (module_selected('web', $init_modules)) {
-    \LibreNMS\Util\OS::loadAllDefinitions(! module_selected('nodb', $init_modules), true);
+if (is_numeric(LibrenmsConfig::get('php_memory_limit')) && LibrenmsConfig::get('php_memory_limit') > 128) {
+    ini_set('memory_limit', LibrenmsConfig::get('php_memory_limit') . 'M');
 }
 
 if (module_selected('web', $init_modules)) {
     require $install_dir . '/includes/html/vars.inc.php';
 }
-
-$console_color = new Console_Color2();

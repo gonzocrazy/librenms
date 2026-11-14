@@ -1,4 +1,5 @@
 <?php
+
 /*
  * MempoolObserver.php
  *
@@ -25,19 +26,21 @@
 
 namespace App\Observers;
 
+use App\Models\Mempool;
 use Log;
 use Rrd;
 
-class MempoolObserver extends ModuleModelObserver
+class MempoolObserver
 {
-    /** @param \App\Models\Mempool $model  */
-    public function updated($model)
+    public function updated(Mempool $mempool): void
     {
-        parent::updated($model);
-
-        if ($model->isDirty('mempool_class')) {
-            Log::debug("Mempool class changed $model->mempool_descr ($model->mempool_id)");
-            Rrd::renameFile($model->device->toArray(), ['mempool', $model->mempool_type, $model->getOriginal('mempool_class'), $model->mempool_index], ['mempool', $model->mempool_type, $model->mempool_class, $model->mempool_index]);
+        if ($mempool->isDirty('mempool_class')) {
+            Log::debug("Mempool class changed $mempool->mempool_descr ($mempool->mempool_id)");
+            Rrd::renameFile(
+                $mempool->device,
+                ['mempool', $mempool->mempool_type, $mempool->getOriginal('mempool_class'), $mempool->mempool_index],
+                ['mempool', $mempool->mempool_type, $mempool->mempool_class, $mempool->mempool_index]
+            );
         }
     }
 }

@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateBgpPeersCbgpTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('bgpPeers_cbgp', function (Blueprint $table) {
+        Schema::create('bgpPeers_cbgp', function (Blueprint $table): void {
             $table->unsignedInteger('device_id');
             $table->string('bgpPeerIdentifier', 64);
             $table->string('afi', 16);
@@ -46,8 +46,8 @@ class CreateBgpPeersCbgpTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('bgpPeers_cbgp');
     }
-}
+};

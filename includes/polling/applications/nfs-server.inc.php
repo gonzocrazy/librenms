@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,19 +19,15 @@ use LibreNMS\RRD\RrdDefinition;
 $name = 'nfs-server';
 $oid = '.1.3.6.1.4.1.8072.1.3.2.3.1.2.10.110.102.115.45.115.101.114.118.101.114';
 
-echo ' ' . $name;
-
-$nfsstats = snmp_get($device, $oid, '-Oqv');
-
-$app_id = $app['app_id'];
+$nfsstats = SnmpQuery::get($oid)->value();
 
 // rrd names
 $rrd_name = [];
-$rrd_name['default'] = ['app', 'nfs-server-default', $app_id];
-$rrd_name['proc2'] = ['app', 'nfs-server-proc2', $app_id];
-$rrd_name['proc3'] = ['app', 'nfs-server-proc3', $app_id];
-$rrd_name['proc4'] = ['app', 'nfs-server-proc4', $app_id];
-$rrd_name['proc4ops'] = ['app', 'nfs-server-proc4ops', $app_id];
+$rrd_name['default'] = ['app', 'nfs-server-default', $app->app_id];
+$rrd_name['proc2'] = ['app', 'nfs-server-proc2', $app->app_id];
+$rrd_name['proc3'] = ['app', 'nfs-server-proc3', $app->app_id];
+$rrd_name['proc4'] = ['app', 'nfs-server-proc4', $app->app_id];
+$rrd_name['proc4ops'] = ['app', 'nfs-server-proc4ops', $app->app_id];
 
 // rrd definitions
 $rrd_def_array['default'] = RrdDefinition::make()
@@ -264,7 +261,7 @@ foreach ($lines as $line) {
                 // create or push data to rrd
                 $tags = ['name' => $name, 'app_id' => $app['app_id'], 'rrd_name' => $rrd_name[$line_id], 'rrd_def' => $rrd_def_array[$line_id]];
                 $metrics[$line_id] = $fields;
-                data_update($device, 'app', $tags, $fields);
+                app('Datastore')->put($device, 'app', $tags, $fields);
             }
             break;
     }
@@ -273,7 +270,7 @@ $metrics['none'] = $default_fields;
 
 // push the default nfs server data to rrd
 $tags = ['name' => $name, 'app_id' => $app['app_id'], 'rrd_name' => $rrd_name['default'], 'rrd_def' => $rrd_def_array['default']];
-data_update($device, 'app', $tags, $default_fields);
+app('Datastore')->put($device, 'app', $tags, $default_fields);
 update_application($app, $nfsstats, $metrics);
 
 // clean up scope

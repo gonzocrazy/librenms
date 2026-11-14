@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": null,
                     "os": "paradyne",
                     "type": "network",
                     "serial": null,
-                    "icon": "paradyne.svg",
-                    "location": null
+                    "icon": "paradyne.svg"
                 }
             ]
         },
@@ -32,6 +32,7 @@
                     "sensor_type": "paradyne",
                     "sensor_descr": "Actual Line Rate",
                     "group": "Modem 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5696000,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -56,6 +58,7 @@
                     "sensor_type": "paradyne",
                     "sensor_descr": "Max Line Rate",
                     "group": "Modem 1",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 5696000,
@@ -69,10 +72,10 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
     }

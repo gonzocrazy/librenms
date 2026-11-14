@@ -11,6 +11,7 @@
                     "sensor_type": "raspberry_freq",
                     "sensor_descr": "ARM",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 700000000,
@@ -24,6 +25,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -35,6 +37,7 @@
                     "sensor_type": "raspberry_freq",
                     "sensor_descr": "Core",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 250000000,
@@ -48,6 +51,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -59,6 +63,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "WVC1 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -72,6 +77,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -83,6 +89,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MPG4 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -96,6 +103,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -107,6 +115,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MJPG codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -120,6 +129,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -131,6 +141,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "WMV9 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -144,6 +155,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -155,6 +167,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "H264 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -168,6 +181,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -179,6 +193,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MPG2 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -192,6 +207,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -203,6 +219,7 @@
                     "sensor_type": "raspberry_temp",
                     "sensor_descr": "CPU Temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22.3,
@@ -216,6 +233,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -227,6 +245,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "Core",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -240,6 +259,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -251,6 +271,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMc",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -264,6 +285,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -275,6 +297,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMi",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -288,6 +311,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -299,6 +323,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.225,
@@ -312,6 +337,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -319,14 +345,12 @@
                 {
                     "state_name": "raspberry_codec",
                     "state_descr": "enabled",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "raspberry_codec",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 }
@@ -343,6 +367,7 @@
                     "sensor_type": "raspberry_freq",
                     "sensor_descr": "ARM",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 700000000,
@@ -356,6 +381,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -367,6 +393,7 @@
                     "sensor_type": "raspberry_freq",
                     "sensor_descr": "Core",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 250000000,
@@ -380,6 +407,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -391,6 +419,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "WVC1 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -404,6 +433,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -415,6 +445,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MPG4 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -428,6 +459,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -439,6 +471,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MJPG codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -452,6 +485,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -463,6 +497,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "WMV9 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -476,6 +511,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -487,6 +523,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "H264 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -500,6 +537,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -511,6 +549,7 @@
                     "sensor_type": "raspberry_codec",
                     "sensor_descr": "MPG2 codec",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3,
@@ -524,6 +563,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": 0,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "raspberry_codec"
                 },
                 {
@@ -535,6 +575,7 @@
                     "sensor_type": "raspberry_temp",
                     "sensor_descr": "CPU Temp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22.3,
@@ -548,6 +589,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -559,6 +601,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "Core",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -572,6 +615,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -583,6 +627,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMc",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -596,6 +641,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -607,6 +653,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMi",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.2,
@@ -620,6 +667,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -631,6 +679,7 @@
                     "sensor_type": "raspberry_volts",
                     "sensor_descr": "SDRAMp",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1.225,
@@ -644,6 +693,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -651,14 +701,12 @@
                 {
                     "state_name": "raspberry_codec",
                     "state_descr": "enabled",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "raspberry_codec",
                     "state_descr": "disabled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 3
                 }
@@ -676,11 +724,11 @@
                     "version": "4.19.97+",
                     "hardware": "Generic ARMv6",
                     "features": null,
+                    "location": "<private>",
                     "os": "linux",
                     "type": "server",
                     "serial": null,
-                    "icon": "linux.svg",
-                    "location": "<private>"
+                    "icon": "linux.svg"
                 }
             ]
         },

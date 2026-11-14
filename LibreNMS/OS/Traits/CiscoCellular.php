@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CiscoCellular.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS\Traits;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 
 trait CiscoCellular
 {
@@ -54,13 +57,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'c3gCurrentGsmRssi', [], 'CISCO-WAN-3G-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'rssi',
+                WirelessSensorType::Rssi,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1.' . $index,
                 'ios',
                 $index,
                 'RSSI: ' . $this->profileApn($index),
-                $entry['c3gCurrentGsmRssi.1']
+                $entry['c3gCurrentGsmRssi']
             );
         }
 
@@ -80,13 +83,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'cwceLteCurrSnr', [], 'CISCO-WAN-CELL-EXT-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'snr',
+                WirelessSensorType::Snr,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.817.1.1.1.1.1.3.' . $index,
                 'ios',
                 $index,
                 'SNR: ' . $this->profileApn($index),
-                $entry['cwceLteCurrSnr.1'],
+                $entry['cwceLteCurrSnr'],
                 1,
                 10
             );
@@ -108,13 +111,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'cwceLteCurrRsrq', [], 'CISCO-WAN-CELL-EXT-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'rsrq',
+                WirelessSensorType::Rsrq,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.817.1.1.1.1.1.2.' . $index,
                 'ios',
                 $index,
                 'RSRQ: ' . $this->profileApn($index),
-                $entry['cwceLteCurrRsrq.1'],
+                $entry['cwceLteCurrRsrq'],
                 1,
                 10
             );
@@ -136,13 +139,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'cwceLteCurrRsrp', [], 'CISCO-WAN-CELL-EXT-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'rsrp',
+                WirelessSensorType::Rsrp,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.817.1.1.1.1.1.1.' . $index,
                 'ios',
                 $index,
                 'RSRP: ' . $this->profileApn($index),
-                $entry['cwceLteCurrRsrp.1']
+                $entry['cwceLteCurrRsrp']
             );
         }
 
@@ -162,13 +165,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'c3gGsmChannelNumber', [], 'CISCO-WAN-3G-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'channel',
+                WirelessSensorType::Channel,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.4.' . $index,
                 'ios',
                 $index,
                 'ChannelRx: ' . $this->profileApn($index),
-                $entry['c3gGsmChannelNumber.1']
+                $entry['c3gGsmChannelNumber']
             );
         }
 
@@ -188,13 +191,13 @@ trait CiscoCellular
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'c3gGsmCurrentCellId', [], 'CISCO-WAN-3G-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'cell',
+                WirelessSensorType::Cell,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.9.9.661.1.3.2.1.13.' . $index,
                 'ios',
                 $index,
                 'Cell: ' . $this->profileApn($index),
-                $entry['c3gGsmCurrentCellId.1']
+                $entry['c3gGsmCurrentCellId']
             );
         }
 

@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
-class PrinterSupply extends DeviceRelatedModel
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use LibreNMS\Interfaces\Models\Keyable;
+
+class PrinterSupply extends DeviceRelatedModel implements Keyable
 {
+    use HasFactory;
+
     protected $table = 'printer_supplies';
     protected $primaryKey = 'supply_id';
     public $timestamps = false;
@@ -18,7 +23,7 @@ class PrinterSupply extends DeviceRelatedModel
         'supply_current',
     ];
 
-    public function getCompositeKey()
+    public function getCompositeKey(): string
     {
         return "$this->supply_type-$this->supply_index";
     }

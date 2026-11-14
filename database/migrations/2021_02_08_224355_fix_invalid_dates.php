@@ -2,21 +2,21 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class FixInvalidDates extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        if (\LibreNMS\DB\Eloquent::getDriver() != 'mysql') {
+        if (LibreNMS\DB\Eloquent::getDriver() != 'mysql') {
             return;
         }
 
         // Too prevent errors like, Incorrect datetime value: '0000-00-00 00:00:00'
-        \LibreNMS\DB\Eloquent::setStrictMode(false);
+        LibreNMS\DB\Eloquent::setStrictMode(false);
 
         $database_name = DB::connection()->getDatabaseName();
 
@@ -31,7 +31,7 @@ class FixInvalidDates extends Migration
               ->update([$column->COLUMN_NAME => '1970-01-02 00:00:01']);
         }
 
-        \LibreNMS\DB\Eloquent::setStrictMode(true);
+        LibreNMS\DB\Eloquent::setStrictMode(true);
     }
 
     /**
@@ -39,8 +39,8 @@ class FixInvalidDates extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};

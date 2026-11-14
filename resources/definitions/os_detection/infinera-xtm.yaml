@@ -1,0 +1,8 @@
+os: infinera-xtm
+text: 'Infinera XTM'
+type: optical
+icon: infinera
+mib_dir: infinera
+discovery:
+    - sysObjectID:
+        - .1.3.6.1.4.1.8708

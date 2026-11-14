@@ -1,4 +1,5 @@
 <?php
+
 /**
  * commander-plus.inc.php
  *
@@ -18,12 +19,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-$current = snmp_get($device, 'batteryTemperature.0', '-Oqv', 'CCPOWER-MIB');
+
+use LibreNMS\Enum\SensorType;
+
+$current = SnmpQuery::get('CCPOWER-MIB::batteryTemperature.0')->value();
 $oid = '.1.3.6.1.4.1.18642.1.2.2.2.0';
 $descr = 'Battery temperature';
 $divisor = 1;
 $multiplier = 1;
-discover_sensor($valid['sensor'], 'temperature', $device, $oid, 'batteryTemperature', 'commander-plus', $descr, $divisor, $multiplier, null, null, null, null, $current);
+discover_sensor(null, SensorType::Temperature, $device, $oid, 'batteryTemperature', 'commander-plus', $descr, $divisor, $multiplier, null, null, null, null, $current);

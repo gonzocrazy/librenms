@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTosToOspfPorts extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('ospf_ports', function (Blueprint $table) {
+        Schema::table('ospf_ports', function (Blueprint $table): void {
             $table->string('ospfIfMetricIpAddress', 32)->nullable()->after('ospfIfAuthType');
             $table->integer('ospfIfMetricAddressLessIf')->nullable()->after('ospfIfMetricIpAddress');
             $table->integer('ospfIfMetricTOS')->nullable()->after('ospfIfMetricAddressLessIf');
@@ -27,10 +27,10 @@ class AddTosToOspfPorts extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('ospf_ports', function (Blueprint $table) {
+        Schema::table('ospf_ports', function (Blueprint $table): void {
             $table->dropColumn(['ospfIfMetricIpAddress', 'ospfIfMetricAddressLessIf', 'ospfIfMetricTOS', 'ospfIfMetricValue', 'ospfIfMetricStatus']);
         });
     }
-}
+};

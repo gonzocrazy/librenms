@@ -1,14 +1,14 @@
 <?php
 
-$mdadm_arrays = get_arrays_with_application($device, $app['app_id'], 'mdadm');
+$mdadm_arrays = Rrd::getRrdApplicationArrays($device, $app['app_id'], 'mdadm');
 
 print_optionbar_start();
 
 $link_array = [
-    'page'   => 'device',
+    'page' => 'device',
     'device' => $device['device_id'],
-    'tab'    => 'apps',
-    'app'    => 'mdadm',
+    'tab' => 'apps',
+    'app' => 'mdadm',
 ];
 
 $array_list = [];
@@ -16,11 +16,13 @@ $array_list = [];
 foreach ($mdadm_arrays as $label) {
     $array = $label;
 
-    if ($vars['array'] == $array) {
-        $label = sprintf('⚫ %s', $label);
+    $link = generate_link($label, $link_array, ['array' => $array]);
+
+    if (isset($vars['array']) && ($vars['array'] == $array)) {
+        $link = '<span class="pagemenu-selected">' . $link . '</span>';
     }
 
-    array_push($array_list, generate_link($label, $link_array, ['array' => $array]));
+    array_push($array_list, $link);
 }
 
 printf('%s | arrays: %s', generate_link('All RAID Arrays', $link_array), implode(', ', $array_list));
@@ -28,12 +30,12 @@ printf('%s | arrays: %s', generate_link('All RAID Arrays', $link_array), implode
 print_optionbar_end();
 
 $graphs = [
-    'mdadm_level'          => 'RAID level',
-    'mdadm_size'           => 'RAID Size',
-    'mdadm_disc_count'     => 'RAID Disc count',
-    'mdadm_hotspare_count' => 'RAID Hotspare Disc count',
-    'mdadm_degraded'       => 'RAID degraded',
-    'mdadm_sync_speed'     => 'RAID Sync speed',
+    'mdadm_level' => 'RAID level',
+    'mdadm_size' => 'RAID Size',
+    'mdadm_disc_count' => 'RAID Disk count',
+    'mdadm_hotspare_count' => 'RAID Hotspare Disk count',
+    'mdadm_degraded' => 'RAID degraded',
+    'mdadm_sync_speed' => 'RAID Sync speed',
     'mdadm_sync_completed' => 'RAID Sync completed',
 ];
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NotesController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,14 +27,12 @@
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class NotesController implements DeviceTab
 {
-    use AuthorizesRequests;
-
     public function visible(Device $device): bool
     {
         return true;
@@ -53,7 +53,7 @@ class NotesController implements DeviceTab
         return __('Notes');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
         return [];
     }
@@ -61,13 +61,13 @@ class NotesController implements DeviceTab
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param Device $device
+     * @param  Request  $request
+     * @param  Device  $device
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Device $device)
     {
-        $this->authorize('update-notes', $device);
+        Gate::authorize('updateNotes', $device);
 
         $device->notes = $request->input('note');
         $device->save();

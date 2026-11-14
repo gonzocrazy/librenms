@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "sensatronics-ittm",
                     "type": "environment",
                     "serial": null,
-                    "icon": "sensatronics.png",
-                    "location": "<private>"
+                    "icon": "sensatronics.png"
                 }
             ]
         },
@@ -32,6 +32,7 @@
                     "sensor_type": "sensatronics-ittm",
                     "sensor_descr": "Sec Colo",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 20.4,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -56,6 +58,7 @@
                     "sensor_type": "sensatronics-ittm",
                     "sensor_descr": "Core",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22.8,
@@ -69,6 +72,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -80,6 +84,7 @@
                     "sensor_type": "sensatronics-ittm",
                     "sensor_descr": "Sec Colo 2",
                     "group": null,
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 23.2,
@@ -93,10 +98,10 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
     }

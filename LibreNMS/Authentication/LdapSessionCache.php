@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LdapSessionCache.php
  *
@@ -18,21 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Authentication;
 
+use App\Facades\LibrenmsConfig;
 use Carbon\Carbon;
-use LibreNMS\Config;
 use Session;
 
 trait LdapSessionCache
 {
     protected function authLdapSessionCacheGet($attr)
     {
-        $ttl = Config::get('auth_ldap_cache_ttl', 300);
+        $ttl = LibrenmsConfig::get('auth_ldap_cache_ttl', 300);
 
         // no session, don't cache
         if (! class_exists('Session')) {

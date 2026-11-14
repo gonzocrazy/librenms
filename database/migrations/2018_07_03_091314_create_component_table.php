@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateComponentTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('component', function (Blueprint $table) {
+        Schema::create('component', function (Blueprint $table): void {
             $table->increments('id')->comment('ID for each component, unique index');
             $table->unsignedInteger('device_id')->index()->comment('device_id from the devices table');
             $table->string('type', 50)->index()->comment('name from the component_type table');
@@ -29,8 +29,8 @@ class CreateComponentTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('component');
     }
-}
+};

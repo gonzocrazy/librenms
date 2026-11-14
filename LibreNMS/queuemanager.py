@@ -1,12 +1,168 @@
-import pymysql
-import subprocess
+import logging
+import os
 import threading
+import time
 import traceback
-from logging import debug, info, error, critical, warning
 from queue import Empty
 from subprocess import CalledProcessError
 
+import pymysql
+
 import LibreNMS
+
+logger = logging.getLogger(__name__)
+
+
+class MemoryPressureGate:
+    """Optional, opt-in gate that pauses a dispatcher's intake while it is under
+    memory pressure, so it backs off instead of being OOM-killed (for example
+    during a thundering-herd startup of many workers).
+
+    Kept out of QueueManager so the worker loop stays readable and the whole
+    feature is easy to remove: delete this class and its two call sites. The
+    gate is disabled unless a percent is configured, and fails open (never
+    gates) whenever memory usage cannot be determined.
+    """
+
+    # cgroup mount + the v1 "unlimited" sentinel (PAGE_COUNTER_MAX rounded to page)
+    _CG_ROOT = "/sys/fs/cgroup"
+    _CG1_UNLIMITED = 9223372036854771712
+
+    # Hysteresis band (resume below limit - margin), pause re-log throttle, and
+    # the poll interval while paused.
+    _RESUME_MARGIN = 0.10
+    _PAUSE_LOG_INTERVAL = 60
+    _PAUSE_SLEEP = 5
+
+    def __init__(self, limit_frac, type_desc="poller"):
+        self._limit_frac = limit_frac  # None => disabled
+        self._type = type_desc
+        self._paused = False
+        self._last_pause_log = 0.0
+
+    @classmethod
+    def from_config(cls, config, type_desc="poller"):
+        """Build a gate from a ServiceConfig-like object.
+
+        Returns a disabled gate when memory_pressure_percent is unset/None;
+        raises ValueError on a value outside 1-99.
+        """
+        pct = getattr(config, "memory_pressure_percent", None)
+        if pct is None:
+            return cls(None, type_desc)
+        try:
+            pct = int(pct)
+        except (TypeError, ValueError):
+            raise ValueError(
+                "DISPATCHER_MEMORY_PRESSURE_PERCENT must be an integer 1-99"
+            )
+        if not 1 <= pct <= 99:
+            raise ValueError(
+                "DISPATCHER_MEMORY_PRESSURE_PERCENT must be an integer 1-99"
+            )
+        return cls(pct / 100.0, type_desc)
+
+    @property
+    def enabled(self):
+        return self._limit_frac is not None
+
+    def pause_if_pressured(self):
+        """The gate's single entry point for the worker loop.
+
+        If enabled and under memory pressure, sleep briefly and return True so
+        the worker skips dequeuing this cycle. Returns False when disabled,
+        healthy, or when usage cannot be determined (fail open).
+        """
+        if self._limit_frac is None:
+            return False
+        frac = self.memory_fraction()
+        if frac is None:
+            self._paused = False  # cannot tell -> fail open, never gate
+            return False
+        if frac >= self._limit_frac:
+            self._paused = True
+        elif frac < self._limit_frac - self._RESUME_MARGIN:
+            if self._paused:
+                logger.info(
+                    "Memory %.1f%%; resuming intake on %s", frac * 100, self._type
+                )
+            self._paused = False
+        if not self._paused:
+            return False
+        now = time.time()
+        if (now - self._last_pause_log) > self._PAUSE_LOG_INTERVAL:
+            self._last_pause_log = now
+            logger.warning(
+                "Memory %.1f%% >= %.0f%%; pausing intake on %s",
+                frac * 100,
+                self._limit_frac * 100,
+                self._type,
+            )
+        time.sleep(self._PAUSE_SLEEP)
+        return True
+
+    @staticmethod
+    def _read_int(path):
+        """Read an int from a cgroup file; None on 'max', missing or unparseable."""
+        try:
+            with open(path) as fh:
+                v = fh.read().strip()
+            return None if v == "max" else int(v)
+        except Exception:
+            return None
+
+    @classmethod
+    def _frac_cgv2(cls, cgroup_root):
+        cur = cls._read_int(os.path.join(cgroup_root, "memory.current"))
+        lim = cls._read_int(os.path.join(cgroup_root, "memory.max"))
+        if cur is None or lim is None or lim <= 0:
+            return None
+        return cur / lim
+
+    @classmethod
+    def _frac_cgv1(cls, cgroup_root):
+        base = os.path.join(cgroup_root, "memory")
+        cur = cls._read_int(os.path.join(base, "memory.usage_in_bytes"))
+        lim = cls._read_int(os.path.join(base, "memory.limit_in_bytes"))
+        if cur is None or lim is None or lim <= 0 or lim >= cls._CG1_UNLIMITED:
+            return None
+        return cur / lim
+
+    @staticmethod
+    def _frac_meminfo(proc_meminfo):
+        try:
+            total = None
+            avail = None
+            with open(proc_meminfo) as fh:
+                for line in fh:
+                    if line.startswith("MemTotal:"):
+                        total = int(line.split()[1])
+                    elif line.startswith("MemAvailable:"):
+                        avail = int(line.split()[1])
+                    if total is not None and avail is not None:
+                        break
+            if total and avail is not None and total > 0:
+                return 1.0 - (avail / total)
+        except Exception:
+            pass
+        return None
+
+    @classmethod
+    def memory_fraction(cls, cgroup_root=None, proc_meminfo="/proc/meminfo"):
+        """Fraction (0.0-1.0) of the effective memory limit in use, or None.
+
+        Order: cgroup v2 (if limited) -> cgroup v1 (if limited) -> meminfo -> None.
+        None means "cannot determine" and the caller must fail open (never gate).
+        """
+        if cgroup_root is None:
+            cgroup_root = cls._CG_ROOT
+        frac = cls._frac_cgv2(cgroup_root)
+        if frac is not None:
+            return frac
+        frac = cls._frac_cgv1(cgroup_root)
+        if frac is not None:
+            return frac
+        return cls._frac_meminfo(proc_meminfo)
 
 
 class QueueManager:
@@ -39,8 +195,8 @@ class QueueManager:
 
         self._stop_event = threading.Event()
 
-        info("Groups: {}".format(self.config.group))
-        info(
+        logger.debug("Groups: {}".format(self.config.group))
+        logger.debug(
             "{} QueueManager created: {} workers, {}s frequency".format(
                 self.type.title(),
                 self.get_poller_config().workers,
@@ -48,13 +204,19 @@ class QueueManager:
             )
         )
 
+        # Optional, opt-in memory-pressure gate (disabled unless configured).
+        self._memory_gate = MemoryPressureGate.from_config(self.config, self.type)
+
         if auto_start:
             self.start()
 
     def _service_worker(self, queue_id):
-        debug("Worker started {}".format(threading.current_thread().getName()))
+        logger.debug("Worker started {}".format(threading.current_thread().getName()))
         while not self._stop_event.is_set():
-            debug(
+            # Back off instead of dequeuing new work while under memory pressure.
+            if self._memory_gate.pause_if_pressured():
+                continue
+            logger.debug(
                 "Worker {} checking queue {} ({}) for work".format(
                     threading.current_thread().getName(),
                     queue_id,
@@ -68,13 +230,13 @@ class QueueManager:
                 if (
                     device_id is not None
                 ):  # None returned by redis after timeout when empty
-                    debug(
+                    logger.debug(
                         "Worker {} ({}) got work {} ".format(
                             threading.current_thread().getName(), queue_id, device_id
                         )
                     )
                     with LibreNMS.TimeitContext.start() as t:
-                        debug("Queues: {}".format(self._queues))
+                        logger.debug("Queues: {}".format(self._queues))
                         target_desc = (
                             "{} ({})".format(device_id if device_id else "", queue_id)
                             if queue_id
@@ -83,7 +245,7 @@ class QueueManager:
                         self.do_work(device_id, queue_id)
 
                         runtime = t.delta()
-                        info(
+                        logger.info(
                             "Completed {} run for {} in {:.2f}s".format(
                                 self.type, target_desc, runtime
                             )
@@ -92,13 +254,13 @@ class QueueManager:
             except Empty:
                 pass  # ignore empty queue exception from subprocess.Queue
             except CalledProcessError as e:
-                error(
+                logger.error(
                     "{} poller script error! {} returned {}: {}".format(
                         self.type.title(), e.cmd, e.returncode, e.output
                     )
                 )
             except Exception as e:
-                error("{} poller exception! {}".format(self.type.title(), e))
+                logger.error("{} poller exception! {}".format(self.type.title(), e))
                 traceback.print_exc()
 
     def post_work(self, payload, queue_id):
@@ -108,7 +270,7 @@ class QueueManager:
         :param queue_id: which queue to post to, 0 is the default
         """
         self.get_queue(queue_id).put(payload)
-        debug(
+        logger.debug(
             "Posted work for {} to {}:{} queue size: {}".format(
                 payload, self.type, queue_id, self.get_queue(queue_id).qsize()
             )
@@ -124,6 +286,7 @@ class QueueManager:
             if hasattr(self.config.group, "__iter__")
             else [self.config.group]
         )
+        logger.debug("Starting {} workers for {}".format(workers, self.type))
         if self.uses_groups:
             for group in groups:
                 group_workers = max(int(workers / len(groups)), 1)
@@ -131,7 +294,7 @@ class QueueManager:
                     thread_name = "{}_{}-{}".format(self.type.title(), group, i + 1)
                     self.spawn_worker(thread_name, group)
 
-                debug(
+                logger.debug(
                     "Started {} {} threads for group {}".format(
                         group_workers, self.type, group
                     )
@@ -196,32 +359,48 @@ class QueueManager:
         :param group:
         :return:
         """
-        info("Creating queue {}".format(self.queue_name(queue_type, group)))
+        logger.debug("Creating queue {}".format(self.queue_name(queue_type, group)))
         try:
             return LibreNMS.RedisUniqueQueue(
                 self.queue_name(queue_type, group),
+                sentinel_kwargs={
+                    "username": self.config.redis_sentinel_user,
+                    "password": self.config.redis_sentinel_pass,
+                    "socket_timeout": self.config.redis_timeout,
+                    "unix_socket_path": self.config.redis_socket,
+                },
                 namespace="librenms.queue",
                 host=self.config.redis_host,
                 port=self.config.redis_port,
                 db=self.config.redis_db,
+                username=self.config.redis_user,
                 password=self.config.redis_pass,
                 unix_socket_path=self.config.redis_socket,
                 sentinel=self.config.redis_sentinel,
                 sentinel_service=self.config.redis_sentinel_service,
                 socket_timeout=self.config.redis_timeout,
+                ssl=(self.config.redis_scheme == "tls"),
             )
 
         except ImportError:
             if self.config.distributed:
-                critical("ERROR: Redis connection required for distributed polling")
-                critical(
+                logger.critical(
+                    "ERROR: Redis connection required for distributed polling"
+                )
+                logger.critical(
                     "Please install redis-py, either through your os software repository or from PyPI"
                 )
                 exit(2)
         except Exception as e:
             if self.config.distributed:
-                critical("ERROR: Redis connection required for distributed polling")
-                critical("Could not connect to Redis. {}".format(e))
+                logger.critical(
+                    "ERROR: Redis connection required for distributed polling"
+                )
+                logger.critical(
+                    "Queue manager could not connect to Redis. {}: {}".format(
+                        type(e).__name__, e
+                    )
+                )
                 exit(2)
 
         return LibreNMS.UniqueQueue()
@@ -312,7 +491,9 @@ class BillingQueueManager(TimedQueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        TimedQueueManager.__init__(self, config, lock_manager, "billing")
+        TimedQueueManager.__init__(
+            self, config, lock_manager, "billing", False, config.billing.enabled
+        )
         self.calculate_timer = LibreNMS.RecurringTimer(
             self.get_poller_config().calculate,
             self.dispatch_calculate_billing,
@@ -341,11 +522,18 @@ class BillingQueueManager(TimedQueueManager):
 
     def do_work(self, run_type, group):
         if run_type == "poll":
-            info("Polling billing")
-            LibreNMS.call_script("poll-billing.php")
+            logger.info("Polling billing")
+            args = ("-d", "-f") if self.config.debug else ("-f",)
+            exit_code, output = LibreNMS.call_script("poll-billing.php", args)
         else:  # run_type == 'calculate'
-            info("Calculating billing")
-            LibreNMS.call_script("billing-calculate.php")
+            logger.info("Calculating billing")
+            args = ("-d", "-f") if self.config.debug else ("-f",)
+            exit_code, output = LibreNMS.call_script("billing-calculate.php", args)
+
+        if exit_code != 0:
+            logger.warning(
+                "Error {} in {} billing:\n{}".format(exit_code, run_type, output)
+            )
 
 
 class PingQueueManager(TimedQueueManager):
@@ -356,7 +544,9 @@ class PingQueueManager(TimedQueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        TimedQueueManager.__init__(self, config, lock_manager, "ping", True)
+        TimedQueueManager.__init__(
+            self, config, lock_manager, "ping", True, config.ping.enabled
+        )
         self._db = LibreNMS.DB(self.config)
 
     def do_dispatch(self):
@@ -365,13 +555,26 @@ class PingQueueManager(TimedQueueManager):
             for group in groups:
                 self.post_work("", group[0])
         except pymysql.err.Error as e:
-            critical("DB Exception ({})".format(e))
+            logger.critical("DB Exception ({})".format(e))
 
     def do_work(self, context, group):
         if self.lock(group, "group", timeout=self.config.ping.frequency):
             try:
-                info("Running fast ping")
-                LibreNMS.call_script("ping.php", ("-g", group))
+                logger.info("Running fast ping")
+
+                args = (
+                    ("device:ping", "fast", "-vv", "-g", group)
+                    if self.config.debug
+                    else ("device:ping", "fast", "-q", "-g", group)
+                )
+                exit_code, output = LibreNMS.call_script("lnms", args)
+
+                if exit_code != 0:
+                    logger.warning(
+                        "Running fast ping for {} failed with error code {}: {}".format(
+                            group, exit_code, output
+                        )
+                    )
             finally:
                 self.unlock(group, "group")
 
@@ -384,7 +587,9 @@ class ServicesQueueManager(TimedQueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        TimedQueueManager.__init__(self, config, lock_manager, "services", True)
+        TimedQueueManager.__init__(
+            self, config, lock_manager, "services", True, config.services.enabled
+        )
         self._db = LibreNMS.DB(self.config)
 
     def do_dispatch(self):
@@ -396,16 +601,28 @@ class ServicesQueueManager(TimedQueueManager):
             for device in devices:
                 self.post_work(device[0], device[1])
         except pymysql.err.Error as e:
-            critical("DB Exception ({})".format(e))
+            logger.critical("DB Exception ({})".format(e))
 
     def do_work(self, device_id, group):
         if self.lock(device_id, timeout=self.config.services.frequency):
-            try:
-                info("Checking services on device {}".format(device_id))
-                LibreNMS.call_script("check-services.php", ("-h", device_id))
-            except subprocess.CalledProcessError as e:
-                if e.returncode == 5:
-                    info(
+            logger.info("Checking services on device {}".format(device_id))
+
+            output = (
+                "{}/dispatch_device_{}_services.log".format(
+                    self.config.logdir, device_id
+                )
+                if self.config.log_output == LibreNMS.LogOutput.FILE
+                else self.config.log_output
+            )
+
+            args = ("-d", "-h", device_id) if self.config.debug else ("-h", device_id)
+            exit_code, output = LibreNMS.call_script("check-services.php", args, output)
+
+            if exit_code == 0:
+                self.unlock(device_id)
+            else:
+                if exit_code == 5:
+                    logger.info(
                         "Device {} is down, cannot poll service, waiting {}s for retry".format(
                             device_id, self.config.down_retry
                         )
@@ -413,8 +630,12 @@ class ServicesQueueManager(TimedQueueManager):
                     self.lock(
                         device_id, allow_relock=True, timeout=self.config.down_retry
                     )
-            else:
-                self.unlock(device_id)
+                else:
+                    logger.warning(
+                        "Unknown error while checking services on device {} with exit code {}: {}".format(
+                            device_id, exit_code, output
+                        )
+                    )
 
 
 class AlertQueueManager(TimedQueueManager):
@@ -425,21 +646,31 @@ class AlertQueueManager(TimedQueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        TimedQueueManager.__init__(self, config, lock_manager, "alerting")
+        TimedQueueManager.__init__(
+            self, config, lock_manager, "alerting", False, config.alerting.enabled
+        )
         self._db = LibreNMS.DB(self.config)
 
     def do_dispatch(self):
         self.post_work("alerts", 0)
 
     def do_work(self, device_id, group):
-        try:
-            info("Checking alerts")
-            LibreNMS.call_script("alerts.php")
-        except subprocess.CalledProcessError as e:
-            if e.returncode == 1:
-                warning("There was an error issuing alerts: {}".format(e.output))
+        logger.info("Checking alerts")
+
+        output = (
+            "{}/dispatch_alerts.log".format(self.config.logdir)
+            if self.config.log_output == LibreNMS.LogOutput.FILE
+            else self.config.log_output
+        )
+
+        args = ("-d", "-f") if self.config.debug else ("-f",)
+        exit_code, output = LibreNMS.call_script("alerts.php", args, output)
+
+        if exit_code != 0:
+            if exit_code == 1:
+                logger.warning("There was an error issuing alerts: {}".format(output))
             else:
-                raise
+                raise CalledProcessError
 
 
 class PollerQueueManager(QueueManager):
@@ -450,17 +681,34 @@ class PollerQueueManager(QueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        QueueManager.__init__(self, config, lock_manager, "poller", True)
+        QueueManager.__init__(
+            self, config, lock_manager, "poller", True, config.poller.enabled
+        )
 
     def do_work(self, device_id, group):
         if self.lock(device_id, timeout=self.config.poller.frequency):
-            info("Polling device {}".format(device_id))
+            logger.info("Polling device {}".format(device_id))
 
-            try:
-                LibreNMS.call_script("poller.php", ("-h", device_id))
-            except subprocess.CalledProcessError as e:
-                if e.returncode == 6:
-                    warning(
+            output = (
+                "{}/dispatch_device_{}_poller.log".format(self.config.logdir, device_id)
+                if self.config.log_output == LibreNMS.LogOutput.FILE
+                else self.config.log_output
+            )
+
+            args_list = ["device:poll", device_id]
+            if self.config.debug:
+                args_list.append("-vv")
+            elif self.config.log_output is LibreNMS.LogOutput.NONE:
+                args_list.append("-q")
+            args = tuple(args_list)
+
+            exit_code, output = LibreNMS.call_script("lnms", args, output)
+
+            if exit_code == 0:
+                self.unlock(device_id)
+            else:
+                if exit_code == 6:
+                    logger.warning(
                         "Polling device {} unreachable, waiting {}s for retry".format(
                             device_id, self.config.down_retry
                         )
@@ -470,12 +718,14 @@ class PollerQueueManager(QueueManager):
                         device_id, allow_relock=True, timeout=self.config.down_retry
                     )
                 else:
-                    error("Polling device {} failed! {}".format(device_id, e))
+                    logger.error(
+                        "Polling device {} failed with exit code {}: {}".format(
+                            device_id, exit_code, output
+                        )
+                    )
                     self.unlock(device_id)
-            else:
-                self.unlock(device_id)
         else:
-            debug("Tried to poll {}, but it is locked".format(device_id))
+            logger.debug("Tried to poll {}, but it is locked".format(device_id))
 
 
 class DiscoveryQueueManager(TimedQueueManager):
@@ -486,29 +736,49 @@ class DiscoveryQueueManager(TimedQueueManager):
         :param config: LibreNMS.ServiceConfig reference to the service config object
         :param lock_manager: the single instance of lock manager
         """
-        TimedQueueManager.__init__(self, config, lock_manager, "discovery", True)
+        TimedQueueManager.__init__(
+            self, config, lock_manager, "discovery", True, config.discovery.enabled
+        )
         self._db = LibreNMS.DB(self.config)
 
     def do_dispatch(self):
         try:
             devices = self._db.query(
-                "SELECT `device_id`, `poller_group` FROM `devices` WHERE `disabled`=0"
+                "SELECT `device_id`, `poller_group` FROM `devices` WHERE `disabled`=0 ORDER BY `last_discovered` IS NULL DESC"
             )
             for device in devices:
                 self.post_work(device[0], device[1])
         except pymysql.err.Error as e:
-            critical("DB Exception ({})".format(e))
+            logger.critical("DB Exception ({})".format(e))
 
     def do_work(self, device_id, group):
         if self.lock(
             device_id, timeout=LibreNMS.normalize_wait(self.config.discovery.frequency)
         ):
-            try:
-                info("Discovering device {}".format(device_id))
-                LibreNMS.call_script("discovery.php", ("-h", device_id))
-            except subprocess.CalledProcessError as e:
-                if e.returncode == 5:
-                    info(
+            logger.info("Discovering device {}".format(device_id))
+
+            output = (
+                "{}/dispatch_device_{}_discovery.log".format(
+                    self.config.logdir, device_id
+                )
+                if self.config.log_output == LibreNMS.LogOutput.FILE
+                else self.config.log_output
+            )
+
+            args_list = ["device:discover", device_id]
+            if self.config.debug:
+                args_list.append("-vv")
+            elif self.config.log_output is LibreNMS.LogOutput.NONE:
+                args_list.append("-q")
+            args = tuple(args_list)
+
+            exit_code, output = LibreNMS.call_script("lnms", args, output)
+
+            if exit_code == 0:
+                self.unlock(device_id)
+            else:
+                if exit_code == 6:
+                    logger.info(
                         "Device {} is down, cannot discover, waiting {}s for retry".format(
                             device_id, self.config.down_retry
                         )
@@ -517,6 +787,9 @@ class DiscoveryQueueManager(TimedQueueManager):
                         device_id, allow_relock=True, timeout=self.config.down_retry
                     )
                 else:
+                    logger.error(
+                        "Discovering device {} failed with exit code {}: {}".format(
+                            device_id, exit_code, output
+                        )
+                    )
                     self.unlock(device_id)
-            else:
-                self.unlock(device_id)

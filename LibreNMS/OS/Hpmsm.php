@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hpmsm.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessClientsDiscovery;
 use LibreNMS\OS;
 
@@ -39,7 +42,7 @@ class Hpmsm extends OS implements WirelessClientsDiscovery
     {
         return [
             new WirelessSensor(
-                'clients',
+                WirelessSensorType::Clients,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.8744.5.25.1.7.2.0',
                 'hpmsm',

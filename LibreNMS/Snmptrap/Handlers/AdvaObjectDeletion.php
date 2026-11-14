@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AdvaObjectDeletion.php
  *
@@ -21,6 +22,7 @@
  * Flow Deletion object, LAG Member Port Removed object, and Lag Deletion object.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net> & Neil Kahle <nkahle@kanren.net>
  */
@@ -30,7 +32,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class AdvaObjectDeletion implements SnmptrapHandler
 {
@@ -38,25 +39,25 @@ class AdvaObjectDeletion implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         if ($trap_oid = $trap->findOid('CM-SECURITY-MIB::cmSecurityUserName')) {
             $UserName = $trap->getOidData($trap_oid);
-            Log::event("User object $UserName deleted", $device->device_id, 'trap', 2);
+            $trap->log("User object $UserName deleted");
         } elseif ($trap_oid = $trap->findOid('CM-FACILITY-MIB::cmFlowIndex')) {
             $flowID = str_replace('.', '-', substr($trap_oid, 29));
-            Log::event("Flow $flowID deleted", $device->device_id, 'trap', 2);
+            $trap->log("Flow $flowID deleted");
         } elseif ($trap_oid = $trap->findOid('F3-LAG-MIB::f3LagPortIndex')) {
             $lagPortID = $trap->getOidData($trap_oid);
             $lagID = str_replace('.', '-', substr($trap_oid, -5, 3));
-            Log::event("LAG member port $lagPortID removed from LAG $lagID", $device->device_id, 'trap', 2);
+            $trap->log("LAG member port $lagPortID removed from LAG $lagID");
         } elseif ($trap_oid = $trap->findOid('F3-LAG-MIB::f3LagIndex')) {
             $lagID = $trap->getOidData($trap_oid);
-            Log::event("LAG $lagID deleted", $device->device_id, 'trap', 2);
+            $trap->log("LAG $lagID deleted");
         }
     }
 }

@@ -2,11 +2,23 @@
 
 namespace App\Models;
 
+use App\Observers\MempoolObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use LibreNMS\Enum\PollingMethodType;
+use LibreNMS\Exceptions\InsufficientDataException;
+use LibreNMS\Exceptions\UncorrectableNegativeException;
+use LibreNMS\Interfaces\Models\HasSyncProtectedAttributes;
 use LibreNMS\Interfaces\Models\Keyable;
+use LibreNMS\Util\Number;
 
-class Mempool extends DeviceRelatedModel implements Keyable
+#[ObservedBy([MempoolObserver::class])]
+class Mempool extends DeviceRelatedModel implements HasSyncProtectedAttributes, Keyable
 {
+    use HasFactory;
+
     protected $table = 'mempools';
     protected $primaryKey = 'mempool_id';
     public $timestamps = false;
@@ -28,65 +40,48 @@ class Mempool extends DeviceRelatedModel implements Keyable
         'mempool_total_oid',
         'mempool_largestfree',
         'mempool_lowestfree',
+        'polling_method',
     ];
     protected $attributes = [
         'mempool_precision' => 1,
     ];
 
-    public function __construct(array $attributes = [])
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        parent::__construct($attributes);
-        if (! $this->exists) {
-            // only allow mempool_perc_warn to be filled for new mempools
-            unset($this->fillable[array_search('mempool_perc_warn', $this->fillable)]);
-        }
+        return [
+            'polling_method' => PollingMethodType::class,
+        ];
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
-        return $this->mempool_total > 0;
+        return $this->mempool_total > 0 && $this->mempool_used !== null && $this->mempool_free !== null && $this->mempool_perc !== null;
     }
 
-    public function fillUsage($used = null, $total = null, $free = null, $percent = null)
+    public function fillUsage($used = null, $total = null, $free = null, $percent = null, $multiplier = null): self
     {
         try {
-            $total = $this->correctNegative($total);
-            $used = $this->correctNegative($used, $total);
-            $free = $this->correctNegative($free, $total);
-        } catch (\Exception $e) {
-            d_echo($e->getMessage());
+            $multiplier ??= $this->mempool_precision ?: 1;
+            $total = Number::correctIntegerOverflow($total) ?? ($this->mempool_total ? $this->mempool_total / $multiplier : null);
+            $used = Number::correctIntegerOverflow($used, $total);
+            $free = Number::correctIntegerOverflow($free, $total);
 
-            return $this; // unhandled negative
-        }
+            [$this->mempool_total, $this->mempool_used, $this->mempool_free, $this->mempool_perc] = Number::fillMissingRatio(
+                $total,
+                $used,
+                $free,
+                $percent,
+                0,
+                $multiplier,
+            );
+        } catch (InsufficientDataException|UncorrectableNegativeException $e) {
+            Log::info($e::class);
+            Log::debug($e->getMessage());
 
-        $this->mempool_total = $this->calculateTotal($total, $used, $free);
-        $this->mempool_used = $used * $this->mempool_precision;
-        $this->mempool_free = $free * $this->mempool_precision;
-        $percent = $this->normalizePercent($percent); // don't assign to model or it loses precision
-        $this->mempool_perc = $percent;
-
-        if (! $this->mempool_total) {
-            if (! $percent && $percent !== 0.0) {
-                // could not calculate total, can't calculate other values
-                return $this;
-            }
-            $this->mempool_total = 100; // only have percent, mark total as 100
-        }
-
-        if ($used === null) {
-            $this->mempool_used = $free !== null
-                ? $this->mempool_total - $this->mempool_free
-                : round($this->mempool_total * ($percent ? ($percent / 100) : 0));
-        }
-
-        if ($free === null) {
-            $this->mempool_free = $used !== null
-                ? $this->mempool_total - $this->mempool_used
-                : round($this->mempool_total * ($percent ? (1 - ($percent / 100)) : 1));
-        }
-
-        if ($percent == null) {
-            $this->mempool_perc = $this->mempool_used / $this->mempool_total * 100;
+            return $this;
         }
 
         return $this;
@@ -97,7 +92,7 @@ class Mempool extends DeviceRelatedModel implements Keyable
      *
      * @param  string  $class
      * @param  string  $default
-     * @return \App\Models\Mempool
+     * @return Mempool
      */
     public function setClass($class = null, $default = 'system')
     {
@@ -139,53 +134,21 @@ class Mempool extends DeviceRelatedModel implements Keyable
 
     public function setMempoolPercAttribute($percent)
     {
-        $this->attributes['mempool_perc'] = round($percent);
+        $this->attributes['mempool_perc'] = is_numeric($percent) ? round($percent) : null;
     }
 
-    public function getCompositeKey()
+    /**
+     * Warn threshold is only set from discovery on create so users can override it
+     *
+     * @return string[]
+     */
+    public function getSyncProtectedAttributes(): array
+    {
+        return ['mempool_perc_warn'];
+    }
+
+    public function getCompositeKey(): string
     {
         return "$this->mempool_type-$this->mempool_index";
-    }
-
-    private function correctNegative($value, $max = null)
-    {
-        $int_max = 4294967296;
-        if ($value < 0) {
-            // assume unsigned/signed issue
-            $value = $int_max + $value;
-            if (($max && $value > $max) || $value > $int_max) {
-                throw new \Exception('Uncorrectable negative value');
-            }
-        }
-
-        return $value;
-    }
-
-    private function calculateTotal($total, $used, $free)
-    {
-        if ($total !== null) {
-            return $total * $this->mempool_precision;
-        }
-
-        if ($used !== null && $free !== null) {
-            return ($used + $free) * $this->mempool_precision;
-        }
-
-        return $this->mempool_total; // don't change the value it may have been set in discovery
-    }
-
-    private function normalizePercent($percent)
-    {
-        if ($percent === null) {
-            return null;
-        }
-
-        $percent = floatval($percent);
-
-        while ($percent > 100) {
-            $percent = $percent / 10;
-        }
-
-        return $percent;
     }
 }

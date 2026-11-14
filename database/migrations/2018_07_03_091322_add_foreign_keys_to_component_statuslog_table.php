@@ -3,17 +3,17 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddForeignKeysToComponentStatuslogTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('component_statuslog', function (Blueprint $table) {
-            $table->foreign('component_id', 'component_statuslog_ibfk_1')->references('id')->on('component')->onUpdate('CASCADE')->onDelete('CASCADE');
+        Schema::table('component_statuslog', function (Blueprint $table): void {
+            $table->foreign('component_id', 'component_statuslog_ibfk_1')->references('id')->on('component')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -22,12 +22,12 @@ class AddForeignKeysToComponentStatuslogTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        if (\LibreNMS\DB\Eloquent::getDriver() !== 'sqlite') {
-            Schema::table('component_statuslog', function (Blueprint $table) {
+        if (LibreNMS\DB\Eloquent::getDriver() !== 'sqlite') {
+            Schema::table('component_statuslog', function (Blueprint $table): void {
                 $table->dropForeign('component_statuslog_ibfk_1');
             });
         }
     }
-}
+};

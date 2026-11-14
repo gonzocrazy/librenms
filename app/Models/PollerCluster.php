@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PollerCluster.php
  *
@@ -18,39 +19,75 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 namespace App\Models;
 
+use App\Queue\WorkerNode;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use LibreNMS\Exceptions\InvalidNameException;
 
 class PollerCluster extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $table = 'poller_cluster';
     protected $primaryKey = 'id';
     protected $fillable = ['poller_name'];
-    protected $casts = [
-        'last_report' => 'datetime',
-    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'last_report' => 'datetime',
+            'poller_details' => 'array',
+        ];
+    }
 
     // ---- Accessors/Mutators ----
 
-    public function setPollerGroupsAttribute($groups)
+    /**
+     * @param  array|string  $groups
+     * @return void
+     */
+    public function setPollerGroupsAttribute($groups): void
     {
         $this->attributes['poller_groups'] = is_array($groups) ? implode(',', $groups) : $groups;
     }
 
     // ---- Scopes ----
 
-    public function scopeIsActive($query)
+    protected function scopeIsActive(Builder $query): Builder
     {
-        $default = (int) \LibreNMS\Config::get('service_poller_frequency');
-        $query->where('last_report', '>=', \DB::raw("DATE_SUB(NOW(),INTERVAL COALESCE(`poller_frequency`, $default) SECOND)"));
+        $default = (int) (\App\Facades\LibrenmsConfig::get('service_poller_frequency') ?? \App\Facades\LibrenmsConfig::get('rrd.step'));
+
+        return $query->where('last_report', '>=', \DB::raw("DATE_SUB(NOW(),INTERVAL COALESCE(`poller_frequency`, $default) SECOND)"));
+    }
+
+    /**
+     * Queue worker nodes, otherwise dispatcher service nodes
+     */
+    protected function scopeIsQueueWorker(Builder $query, bool $worker = true): Builder
+    {
+        return $worker
+            ? $query->where('poller_version', WorkerNode::VERSION)
+            : $query->where(fn (Builder $query) => $query->where('poller_version', '!=', WorkerNode::VERSION)->orWhereNull('poller_version'));
+    }
+
+    protected function scopeIsInactive(Builder $query): Builder
+    {
+        $default = (int) (\App\Facades\LibrenmsConfig::get('service_poller_frequency') ?? \App\Facades\LibrenmsConfig::get('rrd.step'));
+
+        return $query->where('last_report', '<', \DB::raw("DATE_SUB(NOW(),INTERVAL COALESCE(`poller_frequency`, $default) SECOND)"));
     }
 
     // ---- Helpers ----
@@ -58,9 +95,10 @@ class PollerCluster extends Model
     /**
      * Get the value of a setting (falls back to the global value if not set on this node)
      *
-     * @param string $name
+     * @param  string  $name
      * @return mixed
-     * @throws \LibreNMS\Exceptions\InvalidNameException
+     *
+     * @throws InvalidNameException
      */
     public function getSettingValue(string $name)
     {
@@ -78,7 +116,7 @@ class PollerCluster extends Model
     /**
      * Get the frontend config definition for this poller
      *
-     * @param \Illuminate\Support\Collection|bool|null $groups optionally supply full list of poller groups to avoid fetching multiple times
+     * @param  \Illuminate\Support\Collection<int, mixed>|bool|null  $groups  optionally supply full list of poller groups to avoid fetching multiple times
      * @return array[]
      */
     public function configDefinition($groups = null)
@@ -87,153 +125,166 @@ class PollerCluster extends Model
             $groups = PollerGroup::list();
         }
 
+        if ($this->poller_version == WorkerNode::VERSION) {
+            return $this->workerConfigDefinition($groups);
+        }
+
+        $scheduleType = \App\Facades\LibrenmsConfig::get('schedule_type');
+
+        $pollerGloballyEnabled = $scheduleType['poller'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_poller_enabled', true) : $scheduleType['poller'] == 'dispatcher';
+        $discoveryGloballyEnabled = $scheduleType['discovery'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_discovery_enabled', true) : $scheduleType['discovery'] == 'dispatcher';
+        $servicesGloballyEnabled = $scheduleType['services'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_services_enabled', true) : $scheduleType['services'] == 'dispatcher';
+        $alertGloballyEnabled = $scheduleType['alerting'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_alerting_enabled', true) : $scheduleType['alerting'] == 'dispatcher';
+        $billingGloballyEnabled = $scheduleType['billing'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_billing_enabled', true) : $scheduleType['billing'] == 'dispatcher';
+        $pingGloballyEnabled = $scheduleType['ping'] == 'legacy' ? \App\Facades\LibrenmsConfig::get('service_ping_enabled', true) : $scheduleType['ping'] == 'dispatcher';
+
         return [
             [
                 'name' => 'poller_groups',
-                'default' => \LibreNMS\Config::get('distributed_poller_group'),
-                'value' => $this->poller_groups ?? \LibreNMS\Config::get('distributed_poller_group'),
+                'default' => (string) \App\Facades\LibrenmsConfig::get('distributed_poller_group'),
+                'value' => (string) ($this->poller_groups ?? \App\Facades\LibrenmsConfig::get('distributed_poller_group')),
                 'type' => 'multiple',
                 'options' => $groups,
             ],
             [
                 'name' => 'poller_enabled',
-                'default' => \LibreNMS\Config::get('service_poller_enabled'),
-                'value' => (bool) ($this->poller_enabled ?? \LibreNMS\Config::get('service_poller_enabled')),
+                'default' => $pollerGloballyEnabled,
+                'value' => (bool) ($this->poller_enabled ?? $pollerGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'poller_workers',
-                'default' => \LibreNMS\Config::get('service_poller_workers'),
-                'value' => $this->poller_workers ?? \LibreNMS\Config::get('service_poller_workers'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_poller_workers'),
+                'value' => $this->poller_workers ?? \App\Facades\LibrenmsConfig::get('service_poller_workers'),
                 'type' => 'integer',
                 'units' => 'workers',
             ],
             [
                 'name' => 'poller_frequency',
-                'default' => \LibreNMS\Config::get('service_poller_frequency'),
-                'value' => $this->poller_frequency ?? \LibreNMS\Config::get('service_poller_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_poller_frequency') ?? \App\Facades\LibrenmsConfig::get('rrd.step'),
+                'value' => $this->poller_frequency ?? \App\Facades\LibrenmsConfig::get('service_poller_frequency') ?? \App\Facades\LibrenmsConfig::get('rrd.step'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'poller_down_retry',
-                'default' => \LibreNMS\Config::get('service_poller_down_retry'),
-                'value' => $this->poller_down_retry ?? \LibreNMS\Config::get('service_poller_down_retry'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_poller_down_retry'),
+                'value' => $this->poller_down_retry ?? \App\Facades\LibrenmsConfig::get('service_poller_down_retry'),
                 'type' => 'integer',
                 'units' => 'seconds',
             ],
             [
                 'name' => 'discovery_enabled',
-                'default' => \LibreNMS\Config::get('service_discovery_enabled'),
-                'value' => (bool) ($this->discovery_enabled ?? \LibreNMS\Config::get('service_discovery_enabled')),
+                'default' => $discoveryGloballyEnabled,
+                'value' => (bool) ($this->discovery_enabled ?? $discoveryGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'discovery_workers',
-                'default' => \LibreNMS\Config::get('service_discovery_workers'),
-                'value' => $this->discovery_workers ?? \LibreNMS\Config::get('service_discovery_workers'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_discovery_workers'),
+                'value' => $this->discovery_workers ?? \App\Facades\LibrenmsConfig::get('service_discovery_workers'),
                 'type' => 'integer',
                 'units' => 'workers',
             ],
             [
                 'name' => 'discovery_frequency',
-                'default' => \LibreNMS\Config::get('service_discovery_frequency'),
-                'value' => $this->discovery_frequency ?? \LibreNMS\Config::get('service_discovery_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_discovery_frequency'),
+                'value' => $this->discovery_frequency ?? \App\Facades\LibrenmsConfig::get('service_discovery_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'services_enabled',
-                'default' => \LibreNMS\Config::get('service_services_enabled'),
-                'value' => (bool) ($this->services_enabled ?? \LibreNMS\Config::get('service_services_enabled')),
+                'default' => $servicesGloballyEnabled,
+                'value' => (bool) ($this->services_enabled ?? $servicesGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'services_workers',
-                'default' => \LibreNMS\Config::get('service_services_workers'),
-                'value' => $this->services_workers ?? \LibreNMS\Config::get('service_services_workers'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_services_workers'),
+                'value' => $this->services_workers ?? \App\Facades\LibrenmsConfig::get('service_services_workers'),
                 'type' => 'integer',
                 'units' => 'workers',
             ],
             [
                 'name' => 'services_frequency',
-                'default' => \LibreNMS\Config::get('service_services_frequency'),
-                'value' => $this->services_frequency ?? \LibreNMS\Config::get('service_services_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_services_frequency'),
+                'value' => $this->services_frequency ?? \App\Facades\LibrenmsConfig::get('service_services_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'billing_enabled',
-                'default' => \LibreNMS\Config::get('service_billing_enabled'),
-                'value' => (bool) ($this->billing_enabled ?? \LibreNMS\Config::get('service_billing_enabled')),
+                'default' => $billingGloballyEnabled,
+                'value' => (bool) ($this->billing_enabled ?? $billingGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'billing_frequency',
-                'default' => \LibreNMS\Config::get('service_billing_frequency'),
-                'value' => $this->billing_frequency ?? \LibreNMS\Config::get('service_billing_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_billing_frequency'),
+                'value' => $this->billing_frequency ?? \App\Facades\LibrenmsConfig::get('service_billing_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'billing_calculate_frequency',
-                'default' => \LibreNMS\Config::get('service_billing_calculate_frequency'),
-                'value' => $this->billing_calculate_frequency ?? \LibreNMS\Config::get('service_billing_calculate_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_billing_calculate_frequency'),
+                'value' => $this->billing_calculate_frequency ?? \App\Facades\LibrenmsConfig::get('service_billing_calculate_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'alerting_enabled',
-                'default' => \LibreNMS\Config::get('service_alerting_enabled'),
-                'value' => (bool) ($this->alerting_enabled ?? \LibreNMS\Config::get('service_alerting_enabled')),
+                'default' => $alertGloballyEnabled,
+                'value' => (bool) ($this->alerting_enabled ?? $alertGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'alerting_frequency',
-                'default' => \LibreNMS\Config::get('service_alerting_frequency'),
-                'value' => $this->alerting_frequency ?? \LibreNMS\Config::get('service_alerting_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_alerting_frequency'),
+                'value' => $this->alerting_frequency ?? \App\Facades\LibrenmsConfig::get('service_alerting_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'ping_enabled',
-                'default' => \LibreNMS\Config::get('service_ping_enabled'),
-                'value' => (bool) ($this->ping_enabled ?? \LibreNMS\Config::get('service_ping_enabled')),
+                'default' => $pingGloballyEnabled,
+                'value' => (bool) ($this->ping_enabled ?? $pingGloballyEnabled),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'ping_frequency',
-                'default' => \LibreNMS\Config::get('ping_rrd_step'),
-                'value' => $this->ping_frequency ?? \LibreNMS\Config::get('ping_rrd_step'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_ping_frequency'),
+                'value' => $this->ping_frequency ?? \App\Facades\LibrenmsConfig::get('service_ping_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'update_enabled',
-                'default' => \LibreNMS\Config::get('service_update_enabled'),
-                'value' => (bool) ($this->update_enabled ?? \LibreNMS\Config::get('service_update_enabled')),
+                'default' => \App\Facades\LibrenmsConfig::get('service_update_enabled'),
+                'value' => (bool) ($this->update_enabled ?? \App\Facades\LibrenmsConfig::get('service_update_enabled')),
                 'type' => 'boolean',
                 'advanced' => true,
             ],
             [
                 'name' => 'update_frequency',
-                'default' => \LibreNMS\Config::get('service_update_frequency'),
-                'value' => $this->update_frequency ?? \LibreNMS\Config::get('service_update_frequency'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_update_frequency'),
+                'value' => $this->update_frequency ?? \App\Facades\LibrenmsConfig::get('service_update_frequency'),
                 'type' => 'integer',
                 'units' => 'seconds',
                 'advanced' => true,
             ],
             [
                 'name' => 'loglevel',
-                'default' => \LibreNMS\Config::get('service_loglevel'),
-                'value' => $this->loglevel ?? \LibreNMS\Config::get('service_loglevel'),
+                'default' => \App\Facades\LibrenmsConfig::get('service_loglevel'),
+                'value' => $this->loglevel ?? \App\Facades\LibrenmsConfig::get('service_loglevel'),
                 'type' => 'select',
                 'options' => [
                     'DEBUG' => 'DEBUG',
@@ -245,24 +296,73 @@ class PollerCluster extends Model
             ],
             [
                 'name' => 'watchdog_enabled',
-                'default' => \LibreNMS\Config::get('service_watchdog_enabled'),
-                'value' => (bool) ($this->watchdog_enabled ?? \LibreNMS\Config::get('service_watchdog_enabled')),
+                'default' => \App\Facades\LibrenmsConfig::get('service_watchdog_enabled'),
+                'value' => (bool) ($this->watchdog_enabled ?? \App\Facades\LibrenmsConfig::get('service_watchdog_enabled')),
                 'type' => 'boolean',
             ],
             [
                 'name' => 'watchdog_log',
-                'default' => \LibreNMS\Config::get('log_file'),
-                'value' => $this->watchdog_log ?? \LibreNMS\Config::get('log_file'),
+                'default' => \App\Facades\LibrenmsConfig::get('log_file'),
+                'value' => $this->watchdog_log ?? \App\Facades\LibrenmsConfig::get('log_file'),
                 'type' => 'text',
                 'advanced' => true,
             ],
         ];
     }
 
-    // ---- Relationships ----
+    /**
+     * Queue worker nodes only work queues, polling work is dispatched for all nodes from the global settings
+     *
+     * @param  \Illuminate\Support\Collection<int, mixed>|false  $groups
+     * @return array<int, array<string, mixed>>
+     */
+    private function workerConfigDefinition($groups): array
+    {
+        $globalGroups = (string) \App\Facades\LibrenmsConfig::get('distributed_poller_group');
 
+        return [
+            [
+                'name' => 'poller_groups',
+                'default' => $globalGroups,
+                'value' => $this->poller_groups === null || $this->poller_groups === '' ? $globalGroups : (string) $this->poller_groups,
+                'type' => 'multiple',
+                'options' => $groups,
+            ],
+            [
+                'name' => 'poller_enabled',
+                'default' => true,
+                'value' => (bool) ($this->poller_enabled ?? true),
+                'type' => 'boolean',
+            ],
+            [
+                'name' => 'poller_workers',
+                'default' => \App\Facades\LibrenmsConfig::get('service_poller_workers'),
+                'value' => $this->poller_workers ?? \App\Facades\LibrenmsConfig::get('service_poller_workers'),
+                'type' => 'integer',
+                'units' => 'workers',
+            ],
+            [
+                'name' => 'discovery_enabled',
+                'default' => true,
+                'value' => (bool) ($this->discovery_enabled ?? true),
+                'type' => 'boolean',
+            ],
+            [
+                'name' => 'discovery_workers',
+                'default' => \App\Facades\LibrenmsConfig::get('service_discovery_workers'),
+                'value' => $this->discovery_workers ?? \App\Facades\LibrenmsConfig::get('service_discovery_workers'),
+                'type' => 'integer',
+                'units' => 'workers',
+            ],
+        ];
+    }
+
+    // ---- Relationships ----
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\PollerClusterStat, $this>
+     */
     public function stats(): HasMany
     {
-        return $this->hasMany(\App\Models\PollerClusterStat::class, 'parent_poller', 'id');
+        return $this->hasMany(PollerClusterStat::class, 'parent_poller', 'id');
     }
 }

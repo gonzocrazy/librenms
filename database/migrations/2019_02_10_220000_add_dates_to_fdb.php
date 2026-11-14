@@ -1,25 +1,24 @@
 <?php
 
-use App\Models\PortsFdb;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddDatesToFdb extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('ports_fdb', function (Blueprint $table) {
+        Schema::table('ports_fdb', function (Blueprint $table): void {
             $table->timestamps();
         });
 
         // Let's get a value for existing PortsFdb data :
-        DB::table('ports_fdb')->update(['created_at' => \Carbon\Carbon::now()]);
-        DB::table('ports_fdb')->update(['updated_at' => \Carbon\Carbon::now()]);
+        DB::table('ports_fdb')->update(['created_at' => Carbon\Carbon::now()]);
+        DB::table('ports_fdb')->update(['updated_at' => Carbon\Carbon::now()]);
     }
 
     /**
@@ -27,10 +26,10 @@ class AddDatesToFdb extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('ports_fdb', function (Blueprint $table) {
+        Schema::table('ports_fdb', function (Blueprint $table): void {
             $table->dropColumn(['created_at', 'updated_at']);
         });
     }
-}
+};

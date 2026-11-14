@@ -1,4 +1,5 @@
 <?php
+
 /**
  * alert-transports.inc.php
  *
@@ -18,32 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Vivia Nguyen-Tran
  * @author     Vivia Nguyen-Tran <vivia@ualberta.ca>
  */
 
-use Illuminate\Container\Container;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Translation\FileLoader;
-use Illuminate\Translation\Translator;
-use Illuminate\Validation\Factory;
+use App\Models\AlertTransport;
+use Illuminate\Support\Facades\Gate;
 
 header('Content-type: application/json');
 
-if (! Auth::user()->hasGlobalAdmin()) {
+if (Gate::none(['alert-transport.create', 'alert-transport.update'])) {
     exit(json_encode([
         'status' => 'error',
-        'message' => 'You need to be admin',
+        'message' => 'You need permisisson',
     ]));
 }
 
 $status = 'ok';
 $message = '';
 
-$transport_id = $vars['transport_id'];
-$name = $vars['name'];
+$transport_id = strip_tags((string) $vars['transport_id']);
+$name = strip_tags((string) $vars['name']);
 $is_default = (int) (isset($vars['is_default']) && $vars['is_default'] == 'on');
-$transport_type = $vars['transport-type'];
+$transport_type = strip_tags((string) $vars['transport-type']);
 
 if (empty($name)) {
     $status = 'error';
@@ -58,9 +57,14 @@ if (empty($name)) {
     ];
 
     if (is_numeric($transport_id) && $transport_id > 0) {
+        $transport = AlertTransport::findOrFail($transport_id);
+        Gate::authorize('update', $transport);
+        $transport->transport_name = $name;
+        $transport->is_default = $is_default;
+        $transport->save();
         // Update the fields -- json config field will be updated later
-        dbUpdate($details, 'alert_transports', 'transport_id=?', [$transport_id]);
     } else {
+        Gate::authorize('create', AlertTransport::class);
         // Insert the new alert transport
         $newEntry = true;
         $transport_id = dbInsert($details, 'alert_transports');
@@ -78,10 +82,7 @@ if (empty($name)) {
 
         // Build config values
         $result = call_user_func_array($class . '::configTemplate', []);
-        $loader = new FileLoader(new Filesystem, "$install_dir/resources/lang");
-        $translator = new Translator($loader, 'en');
-        $validation = new Factory($translator, new Container);
-        $validator = $validation->make($vars, $result['validation']);
+        $validator = Validator::make($vars, $result['validation']);
         if ($validator->fails()) {
             $errors = $validator->errors();
             foreach ($errors->all() as $error) {
@@ -89,10 +90,11 @@ if (empty($name)) {
             }
             $status = 'error';
         } else {
-            $transport_config = (array) json_decode(dbFetchCell('SELECT transport_config FROM alert_transports WHERE transport_id=?', [$transport_id]), true);
+            $transport_config = AlertTransport::where('transport_id', $transport_id)->value('transport_config');
+            $transport_config = is_array($transport_config) ? $transport_config : (array) json_decode((string) $transport_config, true);
             foreach ($result['config'] as $tmp_config) {
                 if (isset($tmp_config['name']) && $tmp_config['type'] !== 'hidden') {
-                    $transport_config[$tmp_config['name']] = $vars[$tmp_config['name']];
+                    $transport_config[$tmp_config['name']] = $vars[$tmp_config['name']] ?? null;
                 }
             }
             //Update the json config field
@@ -110,7 +112,7 @@ if (empty($name)) {
         if ($status == 'error' && $newEntry) {
             //If error, we will have to delete the new entry in alert_transports tbl
             $where = '`transport_id`=?';
-            dbDelete('alert_transports', $where, [$transport_id]);
+            \App\Models\AlertTransport::where('transport_id', $transport_id)->delete();
         }
     } else {
         $status = 'error';
@@ -119,6 +121,6 @@ if (empty($name)) {
 }
 
 exit(json_encode([
-    'status'       => $status,
-    'message'      => $message,
+    'status' => $status,
+    'message' => $message,
 ]));

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Fs-switch.php
  *
@@ -18,43 +19,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 PipoCanaja
  * @author     PipoCanaja <pipocanaja@gmail.com>
  */
 
 namespace LibreNMS\OS;
 
-use LibreNMS\Device\Processor;
-use LibreNMS\Interfaces\Discovery\ProcessorDiscovery;
 use LibreNMS\OS;
 
-class FsSwitch extends OS implements ProcessorDiscovery
+class FsSwitch extends OS
 {
-    /**
-     * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
-     *
-     * @return array Processors
-     */
-    public function discoverProcessors()
+    public static function normalizeTransceiverValues($value): float
     {
-        $processors = [];
-
-        // Tests OID from SWITCH MIB.
-        $processors_data = snmpwalk_cache_oid($this->getDeviceArray(), 'ssCpuIdle', [], 'SWITCH', 'fs');
-
-        foreach ($processors_data as $index => $entry) {
-            $processors[] = Processor::discover(
-                'fs-SWITCHMIB',
-                $this->getDeviceId(),
-                '.1.3.6.1.4.1.27975.1.2.11.' . $index,
-                $index,
-                'CPU',
-                -1,
-                100 - $entry['ssCpuIdle']
-            );
+        // Convert fixed-point integer thresholds to float
+        $type = gettype($value);
+        if ($type === 'integer') {
+            // Thresholds are integers
+            $value /= 100.0;
         }
 
-        return $processors;
+        return $value;
+    }
+
+    public static function normalizeTransceiverValuesCurrent($value): float
+    {
+        $value = FsSwitch::normalizeTransceiverValues($value);
+        $value *= 0.001; // mA to A
+
+        return $value;
     }
 }

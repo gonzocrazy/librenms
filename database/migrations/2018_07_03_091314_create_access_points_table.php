@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAccessPointsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('access_points', function (Blueprint $table) {
+        Schema::create('access_points', function (Blueprint $table): void {
             $table->increments('accesspoint_id');
             $table->unsignedInteger('device_id');
             $table->string('name');
@@ -37,8 +37,8 @@ class CreateAccessPointsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('access_points');
     }
-}
+};

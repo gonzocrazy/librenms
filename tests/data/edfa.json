@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": "HA5837A-1x016",
                     "features": null,
+                    "location": "<private>",
                     "os": "edfa",
-                    "type": "network",
+                    "type": "optical",
                     "serial": "S26-PYA346",
-                    "icon": "generic.svg",
-                    "location": "<private>"
+                    "icon": "generic.svg"
                 }
             ]
         },
@@ -32,6 +32,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "DC1[5VDC1]",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -45,6 +46,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -56,6 +58,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "DC2[3V3DC2]",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0.02,
@@ -69,6 +72,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -80,6 +84,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "BIAS 1",
                     "group": "Laser",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 100,
                     "sensor_current": 0,
@@ -93,6 +98,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -104,6 +110,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "BIAS 2",
                     "group": "Laser",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 100,
                     "sensor_current": 0,
@@ -117,6 +124,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -128,6 +136,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "Input Optical Power",
                     "group": "Input",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": -1,
@@ -141,6 +150,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -152,6 +162,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "Total Output Optical Power",
                     "group": "Output",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": -35.5,
@@ -165,6 +176,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -176,6 +188,7 @@
                     "sensor_type": "commonDeviceCraftStatus",
                     "sensor_descr": "RS232 or RS485 Status",
                     "group": "Common",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -189,6 +202,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "commonDeviceCraftStatus"
                 },
                 {
@@ -200,6 +214,7 @@
                     "sensor_type": "commonDeviceResetCause",
                     "sensor_descr": "Last Reset Cause",
                     "group": "Common",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 4,
@@ -213,6 +228,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "commonDeviceResetCause"
                 },
                 {
@@ -224,6 +240,7 @@
                     "sensor_type": "commonDeviceTamperStatus",
                     "sensor_descr": "Safety Switch",
                     "group": "Common",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -237,6 +254,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "commonDeviceTamperStatus"
                 },
                 {
@@ -248,6 +266,7 @@
                     "sensor_type": "oaDCPowerSupplyMode",
                     "sensor_descr": "Power Supply Mode",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2,
@@ -261,6 +280,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "oaDCPowerSupplyMode"
                 },
                 {
@@ -272,6 +292,7 @@
                     "sensor_type": "powerSupplyStatusA",
                     "sensor_descr": "Power Supply A",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -285,6 +306,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "powerSupplyStatusA"
                 },
                 {
@@ -296,6 +318,7 @@
                     "sensor_type": "powerSupplyStatusB",
                     "sensor_descr": "Power Supply B",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,
@@ -309,6 +332,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": "powerSupplyStatusB"
                 },
                 {
@@ -320,6 +344,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "Internal Temperature",
                     "group": "Device",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 22,
@@ -333,6 +358,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -344,6 +370,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "Laser Temperature 1",
                     "group": "Laser",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 24.9,
@@ -357,6 +384,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -368,6 +396,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "Laser Temperature 2",
                     "group": "Laser",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -381,6 +410,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -392,6 +422,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "DC1[5VDC1]",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 5,
@@ -405,6 +436,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -416,6 +448,7 @@
                     "sensor_type": "edfa",
                     "sensor_descr": "DC2[3V3DC2]",
                     "group": "Power",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -429,6 +462,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
             ],
@@ -436,140 +470,120 @@
                 {
                     "state_name": "commonDeviceCraftStatus",
                     "state_descr": "disconnected",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "commonDeviceCraftStatus",
                     "state_descr": "connected",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "commonDeviceResetCause",
                     "state_descr": "other",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "commonDeviceResetCause",
                     "state_descr": "powerup",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "commonDeviceResetCause",
                     "state_descr": "command",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "commonDeviceResetCause",
                     "state_descr": "watchdog",
-                    "state_draw_graph": 1,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "commonDeviceResetCause",
                     "state_descr": "craft",
-                    "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "commonDeviceTamperStatus",
                     "state_descr": "intact",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "commonDeviceTamperStatus",
                     "state_descr": "compromised",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "oaDCPowerSupplyMode",
                     "state_descr": "loadsharing",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "oaDCPowerSupplyMode",
                     "state_descr": "switchRedundant",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "oaDCPowerSupplyMode",
                     "state_descr": "aloneSupply",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "powerSupplyStatusA",
                     "state_descr": "undefined",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "powerSupplyStatusA",
                     "state_descr": "nominal",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "powerSupplyStatusA",
                     "state_descr": "failure",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "powerSupplyStatusA",
                     "state_descr": "notInstalled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "powerSupplyStatusB",
                     "state_descr": "undefined",
-                    "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "powerSupplyStatusB",
                     "state_descr": "nominal",
-                    "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "powerSupplyStatusB",
                     "state_descr": "failure",
-                    "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "powerSupplyStatusB",
                     "state_descr": "notInstalled",
-                    "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 }

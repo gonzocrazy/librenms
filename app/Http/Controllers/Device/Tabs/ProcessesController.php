@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ProcessesController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,14 +27,24 @@
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
-use DB;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class ProcessesController implements DeviceTab
 {
+    private const array COLUMNS = [
+        'pid' => ['label' => 'PID'],
+        'vsz' => ['label' => 'VSZ', 'title' => 'Virtual Memory'],
+        'rss' => ['label' => 'RSS', 'title' => 'Resident Memory'],
+        'cputime' => ['label' => 'cputime'],
+        'user' => ['label' => 'user'],
+        'command' => ['label' => 'command'],
+    ];
+
     public function visible(Device $device): bool
     {
-        return DB::table('processes')->where('device_id', $device->device_id)->exists();
+        return $device->processes()->exists();
     }
 
     public function slug(): string
@@ -50,8 +62,40 @@ class ProcessesController implements DeviceTab
         return __('Processes');
     }
 
-    public function data(Device $device): array
+    public function data(Device $device, Request $request): array
     {
-        return [];
+        $validated = $request->validate([
+            'order' => ['nullable', 'string', Rule::in(array_keys(self::COLUMNS))],
+            'by' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+        ]);
+
+        $order = $validated['order'] ?? 'pid';
+        $by = $validated['by'] ?? 'asc';
+
+        $processes = $device->processes()->orderBy($order, $by)->get();
+
+        $columns = [];
+        foreach (self::COLUMNS as $colKey => $colMeta) {
+            $isSorted = $order === $colKey;
+            $nextBy = ($isSorted && $by === 'asc') ? 'desc' : 'asc';
+            $columns[$colKey] = [
+                'label' => $colMeta['label'],
+                'title' => isset($colMeta['title']) ? __($colMeta['title']) : null,
+                'icon' => $isSorted ? ($by === 'asc' ? 'fa fa-chevron-up' : 'fa fa-chevron-down') : '',
+                'url' => route('device', [
+                    'device' => $device,
+                    'tab' => 'processes',
+                    'order' => $colKey,
+                    'by' => $nextBy,
+                ]),
+            ];
+        }
+
+        return [
+            'order' => $order,
+            'by' => $by,
+            'columns' => $columns,
+            'processes' => $processes,
+        ];
     }
 }

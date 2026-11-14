@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FileWriteFailedException.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,12 +30,12 @@ use Throwable;
 
 class FileWriteFailedException extends \Exception
 {
-    protected $file;
-
-    public function __construct($file, $code = 0, Throwable $previous = null)
+    /**
+     * @param  string  $file_path
+     */
+    public function __construct(protected $file_path, $code = 0, ?Throwable $previous = null)
     {
-        $this->file = $file;
-        parent::__construct("Failed to write file: $file", $code, $previous);
+        parent::__construct("Failed to write file: {$this->file_path}", $code, $previous);
     }
 
     /**
@@ -44,14 +46,14 @@ class FileWriteFailedException extends \Exception
     public function render(\Illuminate\Http\Request $request)
     {
         $title = trans('exceptions.file_write_failed.title');
-        $message = trans('exceptions.file_write_failed.message', ['file' => $this->file]);
+        $message = trans('exceptions.file_write_failed.message', ['file' => $this->file_path]);
 
         return $request->wantsJson() ? response()->json([
             'status' => 'error',
             'message' => "$title: $message",
-        ]) : response()->view('errors.generic', [
+        ], 500) : response()->view('errors.generic', [
             'title' => $title,
             'content' => $message,
-        ]);
+        ], 500);
     }
 }

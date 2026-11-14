@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Text.php
+ * StringHelpers.php
  *
  * -Description-
  *
@@ -18,7 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
- * @copyright  2018 Tony Murray
+ *
+ * @copyright  2025 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
@@ -26,26 +28,16 @@ namespace LibreNMS\Util;
 
 class StringHelpers
 {
-    /**
-     * Shorten text over 50 chars, if shortened, add ellipsis
-     *
-     * @param string $string
-     * @param int $max
-     * @return string
-     */
-    public static function shortenText($string, $max = 30)
+    public static function isValidUtf8(string $string): bool
     {
-        if (strlen($string) > 50) {
-            return substr($string, 0, $max) . '...';
-        }
-
-        return $string;
+        return preg_match('//u', $string) === 1;
     }
 
     public static function niceCase($string)
     {
         $replacements = [
             'bind' => 'BIND',
+            'cape' => 'CAPEv2',
             'dbm' => 'dBm',
             'dhcp-stats' => 'DHCP Stats',
             'entropy' => 'Random entropy',
@@ -54,8 +46,13 @@ class StringHelpers
             'fbsd-nfs-server' => 'FreeBSD NFS Server',
             'freeradius' => 'FreeRADIUS',
             'gpsd' => 'GPSD',
+            'hv-monitor' => 'HV Monitor',
+            'http_access_log_combined' => 'HTTP Access Log Combined',
+            'i2pd' => 'I2PD Router',
+            'mojo_cape_submit' => 'Mojo CAPE Submit',
             'mailcow-postfix' => 'mailcow-dockerized postfix',
             'mysql' => 'MySQL',
+            'nfs' => 'NFS',
             'nfs-server' => 'NFS Server',
             'nfs-stats' => 'NFS Stats',
             'nfs-v3-stats' => 'NFS v3 Stats',
@@ -63,9 +60,11 @@ class StringHelpers
             'ntp-client' => 'NTP Client',
             'ntp-server' => 'NTP Server',
             'opengridscheduler' => 'Open Grid Scheduler',
+            'opensearch' => 'Elasticsearch\Opensearch',
+            'oslv_monitor' => 'OS Level Virtualization',
             'os-updates' => 'OS Updates',
             'php-fpm' => 'PHP-FPM',
-            'pi-hole' => 'pi-hole',
+            'pi-hole' => 'Pi-hole',
             'powerdns' => 'PowerDNS',
             'powerdns-dnsdist' => 'PowerDNS dnsdist',
             'powerdns-recursor' => 'PowerDNS Recursor',
@@ -74,21 +73,226 @@ class StringHelpers
             'rrdcached' => 'RRDCached',
             'sdfsinfo' => 'SDFS info',
             'smart' => 'SMART',
+            'ss' => 'Socket Statistics',
+            'syslog-ng' => 'Syslog-NG',
             'ups-apcups' => 'UPS apcups',
             'ups-nut' => 'UPS nut',
             'zfs' => 'ZFS',
         ];
 
-        return isset($replacements[$string]) ? $replacements[$string] : ucwords(str_replace(['_', '-'], ' ', $string));
+        return $replacements[$string] ?? ucwords(str_replace(['_', '-'], ' ', $string));
     }
 
     /**
      * Convert a camel or studly case string to Title case (with spaces)
-     * @param string $string
+     *
+     * @param  string  $string
      * @return string
      */
     public static function camelToTitle($string)
     {
         return ucwords(implode(' ', preg_split('/(?=[A-Z])/', $string)));
+    }
+
+    /**
+     * Sometimes devices store strings as non-unicode strings and return them directly.
+     * NetSnmp parses those as UTF-8, try to convert the string if it contains non-printable ascii characters.
+     *
+     * @param  string|null  $string
+     * @return string
+     */
+    public static function inferEncoding(?string $string): ?string
+    {
+        if (empty($string) || self::isValidUtf8($string)) {
+            return $string;
+        }
+
+        $string = str_replace(chr(218), "\n", $string);
+
+        if (! function_exists('iconv')) {
+            return $string;
+        }
+
+        $charset = config('app.charset');
+
+        if (($converted = @iconv((string) $charset, 'UTF-8', $string)) !== false) {
+            return (string) $converted;
+        }
+
+        // Detect GB multi-byte pattern: strict GB2312 range (0xA1-0xF7, 0xA1-0xFE)
+        // or GBK extended range (0x81-0xA0, 0x40-0x7E/0x80-0xFE). Count occurrences to avoid
+        // false positives from Western encodings like CP850 which may have single high-byte pairs.
+        $gbPatternCount = preg_match_all('/[\xA1-\xF7][\xA1-\xFE]|[\x81-\xA0][\x40-\x7E\x80-\xFE]/s', $string);
+        $hasGbPattern = $gbPatternCount >= 2;
+
+        if ($hasGbPattern) {
+            // GB pattern detected, prioritize GB family encodings
+            foreach (['GB18030', 'GBK', 'GB2312'] as $encoding) {
+                if (($converted = @iconv($encoding, 'UTF-8', $string)) !== false) {
+                    return (string) $converted;
+                }
+            }
+        }
+
+        if ($charset !== 'Windows-1252' && ($converted = @iconv('Windows-1252', 'UTF-8', $string)) !== false) {
+            return (string) $converted;
+        }
+
+        if ($charset !== 'CP850' && ($converted = @iconv('CP850', 'UTF-8', $string)) !== false) {
+            return (string) $converted;
+        }
+
+        \Log::debug('Failed to convert string: ' . $string);
+
+        return $string;
+    }
+
+    /**
+     * Generate a class name from a lowercase string containing - or _
+     * Remove - and _ and camel case words
+     *
+     * @param  string  $name  The string to convert to a class name
+     * @param  string|null  $namespace  namespace to prepend to the name for example: LibreNMS\
+     * @return string Class name
+     */
+    public static function toClass(string $name, ?string $namespace = null): string
+    {
+        $pre_format = str_replace(['-', '_'], ' ', $name);
+        $class = str_replace(' ', '', ucwords(strtolower($pre_format)));
+        $class = preg_replace_callback('/^(\d)(.)/', function ($matches) {
+            $numbers = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+
+            return $numbers[$matches[1]] . strtoupper($matches[2]);
+        }, $class);
+
+        return $namespace . $class;
+    }
+
+    /**
+     * Check if variable can be cast to a string
+     *
+     * @param  mixed  $var
+     * @return bool
+     */
+    public static function isStringable($var): bool
+    {
+        return $var === null || is_scalar($var) || (is_object($var) && method_exists($var, '__toString'));
+    }
+
+    public static function asciiToHex(string $ascii, string $seperator = ''): string
+    {
+        $hex = [];
+        $len = strlen($ascii);
+        for ($i = 0; $i < $len; $i++) {
+            $hex[] = str_pad(strtoupper(dechex(ord($ascii[$i]))), 2, '0', STR_PAD_LEFT);
+        }
+
+        return implode($seperator, $hex);
+    }
+
+    public static function hexToAscii(string $hex, string $seperator = ''): string
+    {
+        if ($seperator) {
+            $escaped_seperator = preg_quote($seperator);
+            $no_nulls = preg_replace("/(00$escaped_seperator(00)?|{$escaped_seperator}00)/", '', $hex);
+            $hex = str_replace($seperator, '', $no_nulls);
+        }
+
+        return hex2bin($hex);
+    }
+
+    /**
+     * Decode an SNMP text value that net-snmp output as hex (ex: "41 42 43 00") because it
+     * contained non-printable bytes. Common causes are a trailing null byte from devices that send
+     * an off by one string length or non-ASCII text (UTF-8, GBK, etc) in an OCTET STRING.
+     * Trailing null bytes are removed and the encoding is inferred.
+     *
+     * Only use for values known to be text, binary values (MACs, IPs, bitmaps) will be mangled.
+     * Values that are not hex or decode to only printable ASCII are returned unchanged,
+     * because net-snmp would not have output those as hex.
+     */
+    public static function decodeSnmpHexText(string $value): string
+    {
+        $hex = trim((string) preg_replace('/\s+/', ' ', $value));
+
+        if (! self::isHex($hex, ' ')) {
+            return $value;
+        }
+
+        $bytes = (string) hex2bin(str_replace(' ', '', $hex));
+
+        if (preg_match('/^[\x20-\x7E]*$/', $bytes)) {
+            return $value;
+        }
+
+        return (string) self::inferEncoding(rtrim($bytes, "\0"));
+    }
+
+    public static function trimHexGarbage(string $string): string
+    {
+        $regex = '/((\.{2,}.{1,2})?\.+)?([0-9a-f]{2} )*([0-9a-f]{2})?$/';
+
+        return preg_replace($regex, '', str_replace("\n", '', $string));
+    }
+
+    /**
+     * If string has a number at the start (excluding whitespace) that can be extraced by Number::cast()
+     */
+    public static function hasNumber(string $string): bool
+    {
+        return (bool) preg_match('/^\s*-?(\d+(\.\d*)?|\.\d+)/', $string);
+    }
+
+    public static function isHex(string $string, string $delimiter = ''): bool
+    {
+        $string = trim($string);
+
+        if ($delimiter === '') {
+            return (bool) preg_match('/^(?:[[:xdigit:]]{2})+$/', $string);
+        }
+
+        $escapedDelimiter = preg_quote($delimiter, '/');
+        $pattern = '/^[[:xdigit:]]{2}(?:' . $escapedDelimiter . '[[:xdigit:]]{2})*$/';
+
+        return (bool) preg_match($pattern, $string);
+    }
+
+    /**
+     * Convert hex string to an array of 1-based indices of the nonzero bits
+     * ie. '9a00' -> '100110100000' -> array(1, 4, 5, 7)
+     *
+     * @return int[]
+     */
+    public static function bitsToIndices(string $hex_data): array
+    {
+        $hex_data = str_replace([' ', "\n"], '', $hex_data);
+
+        // we need an even number of digits for hex2bin
+        if (strlen($hex_data) % 2 === 1) {
+            $hex_data = '0' . $hex_data;
+        }
+
+        if (! StringHelpers::isHex($hex_data)) {
+            // could be malformed
+            if (preg_match('/^(\d+)(,\d+)*$/', ltrim($hex_data, '0'), $matches)) {
+                return array_map(intval(...), explode(',', $matches[0]));
+            }
+
+            return [];
+        }
+
+        $value = hex2bin($hex_data);
+        $length = strlen($value);
+        $indices = [];
+        for ($i = 0; $i < $length; $i++) {
+            $byte = ord($value[$i]);
+            for ($j = 7; $j >= 0; $j--) {
+                if ($byte & (1 << $j)) {
+                    $indices[] = 8 * $i + 8 - $j;
+                }
+            }
+        }
+
+        return $indices;
     }
 }

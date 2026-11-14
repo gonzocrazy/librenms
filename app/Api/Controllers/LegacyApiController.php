@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LegacyApiController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,8 +31,8 @@ class LegacyApiController
     /**
      * Pass through api functions to api_functions.inc.php
      *
-     * @param string $method_name
-     * @param array $arguments
+     * @param  string  $method_name
+     * @param  array  $arguments
      * @return mixed
      */
     public function __call($method_name, $arguments)

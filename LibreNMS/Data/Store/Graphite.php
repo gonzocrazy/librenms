@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Graphite.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @copyright  2017 Falk Stern <https://github.com/fstern/>
  * @author     Tony Murray <murraytony@gmail.com>
@@ -25,9 +27,10 @@
 
 namespace LibreNMS\Data\Store;
 
+use App\Data\TimeSeries\MetricIdentity;
+use App\Facades\LibrenmsConfig;
+use App\Polling\Measure\Measurement;
 use Carbon\Carbon;
-use LibreNMS\Config;
-use LibreNMS\Data\Measure\Measurement;
 use Log;
 
 class Graphite extends BaseDatastore
@@ -39,10 +42,12 @@ class Graphite extends BaseDatastore
     public function __construct(\Socket\Raw\Factory $socketFactory)
     {
         parent::__construct();
-        $host = Config::get('graphite.host');
-        $port = Config::get('graphite.port', 2003);
+        $host = LibrenmsConfig::get('graphite.host');
+        $port = LibrenmsConfig::get('graphite.port', 2003);
         try {
-            $this->connection = $socketFactory->createClient("$host:$port");
+            if (self::isEnabled() && $host && $port) {
+                $this->connection = $socketFactory->createClient("$host:$port");
+            }
         } catch (\Exception $e) {
             d_echo($e->getMessage());
         }
@@ -53,35 +58,23 @@ class Graphite extends BaseDatastore
             Log::error("Graphite connection to $host has failed!");
         }
 
-        $this->prefix = Config::get('graphite.prefix', '');
+        $this->prefix = LibrenmsConfig::get('graphite.prefix', '');
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Graphite';
     }
 
-    public static function isEnabled()
+    public static function isEnabled(): bool
     {
-        return Config::get('graphite.enable', false);
+        return LibrenmsConfig::get('graphite.enable', false);
     }
 
     /**
-     * Datastore-independent function which should be used for all polled metrics.
-     *
-     * RRD Tags:
-     *   rrd_def     RrdDefinition
-     *   rrd_name    array|string: the rrd filename, will be processed with rrd_name()
-     *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
-     *   rrd_step             int: rrd step, defaults to 300
-     *
-     * @param array $device
-     * @param string $measurement Name of this measurement
-     * @param array $tags tags for the data (or to control rrdtool)
-     * @param array|mixed $fields The data to update in an associative array, the order must be consistent with rrd_def,
-     *                            single values are allowed and will be paired with $measurement
+     * @inheritDoc
      */
-    public function put($device, $measurement, $tags, $fields)
+    public function write(string $measurement, array $fields, array $tags = [], array $meta = []): void
     {
         if (! $this->connection) {
             d_echo("Graphite Error: not connected\n");
@@ -95,26 +88,26 @@ class Graphite extends BaseDatastore
             $measurement = 'ports|' . $tags['ifName'];
         }
 
+        $identity = $meta['metric'] ?? null;
+        $hostname = $identity instanceof MetricIdentity ? $identity->group() : $this->getDevice($meta)->hostname;
+
         // metrics will be built as prefix.hostname.measurement.field value timestamp
         // metric fields can not contain . as this is used by graphite as a field separator
-        $hostname = preg_replace('/\./', '_', $device['hostname']);
+        $hostname = preg_replace('/\./', '_', (string) $hostname);
         $measurement = preg_replace(['/\./', '/\//'], '_', $measurement);
-        $measurement = preg_replace('/\|/', '.', $measurement);
-        $measurement_name = preg_replace('/\./', '_', $tags['rrd_name']);
-        if (is_array($measurement_name)) {
-            $ms_name = implode('.', $measurement_name);
-        } else {
-            $ms_name = $measurement_name;
-        }
+        $measurement = preg_replace('/\|/', '.', (string) $measurement);
+
+        $measurement_name = preg_replace('/\./', '_', $identity instanceof MetricIdentity ? array_values($identity->tagsInGroup()) : ($meta['rrd_name'] ?? '')); // FIXME don't use rrd_name
+        $ms_name = is_array($measurement_name) ? implode('.', $measurement_name) : $measurement_name;
         // remove the port-id tags from the metric
-        if (preg_match('/^port-id\d+/', $ms_name)) {
+        if (preg_match('/^port-id\d+/', (string) $ms_name)) {
             $ms_name = '';
         }
 
         foreach ($fields as $k => $v) {
-            // Send zero for fields without values
-            if (empty($v)) {
-                $v = 0;
+            // Skip fields without values
+            if (is_null($v)) {
+                continue;
             }
             $metric = implode('.', array_filter([$this->prefix, $hostname, $measurement, $ms_name, $k]));
             $this->writeData($metric, $v, $timestamp);
@@ -122,9 +115,9 @@ class Graphite extends BaseDatastore
     }
 
     /**
-     * @param string $metric
-     * @param mixed $value
-     * @param mixed $timestamp
+     * @param  string  $metric
+     * @param  mixed  $value
+     * @param  mixed  $timestamp
      */
     private function writeData($metric, $value, $timestamp)
     {

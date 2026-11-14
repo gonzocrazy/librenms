@@ -10,11 +10,11 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
+                    "location": "<private>",
                     "os": "ts-bspdu",
                     "type": "power",
                     "serial": null,
-                    "icon": "bladeshelterpdu.svg",
-                    "location": "<private>"
+                    "icon": "bladeshelterpdu.svg"
                 }
             ]
         },
@@ -36,9 +36,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -48,15 +45,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -143,9 +136,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -155,15 +145,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -250,9 +236,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -262,15 +245,11 @@
                     "ifType": "tunnel",
                     "ifAlias": "sit0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -357,9 +336,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": null,
-                    "ifPromiscuousMode": null,
-                    "ifHighSpeed": null,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": null,
                     "ifAdminStatus": null,
@@ -369,15 +345,11 @@
                     "ifType": "tunnel",
                     "ifAlias": "ip6tnl0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -468,9 +440,6 @@
                     "ifSpeed": 10000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "false",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 10,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -480,15 +449,11 @@
                     "ifType": "softwareLoopback",
                     "ifAlias": "lo",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -575,9 +540,6 @@
                     "ifSpeed": 100000000,
                     "ifSpeed_prev": null,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 100,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "up",
                     "ifOperStatus_prev": "up",
                     "ifAdminStatus": "up",
@@ -587,15 +549,11 @@
                     "ifType": "ethernetCsmacd",
                     "ifAlias": "eth0",
                     "ifPhysAddress": "00e0d81c9f15",
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -682,9 +640,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "down",
@@ -694,15 +649,11 @@
                     "ifType": "tunnel",
                     "ifAlias": "sit0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -789,9 +740,6 @@
                     "ifSpeed": null,
                     "ifSpeed_prev": 0,
                     "ifConnectorPresent": "true",
-                    "ifPromiscuousMode": "false",
-                    "ifHighSpeed": 0,
-                    "ifHighSpeed_prev": null,
                     "ifOperStatus": "down",
                     "ifOperStatus_prev": "down",
                     "ifAdminStatus": "down",
@@ -801,15 +749,11 @@
                     "ifType": "tunnel",
                     "ifAlias": "ip6tnl0",
                     "ifPhysAddress": null,
-                    "ifHardType": null,
                     "ifLastChange": 0,
-                    "ifVlan": "",
+                    "ifVlan": null,
                     "ifTrunk": null,
-                    "counter_in": null,
-                    "counter_out": null,
                     "ignore": 0,
                     "disabled": 0,
-                    "detailed": 0,
                     "deleted": 0,
                     "pagpOperationMode": null,
                     "pagpPortState": null,
@@ -890,7 +834,6 @@
         "discovery": {
             "processors": [
                 {
-                    "entPhysicalIndex": 0,
                     "hrDeviceIndex": 0,
                     "processor_oid": ".1.3.6.1.4.1.2021.11.11.0",
                     "processor_index": "0",
@@ -916,6 +859,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S1",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 2.83,
@@ -929,6 +873,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -940,6 +885,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S2",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -953,6 +899,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -964,6 +911,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S3",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -977,6 +925,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -988,6 +937,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S4",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1001,6 +951,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1012,6 +963,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S5",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1025,6 +977,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1036,6 +989,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S6",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1049,6 +1003,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1060,6 +1015,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S7",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1073,6 +1029,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1084,6 +1041,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Current S8",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 100,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1097,6 +1055,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1108,6 +1067,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S1",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 228.7,
@@ -1121,6 +1081,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1132,6 +1093,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S2",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 230,
@@ -1145,6 +1107,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1156,6 +1119,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S3",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1169,6 +1133,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1180,6 +1145,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S4",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1193,6 +1159,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1204,6 +1171,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S5",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1217,6 +1185,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1228,6 +1197,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S6",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1241,6 +1211,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1252,6 +1223,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S7",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1265,6 +1237,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1276,6 +1249,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Power S8",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 10,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1289,6 +1263,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1300,6 +1275,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S1",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 3470594,
@@ -1313,6 +1289,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1324,6 +1301,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S2",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 2718495,
@@ -1337,6 +1315,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1348,6 +1327,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S3",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1361,6 +1341,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1372,6 +1353,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S4",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1385,6 +1367,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1396,6 +1379,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S5",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1409,6 +1393,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1420,6 +1405,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S6",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1433,6 +1419,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1444,6 +1431,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S7",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1457,6 +1445,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1468,6 +1457,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Total Energy  S8",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1481,6 +1471,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1492,6 +1483,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S1",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1505,6 +1497,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1516,6 +1509,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S2",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1529,6 +1523,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1540,6 +1535,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S3",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1553,6 +1549,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1564,6 +1561,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S4",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1577,6 +1575,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1588,6 +1587,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S5",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1601,6 +1601,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1612,6 +1613,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S6",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1625,6 +1627,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1636,6 +1639,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S7",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1649,6 +1653,7 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 },
                 {
@@ -1660,6 +1665,7 @@
                     "sensor_type": "ts-bspdu",
                     "sensor_descr": "Inlet Voltage  S8",
                     "group": "Inlets",
+                    "category": null,
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 0,
@@ -1673,11 +1679,98 @@
                     "entPhysicalIndex_measured": null,
                     "sensor_prev": null,
                     "user_func": null,
+                    "rrd_type": "GAUGE",
                     "state_name": null
                 }
-            ],
-            "state_indexes": []
+            ]
         },
         "poller": "matches discovery"
+    },
+    "mempools": {
+        "discovery": {
+            "mempools": [
+                {
+                    "mempool_index": "1",
+                    "entPhysicalIndex": null,
+                    "mempool_type": "ucd",
+                    "mempool_class": "system",
+                    "mempool_precision": 1024,
+                    "mempool_descr": "Physical memory",
+                    "mempool_perc": 54,
+                    "mempool_perc_oid": null,
+                    "mempool_used": 68022272,
+                    "mempool_used_oid": null,
+                    "mempool_free": 58503168,
+                    "mempool_free_oid": ".1.3.6.1.4.1.2021.4.6.0",
+                    "mempool_total": 126525440,
+                    "mempool_total_oid": null,
+                    "mempool_largestfree": null,
+                    "mempool_lowestfree": null,
+                    "mempool_deleted": 0,
+                    "mempool_perc_warn": null
+                },
+                {
+                    "mempool_index": "3",
+                    "entPhysicalIndex": null,
+                    "mempool_type": "ucd",
+                    "mempool_class": "buffers",
+                    "mempool_precision": 1024,
+                    "mempool_descr": "Memory buffers",
+                    "mempool_perc": 1,
+                    "mempool_perc_oid": null,
+                    "mempool_used": 638976,
+                    "mempool_used_oid": ".1.3.6.1.4.1.2021.4.14.0",
+                    "mempool_free": 125886464,
+                    "mempool_free_oid": null,
+                    "mempool_total": 126525440,
+                    "mempool_total_oid": null,
+                    "mempool_largestfree": null,
+                    "mempool_lowestfree": null,
+                    "mempool_deleted": 0,
+                    "mempool_perc_warn": null
+                },
+                {
+                    "mempool_index": "4",
+                    "entPhysicalIndex": null,
+                    "mempool_type": "ucd",
+                    "mempool_class": "cached",
+                    "mempool_precision": 1024,
+                    "mempool_descr": "Cached memory",
+                    "mempool_perc": 14,
+                    "mempool_perc_oid": null,
+                    "mempool_used": 17334272,
+                    "mempool_used_oid": ".1.3.6.1.4.1.2021.4.15.0",
+                    "mempool_free": 109191168,
+                    "mempool_free_oid": null,
+                    "mempool_total": 126525440,
+                    "mempool_total_oid": null,
+                    "mempool_largestfree": null,
+                    "mempool_lowestfree": null,
+                    "mempool_deleted": 0,
+                    "mempool_perc_warn": null
+                }
+            ]
+        },
+        "poller": "matches discovery"
+    },
+    "ipv4-addresses": {
+        "discovery": {
+            "ipv4_addresses": [
+                {
+                    "ipv4_address": "127.0.0.1",
+                    "ipv4_prefixlen": 8,
+                    "context_name": "",
+                    "ipv4_network": "127.0.0.0/8",
+                    "ifIndex": 1
+                },
+                {
+                    "ipv4_address": "172.21.69.220",
+                    "ipv4_prefixlen": 24,
+                    "context_name": "",
+                    "ipv4_network": "172.21.69.0/24",
+                    "ifIndex": 2
+                }
+            ]
+        }
     }
 }

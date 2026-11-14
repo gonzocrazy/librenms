@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Deliberant.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessClientsDiscovery;
 use LibreNMS\OS;
 
@@ -44,7 +47,7 @@ class Deliberant extends OS implements WirelessClientsDiscovery
         $sensors = [];
         foreach ($clients_data as $index => $entry) {
             $sensors[] = new WirelessSensor(
-                'clients',
+                WirelessSensorType::Clients,
                 $device['device_id'],
                 '.1.3.6.1.4.1.32761.3.5.1.2.1.1.16.' . $index,
                 'deliberant',

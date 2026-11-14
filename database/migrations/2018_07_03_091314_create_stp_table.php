@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateStpTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('stp', function (Blueprint $table) {
+        Schema::create('stp', function (Blueprint $table): void {
             $table->increments('stp_id');
             $table->unsignedInteger('device_id')->index();
             $table->boolean('rootBridge');
@@ -39,8 +39,8 @@ class CreateStpTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('stp');
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Configuration.php
  *
@@ -18,13 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Validations;
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
+use Illuminate\Contracts\Encryption\DecryptException;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\Validator;
 
@@ -34,12 +37,12 @@ class Configuration extends BaseValidation
      * Validate this module.
      * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
      *
-     * @param Validator $validator
+     * @param  Validator  $validator
      */
-    public function validate(Validator $validator)
+    public function validate(Validator $validator): void
     {
         // Test transports
-        if (Config::get('alerts.email.enable') == true) {
+        if (LibrenmsConfig::get('alerts.email.enable') == true) {
             $validator->warn('You have the old alerting system enabled - this is to be deprecated on the 1st of June 2015: https://groups.google.com/forum/#!topic/librenms-project/1llxos4m0p4');
         }
 
@@ -50,5 +53,28 @@ class Configuration extends BaseValidation
         if (Eloquent::isConnected() && ! \DB::table('devices')->exists()) {
             $validator->warn('You have no devices.', 'Consider adding a device such as localhost: ' . $validator->getBaseURL() . '/addhost');
         }
+
+        if (LibrenmsConfig::has('validation.encryption.test')) {
+            try {
+                if (\Crypt::decryptString(LibrenmsConfig::get('validation.encryption.test')) !== 'librenms') {
+                    $this->failKeyChanged($validator);
+                }
+            } catch (DecryptException) {
+                $this->failKeyChanged($validator);
+            }
+        } else {
+            LibrenmsConfig::persist('validation.encryption.test', \Crypt::encryptString('librenms'));
+        }
+    }
+
+    /**
+     * @param  Validator  $validator
+     */
+    private function failKeyChanged(Validator $validator): void
+    {
+        $validator->fail(
+            'APP_KEY does not match key used to encrypt secrets in the database. APP_KEY must be identical across all nodes and restored from backups.',
+            'If you rotated APP_KEY, run lnms key:rotate to re-encrypt stored secrets with the new key.'
+        );
     }
 }

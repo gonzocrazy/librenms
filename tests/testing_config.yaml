@@ -1,0 +1,2 @@
+snmp.timeout: 0.5
+snmp.retries: 0

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * dell.inc.php
  *
@@ -18,24 +19,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$temp = snmpwalk_cache_multi_oid($device, 'voltageProbeTable', [], 'MIB-Dell-10892');
+
+use LibreNMS\Enum\SensorType;
+
+$temp = snmpwalk_cache_multi_oid($device, 'voltageProbeTable', [], 'MIB-Dell-10892', 'dell');
 $cur_oid = '.1.3.6.1.4.1.674.10892.1.600.20.1.6.';
 
 foreach ((array) $temp as $index => $entry) {
     $descr = $entry['voltageProbeLocationName'];
     if ($entry['voltageProbeType'] != 'voltageProbeTypeIsDiscrete') {
         $divisor = 1000;
-        $value = $entry['voltageProbeReading'];
-        $lowlimit = $entry['voltageProbeLowerCriticalThreshold'] / $divisor;
-        $low_warn_limit = $entry['voltageProbeLowerCriticalThreshold'] / $divisor;
-        $warnlimit = $entry['voltageProbeUpperNonCriticalThreshold'] / $divisor;
-        $limit = $entry['voltageProbeUpperCriticalThreshold'] / $divisor;
+        (isset($entry['voltageProbeReading'])) ? $value = $entry['voltageProbeReading'] : $value = null;
+        (isset($entry['voltageProbeLowerCriticalThreshold'])) ? $lowlimit = $entry['voltageProbeLowerCriticalThreshold'] / $divisor : $lowlimit = null;
+        (isset($entry['voltageProbeLowerCriticalThreshold'])) ? $low_warn_limit = $entry['voltageProbeLowerCriticalThreshold'] / $divisor : $low_warn_limit = null;
+        (isset($entry['voltageProbeUpperNonCriticalThreshold'])) ? $warnlimit = $entry['voltageProbeUpperNonCriticalThreshold'] / $divisor : $warnlimit = null;
+        (isset($entry['voltageProbeUpperCriticalThreshold'])) ? $limit = $entry['voltageProbeUpperCriticalThreshold'] / $divisor : $limit = null;
 
-        discover_sensor($valid['sensor'], 'voltage', $device, $cur_oid . $index, $index, 'dell', $descr, $divisor, '1', $lowlimit, $low_warn_limit, $warnlimit, $limit, $value, 'snmp', $index);
+        discover_sensor(null, SensorType::Voltage, $device, $cur_oid . $index, $index, 'dell', $descr, $divisor, '1', $lowlimit, $low_warn_limit, $warnlimit, $limit, $value, 'snmp', $index);
     }
+
+    unset(
+        $descr,
+        $value,
+        $lowlimit,
+        $low_warn_limit,
+        $warnlimit,
+        $limit
+    );
 }
 
 unset(

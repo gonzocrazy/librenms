@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RuckusSzClusterInService.php
  *
@@ -21,6 +22,7 @@
  * Virtual Smartzone cluster state changed to "in service"
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -30,7 +32,6 @@ namespace LibreNMS\Snmptrap\Handlers;
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class RuckusSzClusterInService implements SnmptrapHandler
 {
@@ -38,13 +39,13 @@ class RuckusSzClusterInService implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         $clusterName = $trap->getOidData($trap->findOid('RUCKUS-SZ-EVENT-MIB::ruckusSZClusterName'));
-        Log::event("Smartzone cluster $clusterName is now in service", $device->device_id, 'trap', 2);
+        $trap->log("Smartzone cluster $clusterName is now in service");
     }
 }

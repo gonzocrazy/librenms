@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveMibPollingTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::drop('device_mibs');
         Schema::drop('device_oids');
@@ -23,21 +23,21 @@ class RemoveMibPollingTables extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::create('device_mibs', function (Blueprint $table) {
+        Schema::create('device_mibs', function (Blueprint $table): void {
             $table->unsignedInteger('device_id');
             $table->string('module');
             $table->string('mib');
             $table->string('included_by');
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('last_modified')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('last_modified')->useCurrent();
             }
             $table->primary(['device_id', 'module', 'mib']);
         });
-        Schema::create('device_oids', function (Blueprint $table) {
+        Schema::create('device_oids', function (Blueprint $table): void {
             $table->unsignedInteger('device_id');
             $table->string('oid');
             $table->string('module');
@@ -45,14 +45,14 @@ class RemoveMibPollingTables extends Migration
             $table->string('object_type');
             $table->string('value')->nullable();
             $table->bigInteger('numvalue')->nullable();
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('last_modified')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('last_modified')->useCurrent();
             }
             $table->primary(['device_id', 'oid']);
         });
-        Schema::create('mibdefs', function (Blueprint $table) {
+        Schema::create('mibdefs', function (Blueprint $table): void {
             $table->string('module');
             $table->string('mib');
             $table->string('object_type');
@@ -62,7 +62,7 @@ class RemoveMibPollingTables extends Migration
             $table->string('max_access')->nullable();
             $table->string('status')->nullable();
             $table->string('included_by');
-            if (\LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
+            if (LibreNMS\DB\Eloquent::getDriver() == 'mysql') {
                 $table->timestamp('last_modified')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             } else {
                 $table->timestamp('last_modified')->useCurrent();
@@ -70,4 +70,4 @@ class RemoveMibPollingTables extends Migration
             $table->primary(['module', 'mib', 'object_type']);
         });
     }
-}
+};

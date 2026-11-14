@@ -3,7 +3,7 @@
 require 'includes/html/graphs/common.inc.php';
 $descr_len = 20;
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'mysql', $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'mysql', $app->app_id]);
 
 $array = ['IBTNx' => 'Transactions created'];
 
@@ -21,7 +21,7 @@ if (Rrd::checkRrdExists($rrd_filename)) {
         $i++;
     }
 } else {
-    echo "file missing: $file";
+    throw new \LibreNMS\Exceptions\RrdGraphException("No Data file $rrd_filename");
 }
 
 $colours = 'mixed';

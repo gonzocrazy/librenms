@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CheckInstalled.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,18 +28,19 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use LibreNMS\Util\EnvHelper;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckInstalled
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
+     * @param  Request  $request
+     * @param  Closure  $next
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $installed = ! config('librenms.install') && file_exists(base_path('.env'));
         $is_install_route = $request->is('install*');

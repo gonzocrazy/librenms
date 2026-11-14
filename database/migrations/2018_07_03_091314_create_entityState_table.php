@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateEntityStateTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('entityState', function (Blueprint $table) {
+        Schema::create('entityState', function (Blueprint $table): void {
             $table->increments('entity_state_id');
             $table->unsignedInteger('device_id')->nullable()->index();
             $table->unsignedInteger('entPhysical_id')->nullable();
@@ -30,8 +30,8 @@ class CreateEntityStateTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('entityState');
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * VmwVmHBLost.php
  *
@@ -22,6 +23,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -29,9 +31,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class VmwVmHBLost implements SnmptrapHandler
 {
@@ -39,13 +41,13 @@ class VmwVmHBLost implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         $vmGuestName = VmwTrapUtil::getGuestName($trap);
-        Log::event("Heartbeat from guest $vmGuestName lost", $device->device_id, 'trap', 4);
+        $trap->log("Heartbeat from guest $vmGuestName lost", Severity::Warning);
     }
 }

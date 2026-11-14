@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Mgnt2TrapNMSEvent.php
  *
@@ -20,6 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -27,9 +29,9 @@
 namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SnmptrapHandler;
 use LibreNMS\Snmptrap\Trap;
-use Log;
 
 class Mgnt2TrapNmsAlarm implements SnmptrapHandler
 {
@@ -37,8 +39,8 @@ class Mgnt2TrapNmsAlarm implements SnmptrapHandler
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
      *
-     * @param Device $device
-     * @param Trap $trap
+     * @param  Device  $device
+     * @param  Trap  $trap
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -69,30 +71,14 @@ class Mgnt2TrapNmsAlarm implements SnmptrapHandler
             $msg = "Alarm on slot $slot, $sourcePm Issue: $probSpecific Possible Cause: $probCause";
         }
 
-        switch ($alarmSeverity) {
-            case 'cleared':
-                $severity = 1;
-                break;
-            case 'critical':
-                $severity = 5;
-                break;
-            case 'major':
-                $severity = 5;
-                break;
-            case 'minor':
-                $severity = 4;
-                break;
-            case 'warning':
-                $severity = 4;
-                break;
-            case 'indeterminate':
-                $severity = 0;
-                break;
-            default:
-                $severity = 2;
-                break;
-        }
+        $severity = match ($alarmSeverity) {
+            'cleared' => Severity::Ok,
+            'critical', 'major' => Severity::Error,
+            'minor', 'warning' => Severity::Warning,
+            'indeterminate' => Severity::Unknown,
+            default => Severity::Info,
+        };
 
-        Log::event($msg, $device->device_id, 'trap', $severity);
+        $trap->log($msg, $severity);
     }
 }

@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+use App\Observers\ServiceObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[ObservedBy([ServiceObserver::class])]
 class Service extends DeviceRelatedModel
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $primaryKey = 'service_id';
     protected $fillable = [
@@ -28,7 +34,19 @@ class Service extends DeviceRelatedModel
     // ---- Query Scopes ----
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
+     * @return Builder
+     */
+    public function scopeIsActive($query)
+    {
+        return $query->where([
+            ['service_ignore', '=', 0],
+            ['service_disabled', '=', 0],
+        ]);
+    }
+
+    /**
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsOk($query)
@@ -41,7 +59,7 @@ class Service extends DeviceRelatedModel
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsCritical($query)
@@ -54,7 +72,7 @@ class Service extends DeviceRelatedModel
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsWarning($query)
@@ -67,7 +85,7 @@ class Service extends DeviceRelatedModel
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsIgnored($query)
@@ -79,7 +97,7 @@ class Service extends DeviceRelatedModel
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsDisabled($query)

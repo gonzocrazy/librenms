@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenTSDBStoreTest.php
  *
@@ -18,96 +19,125 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Tests\Unit\Data;
 
+use App\Data\TimeSeries\MetricIdentity;
+use App\Facades\DeviceCache;
+use App\Facades\LibrenmsConfig;
+use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\OpenTSDB;
 use LibreNMS\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group datastores
- */
-class OpenTSDBStoreTest extends TestCase
+#[Group('datastores')]
+final class OpenTSDBStoreTest extends TestCase
 {
-    protected $timestamp = 990464400;
+    protected $timestamp = 1190464400;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         // fix the date
-        Carbon::setTestNow(Carbon::createFromTimestamp($this->timestamp));
+        Carbon::setTestNow(Carbon::createFromTimestampUTC($this->timestamp));
+        LibrenmsConfig::set('opentsdb.enable', true);
     }
 
     protected function tearDown(): void
     {
         // restore Carbon:now() to normal
         Carbon::setTestNow();
+        LibrenmsConfig::set('opentsdb.enable', false);
 
         parent::tearDown();
     }
 
-    public function testSocketConnectError()
+    public function testSocketConnectError(): void
     {
         $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
 
         $mockFactory->shouldReceive('createClient')
-            ->andThrow('Socket\Raw\Exception', 'Failed to handle connect exception');
+            ->andThrow(\Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
 
         new OpenTSDB($mockFactory);
     }
 
-    public function testSocketWriteError()
+    public function testSocketWriteError(): void
     {
         $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
         $opentsdb = $this->mockOpenTSDB($mockSocket);
 
         $mockSocket->shouldReceive('write')
-            ->andThrow('Socket\Raw\Exception', 'Did not handle socket exception');
+            ->andThrow(\Socket\Raw\Exception::class, 'Did not handle socket exception')->once();
 
-        $opentsdb->put(['hostname' => 'test'], 'fake', [], ['one' => 1]);
+        $opentsdb->write('fake', ['one' => 1]);
     }
 
-    public function testSimpleWrite()
+    public function testSimpleWrite(): void
     {
         $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
         $opentsdb = $this->mockOpenTSDB($mockSocket);
 
-        $device = ['hostname' => 'testhost'];
         $measurement = 'testmeasure';
         $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
         $fields = ['ifIn' => 234234, 'ifOut' => 53453];
+        $meta = ['device' => new Device(['hostname' => 'testhost'])];
 
         $mockSocket->shouldReceive('write')
-            ->with("put net.testmeasure $this->timestamp 234234.000000 hostname=testhost ifName=testifname type=testtype key=ifIn\n");
+            ->with("put net.testmeasure $this->timestamp 234234.000000 hostname=testhost ifName=testifname type=testtype key=ifIn\n")->once();
         $mockSocket->shouldReceive('write')
-            ->with("put net.testmeasure $this->timestamp 53453.000000 hostname=testhost ifName=testifname type=testtype key=ifOut\n");
-        $opentsdb->put($device, $measurement, $tags, $fields);
+            ->with("put net.testmeasure $this->timestamp 53453.000000 hostname=testhost ifName=testifname type=testtype key=ifOut\n")->once();
+        $opentsdb->write($measurement, $fields, $tags, $meta);
     }
 
-    public function testPortWrite()
+    public function testMetricIdentityTagsReplaceTheDeviceHostname(): void
+    {
+        $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+        $opentsdb = $this->mockOpenTSDB($mockSocket);
+        $meta = ['device' => new Device(['hostname' => 'pve1'])];
+
+        $host = new MetricIdentity('vm.cpu', ['hostname' => 'pve1', 'type' => 'qemu', 'id' => 100]);
+        $cluster = new MetricIdentity('vm.cpu', ['cluster' => 'pve-cluster', 'type' => 'qemu', 'id' => 100]);
+
+        $mockSocket->shouldReceive('write')
+            ->with("put net.vm.cpu $this->timestamp 5.000000 hostname=pve1 type=qemu id=100 key=usage\n")->once();
+        $mockSocket->shouldReceive('write')
+            ->with("put net.vm.cpu $this->timestamp 5.000000 cluster=pve-cluster type=qemu id=100 key=usage\n")->once();
+
+        $opentsdb->write($host->measurement, ['usage' => 5], $host->tags, [...$meta, 'metric' => $host]);
+        $opentsdb->write($cluster->measurement, ['usage' => 5], $cluster->tags, [...$meta, 'metric' => $cluster]);
+    }
+
+    public function testPortWrite(): void
     {
         $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
         $opentsdb = $this->mockOpenTSDB($mockSocket);
 
-        $device = ['hostname' => 'testhost'];
+        // test that device is used from DeviceCache::getPrimary()
+        $device = new Device(['hostname' => 'testhost']);
+        $device->device_id = 42;
+        DeviceCache::fake($device);
+        DeviceCache::setPrimary($device->device_id);
+
         $measurement = 'ports';
         $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
         $fields = ['ifIn' => 897238, 'ifOut' => 2342];
 
         $mockSocket->shouldReceive('write')
-            ->with("put net.port.ifin $this->timestamp 897238.000000 hostname=testhost ifName=testifname type=testtype\n");
+            ->with("put net.port.ifin $this->timestamp 897238.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
         $mockSocket->shouldReceive('write')
-            ->with("put net.port.ifout $this->timestamp 2342.000000 hostname=testhost ifName=testifname type=testtype\n");
-        $opentsdb->put($device, $measurement, $tags, $fields);
+            ->with("put net.port.ifout $this->timestamp 2342.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
+        $opentsdb->write($measurement, $fields, $tags);
     }
 
     /**
-     * @param mixed $mockSocket
+     * @param  mixed  $mockSocket
      * @return OpenTSDB
      */
     private function mockOpenTSDB($mockSocket)

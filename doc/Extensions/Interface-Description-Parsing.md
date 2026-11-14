@@ -1,13 +1,10 @@
-source: Extensions/Interface-Description-Parsing.md
-path: blob/master/doc/
-
-# About
+# Interface Description Parsing
 
 Librenms can interpret, display and group certain additional information on ports.
-This is done based on the format that the port description is written
-although it's possible  to customise the parser to be specific for your setup.
+This is done based on the format that the port description is written,
+You can also customise the parser for your own setup.
 
-# Keywords
+## Keywords
 
 See [examples](#examples) for formats.
 
@@ -21,7 +18,7 @@ See [examples](#examples) for formats.
   - `{}` contains *your* circuit id
   - `[]` contains the service type or speed
 
-# Examples
+## Examples
 
 Cisco IOS / NXOS / IOSXR:
 
@@ -38,7 +35,7 @@ descr Cust: Example Customer [10Mbit] (T1 Telco Y CCID129031) {EXAMP0001}
 
 Unix / Linux:
 
-This requires an additional script to be [setup](#setup)
+This requires an additional script to be [setup](#device-setup)
 
 ```text
 # eth3: Cust: Example Customer [10Mbit] (T1 Telco Y CCID129031) {EXAMP0001}
@@ -47,41 +44,88 @@ This requires an additional script to be [setup](#setup)
 # eth2: Peering: Peering Exchange
 ```
 
-# Customisation
+## Customisation
 
 The following config options can be set to enable more custom types:
 
+!!! setting "webui/port-descr"
+    ```bash
+    lnms config:set customers_descr.+ 'cust'
+    lnms config:set transit_descr.+ 'transit'
+    lnms config:set peering_descr.+ 'peering'
+    lnms config:set core_descr.+ 'core'
+    lnms config:set custom_descr.+ 'ptp'
+    lnms config:set custom_descr.+ 'anything'
+    ```
+
+## Custom interface parser
+
+You can write your own parser. The existing one is `includes/port-descr-parser.inc.php`.
+
+After you create your own parser, enable it with:
+
+!!! setting "webui/port-descr"
+    ```bash
+    lnms config:set port_descr_parser includes/custom/my-port-descr-parser.inc.php
+    ```
+
+Here is an example of a very simple file that parses type and descr.
 ```php
-$config['customers_descr'][]         = 'cust';
-$config['transit_descr'][]           = "transit";
-$config['peering_descr'][]           = "peering";
-$config['core_descr'][]              = "core";
-$config['custom_descr'][]            = "something_made_up";
+<?php
+
+return function (string $ifAlias): array {
+    if (! str_contains(':', $ifAlias)) {
+        return [];
+    }
+
+    $parts = explode(':', $ifAlias, 2);
+
+    return [
+        'type' => $parts[0],
+        'descr' => $parts[1],
+    ];
+};
 ```
 
-# Custom interface parser
+#### Fields
 
-It's also possible to write your own parser, the existing one is: includes/port-descr-parser.inc.php
+Fields you can fill in your returned array
 
-Once you've created your own then you can enable it with:
+ - type: the port type. Only a defined type appears as a graph
+ - descr: description of the port
+ - circuit: usually a circuit id
+ - speed: can be a plan name or a numeric speed 10G or asymmetric egress/ingress numeric speeds (eg 10G/500M)
+   can used by custom maps and some graphs
+ - notes: notes
 
-```php
-$config['port_descr_parser'] = "includes/custom/my-port-descr-parser.inc.php";
-```
+#### Variables
 
-## Setup
+Variables you can request for your function include:
+
+ - string $ifAlias
+ - int $port_id
+ - string $ifName
+ - int $ifIndex
+ - \App\Models\Device $device
+
+### Device Setup
 
 For Unix / Linux based systems, you need to run an additional script
-to support the parsing of interface infor.
+to support the parsing of interface information.
 
 - Add `ifAlias` from `/opt/librenms/scripts/` or download it from
   [here](https://github.com/librenms/librenms/blob/master/scripts/ifAlias)
   to the Server and make it executable `chmod +x /path/to/ifAlias`
 - Add to `snmpd.conf` something like:
     ``pass .1.3.6.1.2.1.31.1.1.1.18 /path/to/ifAlias``
- Restart `snmpd` - `service snmpd restart`
+- Add aliases with
+  - `iproute2` package like:
+    ``ip link set eth0.427 alias 'Cust: CustomerA'``
+  - in `/etc/network/interfaces` or `/etc/network/interfaces.d/*` with a comment like:
+    ``# eth0.427: Cust CustomerA``
+
+- Restart `snmpd` - `systemctl restart snmpd`
 
 There are no changes to be made or additions to install for the polling librenms.
 
-Now you can set up your [keywords](#keywords) in your `/etc/network/interfaces`
-``//Add more distributions than just Debian based``
+Now you can set up your [keywords](#keywords) in your aliases.

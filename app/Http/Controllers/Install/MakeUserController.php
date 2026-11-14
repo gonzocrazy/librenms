@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MakeUserController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,6 +30,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rules\Password;
 use LibreNMS\Interfaces\InstallerStep;
 
 class MakeUserController extends InstallationController implements InstallerStep
@@ -61,7 +64,7 @@ class MakeUserController extends InstallationController implements InstallerStep
     {
         $this->validate($request, [
             'username' => 'required',
-            'password' => 'required',
+            'password' => ['required', Password::defaults()],
         ]);
 
         $message = trans('install.user.failure');
@@ -71,9 +74,10 @@ class MakeUserController extends InstallationController implements InstallerStep
             if (! $this->complete()) {
                 $this->configureDatabase();
                 $user = new User($request->only(['username', 'password', 'email']));
-                $user->level = 10; // admin
-                $user->setPassword($request->get('password'));
+                $user->setPassword($request->input('password'));
                 $res = $user->save();
+
+                $user->assignRole('admin');
 
                 if ($res) {
                     $message = trans('install.user.success');
@@ -102,7 +106,7 @@ class MakeUserController extends InstallationController implements InstallerStep
 
                 return $exists;
             }
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             //
         }
 
@@ -116,6 +120,6 @@ class MakeUserController extends InstallationController implements InstallerStep
 
     public function icon(): string
     {
-        return 'fa-key';
+        return 'fa-solid fa-key';
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LibreNMS module to capture Cisco OTV Details
  *
@@ -10,6 +11,9 @@
  * option) any later version.  Please see LICENSE.txt at the top level of
  * the source code distribution for details.
  */
+
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Util\ProgressList;
 
 if ($device['os_group'] == 'cisco') {
     // Define some error messages
@@ -59,10 +63,10 @@ if ($device['os_group'] == 'cisco') {
     $module = 'Cisco-OTV';
 
     $component = new LibreNMS\Component();
-    $components = $component->getComponents($device['device_id'], ['type'=>$module]);
+    $components = $component->getComponents($device['device_id'], ['type' => $module]);
 
     // We only care about our device id.
-    $components = $components[$device['device_id']];
+    $components = $components[$device['device_id']] ?? [];
 
     // Begin our master array, all other values will be processed into this array.
     $tblOTV = [];
@@ -79,12 +83,12 @@ if ($device['os_group'] == 'cisco') {
      */
     if (is_null($tblOverlayEntry) || is_null($tblAdjacencyDatabaseEntry) || is_null($tblAdjacentDevName)) {
         // We have to error here or we will end up deleting all our components.
-        echo "Error\n";
+        Log::info('Error');
     } else {
         // No Error, lets process things.
 
         // Add each overlay to the array.
-        foreach ((array) $tblOverlayEntry['1.3.6.1.4.1.9.9.810.1.2.1.1.2'] as $index => $name) {
+        foreach ((array) ($tblOverlayEntry['1.3.6.1.4.1.9.9.810.1.2.1.1.2'] ?? []) as $index => $name) {
             $result = [];
             $message = false;
             $result['index'] = $index;
@@ -134,7 +138,7 @@ if ($device['os_group'] == 'cisco') {
         // Add each adjacency to the array.
         if ($tblAdjacentDevName) {
             foreach ((array) $tblAdjacentDevName as $key => $value) {
-                preg_match('/^1.3.6.1.4.1.9.9.810.1.3.1.1.4.(\d+).1.4.(\d+.\d+.\d+.\d+)$/', $key, $matches);
+                preg_match('/^1.3.6.1.4.1.9.9.810.1.3.1.1.4.(\d+).1.4.(\d+.\d+.\d+.\d+)$/', (string) $key, $matches);
                 $result = [];
                 $result['index'] = $matches[1];
                 $result['endpoint'] = $matches[2];
@@ -194,6 +198,7 @@ if ($device['os_group'] == 'cisco') {
             $tblOTV[] = $result;
         }
 
+        $progress = ProgressList::start('OTV');
         /*
          * Ok, we have our 2 array's (Components and SNMP) now we need
          * to compare and see what needs to be added/updated.
@@ -215,11 +220,11 @@ if ($device['os_group'] == 'cisco') {
                 $new_component = $component->createComponent($device['device_id'], $module);
                 $component_key = key($new_component);
                 $components[$component_key] = array_merge($new_component[$component_key], $array);
-                echo '+';
+                $progress->mark('+');
             } else {
                 // The component does exist, merge the details in - UPDATE.
                 $components[$component_key] = array_merge($components[$component_key], $array);
-                echo '.';
+                $progress->mark('.');
             }
         }
 
@@ -230,7 +235,7 @@ if ($device['os_group'] == 'cisco') {
             // Guilty until proven innocent
             $found = false;
 
-            foreach ($tblOTV as $k => $v) {
+            foreach ($tblOTV as $v) {
                 if ($array['UID'] == $v['UID']) {
                     // Yay, we found it...
                     $found = true;
@@ -239,13 +244,13 @@ if ($device['os_group'] == 'cisco') {
 
             if ($found === false) {
                 // The component has not been found. we should delete it.
-                echo '-';
+                $progress->mark('-');
                 $component->deleteComponent($key);
             }
         }
 
         // Write the Components back to the DB.
         $component->setComponentPrefs($device['device_id'], $components);
-        echo "\n";
+        $progress->end();
     } // End if not error
 }

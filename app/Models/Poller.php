@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Widget.php
  *
@@ -18,12 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Poller extends Model
@@ -31,4 +34,30 @@ class Poller extends Model
     public $timestamps = false;
     protected $primaryKey = 'id';
     protected $fillable = ['poller_name'];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'poller_details' => 'array',
+        ];
+    }
+
+    // ---- Scopes ----
+
+    protected function scopeIsInactive(Builder $query): Builder
+    {
+        $default = (int) \App\Facades\LibrenmsConfig::get('rrd.step');
+
+        return $query->where('last_polled', '<', \DB::raw("DATE_SUB(NOW(),INTERVAL $default SECOND)"));
+    }
+
+    protected function scopeIsActive(Builder $query): Builder
+    {
+        $default = (int) \App\Facades\LibrenmsConfig::get('rrd.step');
+
+        return $query->where('last_polled', '>=', \DB::raw("DATE_SUB(NOW(),INTERVAL $default SECOND)"));
+    }
 }

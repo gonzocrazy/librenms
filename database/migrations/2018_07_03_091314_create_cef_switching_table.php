@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCefSwitchingTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('cef_switching', function (Blueprint $table) {
+        Schema::create('cef_switching', function (Blueprint $table): void {
             $table->increments('cef_switching_id');
             $table->unsignedInteger('device_id');
             $table->integer('entPhysicalIndex');
@@ -36,8 +36,8 @@ class CreateCefSwitchingTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('cef_switching');
     }
-}
+};

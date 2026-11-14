@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DynamicConfigItem.php
  *
@@ -18,18 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Util;
 
-use LibreNMS\Config;
+use App\Facades\LibrenmsConfig;
 use Validator;
 
+#[\AllowDynamicProperties]
 class DynamicConfigItem implements \ArrayAccess
 {
-    public $name;
     public $group;
     public $section;
     public $value;
@@ -45,10 +47,9 @@ class DynamicConfigItem implements \ArrayAccess
     public $validate;
     public $units;
 
-    public function __construct($name, $settings = [])
+    public function __construct(public $name, $settings = [])
     {
-        $this->name = $name;
-        $this->value = Config::get($this->name, $this->default);
+        $this->value = LibrenmsConfig::get($this->name, $this->default);
 
         foreach ($settings as $key => $value) {
             $this->$key = $value;
@@ -58,7 +59,7 @@ class DynamicConfigItem implements \ArrayAccess
     /**
      * Check given value is valid. Using the type of this config item and possibly other variables.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return bool|mixed
      */
     public function checkValue($value)
@@ -69,25 +70,44 @@ class DynamicConfigItem implements \ArrayAccess
             return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;
         } elseif ($this->type == 'integer') {
             return (! is_bool($value) && filter_var($value, FILTER_VALIDATE_INT)) || $value === '0' || $value === 0;
+        } elseif ($this->type == 'float') {
+            return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
         } elseif ($this->type == 'select') {
             return in_array($value, array_keys($this->options));
         } elseif ($this->type == 'email') {
             // allow email format that includes display text
-            if (preg_match('/.* <(.*)>/', $value, $matches)) {
+            if (preg_match('/.* <(.*)>/', (string) $value, $matches)) {
                 $value = $matches[1];
             }
 
             return filter_var($value, FILTER_VALIDATE_EMAIL);
         } elseif ($this->type == 'array') {
             return is_array($value); // this should probably have more complex validation via validator rules
+        } elseif ($this->type == 'array-sub-keyed') {
+            if (! is_array($value)) {
+                return false;
+            }
+
+            foreach ($value as $key => $v) {
+                if (! is_array($v)) {
+                    return false;
+                }
+
+                // check keys not empty
+                if (is_string($key) && strlen(trim($key)) == 0) {
+                    return false;
+                }
+            }
+
+            return true;
         } elseif ($this->type == 'color') {
-            return (bool) preg_match('/^#?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/', $value);
+            return (bool) preg_match('/^#?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/', (string) $value);
         } elseif (in_array($this->type, ['text', 'password'])) {
             return ! is_array($value);
-        } elseif ($this->type === 'executable') {
-            return is_file($value) && is_executable($value);
         } elseif ($this->type === 'directory') {
-            return is_dir($value);
+            $value = $this->sanitizePath($value);
+
+            return $value !== false && is_dir($value);
         }
 
         return false;
@@ -193,7 +213,7 @@ class DynamicConfigItem implements \ArrayAccess
     }
 
     /**
-     * @param mixed $value The value that was validated
+     * @param  mixed  $value  The value that was validated
      * @return string
      */
     public function getValidationMessage($value)
@@ -204,22 +224,23 @@ class DynamicConfigItem implements \ArrayAccess
     }
 
     // ArrayAccess functions
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->$offset);
     }
 
-    public function offsetGet($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset): mixed
     {
-        return isset($this->$offset) ? $this->$offset : null;
+        return $this->$offset ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->$offset = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->$offset);
     }
@@ -247,5 +268,14 @@ class DynamicConfigItem implements \ArrayAccess
     private function buildValidator($value)
     {
         return Validator::make(['value' => $value], $this->validate);
+    }
+
+    private function sanitizePath(string $path): string|false
+    {
+        if (preg_match('/[`;#$|&\'"><(]/', $path)) {
+            return false;
+        }
+
+        return realpath($path); // avoid path redirection shenanigans
     }
 }

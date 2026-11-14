@@ -6,23 +6,26 @@
     <div class="container-fluid">
         <x-panel id="manage-port-groups-panel">
             <x-slot name="title">
-                <i class="fa fa-th fa-fw fa-lg" aria-hidden="true"></i> @lang('Port Groups')
+                <i class="fa fa-th fa-fw fa-lg" aria-hidden="true"></i> {{ __('Port Groups') }}
             </x-slot>
 
             <div class="row">
                 <div class="col-md-12">
+                    @can('create', \App\Models\PortGroup::class)
                     <a type="button" class="btn btn-primary" href="{{ route('port-groups.create') }}">
-                        <i class="fa fa-plus"></i> @lang('New Port Group')
+                        <i class="fa fa-plus"></i> {{ __('New Port Group') }}
                     </a>
+                    @endcan
                 </div>
             </div>
             <div class="table-responsive">
                 <table id="manage-port-groups-table" class="table table-condensed table-hover">
                     <thead>
                     <tr>
-                        <th>@lang('Name')</th>
-                        <th>@lang('Description')</th>
-                        <th>@lang('Actions')</th>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Description') }}</th>
+                        <th>{{ __('Ports') }}</th>
+                        <th>{{ __('Actions') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -30,14 +33,26 @@
                         <tr id="row_{{ $port_group->id }}">
                             <td>{{ $port_group->name }}</td>
                             <td>{{ $port_group->desc }}</td>
+                            <td><a href="{{ route('ports', ['filter' => ['groups.id' => ['eq' => $port_group->id]]]) }}">{{ $port_group->ports_count }}</a></td>
                             <td>
-                                <a type="button" title="@lang('edit Port Group')" class="btn btn-primary btn-sm" aria-label="@lang('Edit')"
+                                <a type="button" title="{{ __('port.groups.graph') }}" class="btn btn-default btn-sm" aria-label="{{ __('port.groups.graph') }}"
+                                   href="{{ route('portgroup.graph', $port_group->id) }}">
+                                    <i class="fa fa-area-chart" aria-hidden="true"></i></a>
+                                @can('update', $port_group)
+                                <a type="button" title="{{ __('port.groups.manage') }}" class="btn btn-default btn-sm" aria-label="{{ __('port.groups.manage') }}"
+                                   href="{{ route('port-groups.ports', $port_group->id) }}">
+                                    <i class="fa fa-list" aria-hidden="true"></i></a>
+                                <a type="button" title="{{ __('edit Port Group') }}" class="btn btn-primary btn-sm" aria-label="{{ __('Edit') }}"
                                    href="{{ route('port-groups.edit', $port_group->id) }}">
                                     <i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                <button type="button" class="btn btn-danger btn-sm" title="@lang('delete Port Group')" aria-label="@lang('Delete')"
-                                        onclick="delete_pg(this, '{{ $port_group->name }}', '{{ route('port-groups.destroy', $port_group->id) }}')">
+                                @endcan
+                                @can('delete', $port_group)
+                                <button type="button" class="btn btn-danger btn-sm" title="{{ __('delete Port Group') }}" aria-label="{{ __('Delete') }}"
+                                        data-group-name="{{ $port_group->name }}"
+                                        onclick="delete_pg(this, '{{ route('port-groups.destroy', $port_group->id) }}')">
                                     <i
                                         class="fa fa-trash" aria-hidden="true"></i></button>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -50,10 +65,11 @@
 
 @section('scripts')
     <script>
-        function delete_pg(button, name, url) {
+        function delete_pg(button, url) {
             var index = button.parentNode.parentNode.rowIndex;
+            var name = button.dataset.groupName;
 
-            if (confirm('@lang('Are you sure you want to delete ')' + name + '?')) {
+            if (confirm('{{ __('Are you sure you want to delete ') }}' + name + '?')) {
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -62,7 +78,7 @@
                         toastr.success(msg);
                     },
                     error: function () {
-                        toastr.error('@lang('The port group could not be deleted')');
+                        toastr.error('{{ __('The port group could not be deleted') }}');
                     }
                 });
             }

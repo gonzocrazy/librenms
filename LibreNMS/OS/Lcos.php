@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Lcos.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Vitali Kari
  * @author     Vitali Kari <vitali.kari@gmail.com>
  */
@@ -25,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCapacityDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCcqDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
@@ -34,7 +37,10 @@ use LibreNMS\Interfaces\Discovery\Sensors\WirelessRateDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRssiDiscovery;
 use LibreNMS\Interfaces\Polling\Sensors\WirelessFrequencyPolling;
 use LibreNMS\OS;
-use LibreNMS\Util\Rewrite;
+use LibreNMS\Util\Mac;
+use LibreNMS\Util\Number;
+use LibreNMS\Util\Oid;
+use SnmpQuery;
 
 class Lcos extends OS implements
     WirelessFrequencyDiscovery,
@@ -47,22 +53,6 @@ class Lcos extends OS implements
     WirelessRssiDiscovery
 {
     /**
-     * Convert String to decimal encoded string notation
-     *
-     * @param string $index
-     * @return string decimal encoded OID string
-     */
-    private function strToDecOid($index)
-    {
-        $dec_index = [];
-        for ($i = 0, $j = strlen($index); $i < $j; $i++) {
-            $dec_index[] = ord($index[$i]);
-        }
-
-        return implode('.', $dec_index);
-    }
-
-    /**
      * Discover wireless frequency.  This is in Hz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
@@ -71,18 +61,18 @@ class Lcos extends OS implements
     public function discoverWirelessFrequency()
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryRadioChannel', [], 'LCOS-MIB');
-        $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
+        $radios = SnmpQuery::cache()->walk('LCOS-MIB::lcsStatusWlanRadiosEntryIfc')->table(1);
 
         $sensors = [];
         foreach ($data as $index => $entry) {
-            $radio = $radios[$index];
+            $radio = $radios[$index]['LCOS-MIB::lcsStatusWlanRadiosEntryIfc'];
             if (isset($sensors[$radio])) {
                 continue;
             }
             $sensors[$radio] = new WirelessSensor(
-                'frequency',
+                WirelessSensorType::Frequency,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.' . Oid::encodeString($index),
                 'lcos',
                 $radio,
                 "Frequency ($radio)",
@@ -97,7 +87,7 @@ class Lcos extends OS implements
      * Poll wireless frequency as MHz
      * The returned array should be sensor_id => value pairs
      *
-     * @param array $sensors Array of sensors needed to be polled
+     * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -114,18 +104,18 @@ class Lcos extends OS implements
     public function discoverWirelessCapacity()
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryModemLoad', [], 'LCOS-MIB');
-        $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
+        $radios = SnmpQuery::cache()->walk('LCOS-MIB::lcsStatusWlanRadiosEntryIfc')->table(1);
 
         $sensors = [];
         foreach ($data as $index => $entry) {
-            $radio = $radios[$index];
+            $radio = $radios[$index]['LCOS-MIB::lcsStatusWlanRadiosEntryIfc'];
             if (isset($sensors[$radio])) {
                 continue;
             }
             $sensors[$radio] = new WirelessSensor(
-                'capacity',
+                WirelessSensorType::Capacity,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.' . Oid::encodeString($index),
                 'lcos',
                 $radio,
                 "Modem Load ($radio)",
@@ -145,18 +135,18 @@ class Lcos extends OS implements
     public function discoverWirelessNoiseFloor()
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryNoiseLevel', [], 'LCOS-MIB');
-        $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
+        $radios = SnmpQuery::cache()->walk('LCOS-MIB::lcsStatusWlanRadiosEntryIfc')->table(1);
 
         $sensors = [];
         foreach ($data as $index => $entry) {
-            $radio = $radios[$index];
+            $radio = $radios[$index]['LCOS-MIB::lcsStatusWlanRadiosEntryIfc'];
             if (isset($sensors[$radio])) {
                 continue;
             }
             $sensors[$radio] = new WirelessSensor(
-                'noise-floor',
+                WirelessSensorType::NoiseFloor,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.' . Oid::encodeString($index),
                 'lcos',
                 $radio,
                 "Noise Floor ($radio)",
@@ -176,23 +166,23 @@ class Lcos extends OS implements
     public function discoverWirelessPower()
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryTransmitPower', [], 'LCOS-MIB');
-        $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
+        $radios = SnmpQuery::cache()->walk('LCOS-MIB::lcsStatusWlanRadiosEntryIfc')->table(1);
 
         $sensors = [];
 
         foreach ($data as $index => $entry) {
-            $radio = $radios[$index];
+            $radio = $radios[$index]['LCOS-MIB::lcsStatusWlanRadiosEntryIfc'];
             if (isset($sensors[$radio])) {
                 continue;
             }
             $sensors[$radio] = new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.' . Oid::encodeString($index),
                 'lcos-tx',
                 $radio,
                 "Tx Power ($radio)",
-                $entry['lcsStatusWlanRadiosEntryTransmitPower']
+                Number::extract($entry['lcsStatusWlanRadiosEntryTransmitPower']) // returns "12 dbm"
             );
         }
 
@@ -207,25 +197,27 @@ class Lcos extends OS implements
      */
     public function discoverWirelessCcq()
     {
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryPhySignal', [], 'LCOS-MIB');
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');
-        $bssids = $this->getCacheByIndex('lcsStatusWlanCompetingNetworksEntryBssid', 'LCOS-MIB');
+        $data = SnmpQuery::walk('LCOS-MIB::lcsStatusWlanCompetingNetworksEntryPhySignal')->valuesByIndex();
+        $data = SnmpQuery::cache()->walk([
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName',
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid',
+        ])->valuesByIndex($data);
 
         $sensors = [];
-        foreach ($data as $index => $entry) {
-            $bssid = $bssids[$index];
-            if (isset($sensors[$bssid])) {
+        foreach ($data as $entry) {
+            $bssid = $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid'] ?? null;
+            if ($bssid === null || isset($sensors[$bssid]) || ! array_key_exists('LCOS-MIB::lcsStatusWlanCompetingNetworksEntryPhySignal', $entry)) {
                 continue;
             }
 
             $sensors[$bssid] = new WirelessSensor(
-                'ccq',
+                WirelessSensorType::Ccq,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.' . Mac::parse($bssid)->oid() . '.0',
                 'lcos',
                 $bssid,
-                'CCQ ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
-                $entry['lcsStatusWlanCompetingNetworksEntryPhySigal']
+                'CCQ ' . $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryPhySignal']
             );
         }
 
@@ -240,25 +232,27 @@ class Lcos extends OS implements
      */
     public function discoverWirelessRate()
     {
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryEffRate', [], 'LCOS-MIB');
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');
-        $bssids = $this->getCacheByIndex('lcsStatusWlanCompetingNetworksEntryBssid', 'LCOS-MIB');
+        $data = SnmpQuery::walk('LCOS-MIB::lcsStatusWlanCompetingNetworksEntryEffRate')->valuesByIndex();
+        $data = SnmpQuery::cache()->walk([
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName',
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid',
+        ])->valuesByIndex($data);
 
         $sensors = [];
-        foreach ($data as $index => $entry) {
-            $bssid = $bssids[$index];
-            if (isset($sensors[$bssid])) {
+        foreach ($data as $entry) {
+            $bssid = $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid'] ?? null;
+            if ($bssid === null || isset($sensors[$bssid]) || ! array_key_exists('LCOS-MIB::lcsStatusWlanCompetingNetworksEntryEffRate', $entry)) {
                 continue;
             }
 
             $sensors[$bssid] = new WirelessSensor(
-                'rate',
+                WirelessSensorType::Rate,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.' . Mac::parse($bssid)->oid() . '.0',
                 'lcos-tx',
                 $bssid,
-                'TX Rate ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
-                $entry['lcsStatusWlanCompetingNetworksEntryEffRate'],
+                'TX Rate ' . ($entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] ?? '') . " $bssid",
+                $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryEffRate'],
                 1000000
             );
         }
@@ -274,26 +268,28 @@ class Lcos extends OS implements
      */
     public function discoverWirelessRssi()
     {
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntrySignalLevel', [], 'LCOS-MIB');
-        $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');
-        $bssids = $this->getCacheByIndex('lcsStatusWlanCompetingNetworksEntryBssid', 'LCOS-MIB');
+        $data = SnmpQuery::walk('LCOS-MIB::lcsStatusWlanCompetingNetworksEntrySignalLevel')->valuesByIndex();
+        $data = SnmpQuery::cache()->walk([
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName',
+            'LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid',
+        ])->valuesByIndex($data);
 
         $sensors = [];
 
-        foreach ($data as $index => $entry) {
-            $bssid = $bssids[$index];
-            if (isset($sensors[$bssid])) {
+        foreach ($data as $entry) {
+            $bssid = $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryBssid'] ?? null;
+            if ($bssid === null || isset($sensors[$bssid]) || ! array_key_exists('LCOS-MIB::lcsStatusWlanCompetingNetworksEntrySignalLevel', $entry)) {
                 continue;
             }
 
             $sensors[$bssid] = new WirelessSensor(
-                'rssi',
+                WirelessSensorType::Rssi,
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.' . Mac::parse($bssid)->oid() . '.0',
                 'lcos',
                 $bssid,
-                'RSSI ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
-                $entry['lcsStatusWlanCompetingNetworksEntrySignalLevel']
+                'RSSI ' . ($entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] ?? '') . " $bssid",
+                $entry['LCOS-MIB::lcsStatusWlanCompetingNetworksEntrySignalLevel']
             );
         }
 

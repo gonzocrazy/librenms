@@ -1,13 +1,13 @@
-import LibreNMS
-
-import json
 import logging
 import os
-import pymysql
-import subprocess
-import threading
 import sys
+import threading
 import time
+
+import pymysql  # pylint: disable=import-error
+
+import LibreNMS
+from LibreNMS.config import DBConfig
 
 try:
     import psutil
@@ -16,20 +16,41 @@ except ImportError:
 
 from datetime import timedelta
 from datetime import datetime
-from logging import debug, info, warning, error, critical, exception
+from enum import Enum
 from platform import python_version
 from time import sleep
 from socket import gethostname
-from signal import signal, SIGTERM, SIGQUIT, SIGINT, SIGHUP, SIGCHLD, SIG_DFL
+from signal import signal, SIGTERM, SIGQUIT, SIGINT, SIGHUP, SIGCHLD, SIG_IGN
 from uuid import uuid1
+from os import utime
 
 try:
     from systemd.daemon import notify
 except ImportError:
     pass
 
+try:
+    from redis.exceptions import ConnectionError as RedisConnectionError
+except ImportError:
 
-class ServiceConfig:
+    class RedisConnectionError(Exception):
+        pass
+
+
+logger = logging.getLogger(__name__)
+
+# how often to re-collect the poller details reported to poller_cluster (6 hours)
+POLLER_DETAILS_REFRESH = 21600
+
+
+class LogOutput(Enum):
+    NONE = "none"
+    PASSTHROUGH = "passthrough"
+    LOGGER = "logger"
+    FILE = "file"
+
+
+class ServiceConfig(DBConfig):
     def __init__(self):
         """
         Stores all of the configuration variables for the LibreNMS service in a common object
@@ -61,6 +82,7 @@ class ServiceConfig:
     single_instance = True
     distributed = False
     group = 0
+    memory_pressure_percent = None
 
     debug = False
     log_level = 20
@@ -81,25 +103,26 @@ class ServiceConfig:
 
     redis_host = "localhost"
     redis_port = 6379
+    redis_scheme = "tcp"
     redis_db = 0
+    redis_user = None
     redis_pass = None
     redis_socket = None
     redis_sentinel = None
+    redis_sentinel_user = None
+    redis_sentinel_pass = None
     redis_sentinel_service = None
     redis_timeout = 60
 
-    db_host = "localhost"
-    db_port = 0
-    db_socket = None
-    db_user = "librenms"
-    db_pass = ""
-    db_name = "librenms"
+    log_output = LogOutput.NONE
+    logdir = "logs"
 
     watchdog_enabled = False
     watchdog_logfile = "logs/librenms.log"
+    health_file = ""  # disabled by default
 
     def populate(self):
-        config = self._get_config_data()
+        config = LibreNMS.get_config_data(self.BASE_DIR)
 
         # populate config variables
         self.node_id = os.getenv("NODE_ID")
@@ -108,57 +131,76 @@ class ServiceConfig:
         self.group = ServiceConfig.parse_group(
             config.get("distributed_poller_group", ServiceConfig.group)
         )
+        self.memory_pressure_percent = os.getenv(
+            "DISPATCHER_MEMORY_PRESSURE_PERCENT",
+            ServiceConfig.memory_pressure_percent,
+        )
 
-        # backward compatible options
-        self.poller.workers = config.get(
-            "poller_service_workers", ServiceConfig.poller.workers
+        self.master_timeout = config.get(
+            "service_master_timeout", ServiceConfig.master_timeout
         )
-        self.poller.frequency = config.get(
-            "poller_service_poll_frequency", ServiceConfig.poller.frequency
+        self.poller.enabled = (
+            config.get("service_poller_enabled", True)
+            if config.get("schedule_type").get("poller", "legacy") == "legacy"
+            else config.get("schedule_type").get("poller", "legacy") == "dispatcher"
         )
-        self.discovery.frequency = config.get(
-            "poller_service_discover_frequency", ServiceConfig.discovery.frequency
-        )
-        self.down_retry = config.get(
-            "poller_service_down_retry", ServiceConfig.down_retry
-        )
-        self.log_level = config.get("poller_service_loglevel", ServiceConfig.log_level)
-
-        # new options
-        self.poller.enabled = config.get("service_poller_enabled", True)  # unused
         self.poller.workers = config.get(
             "service_poller_workers", ServiceConfig.poller.workers
         )
         self.poller.frequency = config.get(
-            "service_poller_frequency", ServiceConfig.poller.frequency
+            "service_poller_frequency",
+            config.get("rrd").get("step", ServiceConfig.poller.frequency),
         )
-        self.discovery.enabled = config.get("service_discovery_enabled", True)  # unused
+        self.discovery.enabled = (
+            config.get("service_discovery_enabled", True)
+            if config.get("schedule_type").get("discovery", "legacy") == "legacy"
+            else config.get("schedule_type").get("discovery", "legacy") == "dispatcher"
+        )
         self.discovery.workers = config.get(
             "service_discovery_workers", ServiceConfig.discovery.workers
         )
         self.discovery.frequency = config.get(
             "service_discovery_frequency", ServiceConfig.discovery.frequency
         )
-        self.services.enabled = config.get("service_services_enabled", True)
+        self.services.enabled = (
+            config.get("service_services_enabled", True)
+            if config.get("schedule_type").get("services", "legacy") == "legacy"
+            else config.get("schedule_type").get("services", "legacy") == "dispatcher"
+        )
         self.services.workers = config.get(
             "service_services_workers", ServiceConfig.services.workers
         )
         self.services.frequency = config.get(
             "service_services_frequency", ServiceConfig.services.frequency
         )
-        self.billing.enabled = config.get("service_billing_enabled", True)
+        self.billing.enabled = (
+            config.get("service_billing_enabled", True)
+            if config.get("schedule_type").get("billing", "legacy") == "legacy"
+            else config.get("schedule_type").get("billing", "legacy") == "dispatcher"
+        )
         self.billing.frequency = config.get(
             "service_billing_frequency", ServiceConfig.billing.frequency
         )
         self.billing.calculate = config.get(
             "service_billing_calculate_frequency", ServiceConfig.billing.calculate
         )
-        self.alerting.enabled = config.get("service_alerting_enabled", True)
+        self.alerting.enabled = (
+            config.get("service_alerting_enabled", True)
+            if config.get("schedule_type").get("alerting", "legacy") == "legacy"
+            else config.get("schedule_type").get("alerting", "legacy") == "dispatcher"
+        )
         self.alerting.frequency = config.get(
             "service_alerting_frequency", ServiceConfig.alerting.frequency
         )
-        self.ping.enabled = config.get("service_ping_enabled", False)
-        self.ping.frequency = config.get("ping_rrd_step", ServiceConfig.ping.frequency)
+        self.ping.enabled = (
+            config.get("service_ping_enabled", False)
+            if config.get("schedule_type").get("ping", "legacy") == "legacy"
+            else config.get("schedule_type").get("ping", "legacy") == "dispatcher"
+        )
+        self.ping.frequency = config.get(
+            "service_ping_frequency",
+            config.get("ping_rrd_step", ServiceConfig.ping.frequency),
+        )
         self.down_retry = config.get(
             "service_poller_down_retry", ServiceConfig.down_retry
         )
@@ -176,17 +218,31 @@ class ServiceConfig:
         self.redis_db = os.getenv(
             "REDIS_DB", config.get("redis_db", ServiceConfig.redis_db)
         )
+        self.redis_user = os.getenv(
+            "REDIS_USERNAME", config.get("redis_user", ServiceConfig.redis_user)
+        )
         self.redis_pass = os.getenv(
             "REDIS_PASSWORD", config.get("redis_pass", ServiceConfig.redis_pass)
         )
         self.redis_port = int(
             os.getenv("REDIS_PORT", config.get("redis_port", ServiceConfig.redis_port))
         )
+        self.redis_scheme = os.getenv(
+            "REDIS_SCHEME", config.get("redis_scheme", ServiceConfig.redis_scheme)
+        )
         self.redis_socket = os.getenv(
             "REDIS_SOCKET", config.get("redis_socket", ServiceConfig.redis_socket)
         )
         self.redis_sentinel = os.getenv(
             "REDIS_SENTINEL", config.get("redis_sentinel", ServiceConfig.redis_sentinel)
+        )
+        self.redis_sentinel_user = os.getenv(
+            "REDIS_SENTINEL_USERNAME",
+            config.get("redis_sentinel_user", ServiceConfig.redis_sentinel_user),
+        )
+        self.redis_sentinel_pass = os.getenv(
+            "REDIS_SENTINEL_PASSWORD",
+            config.get("redis_sentinel_pass", ServiceConfig.redis_sentinel_pass),
         )
         self.redis_sentinel_service = os.getenv(
             "REDIS_SENTINEL_SERVICE",
@@ -195,9 +251,11 @@ class ServiceConfig:
         self.redis_timeout = int(
             os.getenv(
                 "REDIS_TIMEOUT",
-                self.alerting.frequency
-                if self.alerting.frequency != 0
-                else self.redis_timeout,
+                (
+                    self.alerting.frequency
+                    if self.alerting.frequency != 0
+                    else self.redis_timeout
+                ),
             )
         )
 
@@ -219,11 +277,19 @@ class ServiceConfig:
         self.db_user = os.getenv(
             "DB_USERNAME", config.get("db_user", ServiceConfig.db_user)
         )
+        self.db_sslmode = os.getenv(
+            "DB_SSLMODE", config.get("db_sslmode", ServiceConfig.db_sslmode)
+        )
+        self.db_ssl_ca = os.getenv(
+            "MYSQL_ATTR_SSL_CA", config.get("db_ssl_ca", ServiceConfig.db_ssl_ca)
+        )
 
         self.watchdog_enabled = config.get(
             "service_watchdog_enabled", ServiceConfig.watchdog_enabled
         )
-        self.watchdog_logfile = config.get("log_file", ServiceConfig.watchdog_logfile)
+        self.logdir = config.get("log_dir", ServiceConfig.BASE_DIR + "/logs")
+        self.watchdog_logfile = config.get("log_file", self.logdir + "/librenms.log")
+        self.health_file = config.get("service_health_file", ServiceConfig.health_file)
 
         # set convenient debug variable
         self.debug = logging.getLogger().isEnabledFor(logging.DEBUG)
@@ -232,7 +298,7 @@ class ServiceConfig:
             try:
                 logging.getLogger().setLevel(self.log_level)
             except ValueError:
-                error(
+                logger.error(
                     "Unknown log level {}, must be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'".format(
                         self.log_level
                     )
@@ -301,39 +367,7 @@ class ServiceConfig:
             if settings["watchdog_log"] is not None:
                 self.watchdog_logfile = settings["watchdog_log"]
         except pymysql.err.Error:
-            warning("Unable to load poller (%s) config", self.node_id)
-
-    def _get_config_data(self):
-        try:
-            import dotenv
-
-            env_path = "{}/.env".format(self.BASE_DIR)
-            info("Attempting to load .env from '%s'", env_path)
-            dotenv.load_dotenv(dotenv_path=env_path, verbose=True)
-
-            if not os.getenv("NODE_ID"):
-                raise ImportError(".env does not contain a valid NODE_ID setting.")
-
-        except ImportError as e:
-            exception(
-                "Could not import .env - check that the poller user can read the file, and that composer install has been run recently"
-            )
-            sys.exit(3)
-
-        config_cmd = [
-            "/usr/bin/env",
-            "php",
-            "{}/config_to_json.php".format(self.BASE_DIR),
-            "2>&1",
-        ]
-        try:
-            return json.loads(subprocess.check_output(config_cmd).decode())
-        except subprocess.CalledProcessError as e:
-            error(
-                "ERROR: Could not load or parse configuration! {}: {}".format(
-                    subprocess.list2cmdline(e.cmd), e.output.decode()
-                )
-            )
+            logger.warning("Unable to load poller (%s) config", self.node_id)
 
     @staticmethod
     def parse_group(g):
@@ -347,7 +381,7 @@ class ServiceConfig:
             except ValueError:
                 pass
 
-        error("Could not parse group string, defaulting to 0")
+        logger.error("Could not parse group string, defaulting to 0")
         return [0]
 
 
@@ -382,7 +416,7 @@ class Service:
             self.config.poller.frequency, self.log_performance_stats, "performance"
         )
         if self.config.watchdog_enabled:
-            info(
+            logger.info(
                 "Starting watchdog timer for log file: {}".format(
                     self.config.watchdog_logfile
                 )
@@ -391,24 +425,32 @@ class Service:
                 self.config.poller.frequency, self.logfile_watchdog, "watchdog"
             )
         else:
-            info("Watchdog is disabled.")
+            logger.info("Watchdog is disabled.")
+        if self.config.health_file:
+            with open(self.config.health_file, "a") as f:
+                utime(self.config.health_file)
+        else:
+            logger.info("Service health file disabled.")
         self.systemd_watchdog_timer = LibreNMS.RecurringTimer(
             10, self.systemd_watchdog, "systemd-watchdog"
         )
         self.is_master = False
+        self._poller_details_time = 0
 
     def service_age(self):
         return time.time() - self.start_time
 
     def attach_signals(self):
-        info("Attaching signal handlers on thread %s", threading.current_thread().name)
+        logger.debug(
+            "Attaching signal handlers on thread %s", threading.current_thread().name
+        )
         signal(SIGTERM, self.terminate)  # capture sigterm and exit gracefully
         signal(SIGQUIT, self.terminate)  # capture sigquit and exit gracefully
         signal(SIGINT, self.terminate)  # capture sigint and exit gracefully
         signal(SIGHUP, self.reload)  # capture sighup and restart gracefully
 
         if "psutil" not in sys.modules:
-            warning("psutil is not available, polling gap possible")
+            logger.warning("psutil is not available, polling gap possible")
         else:
             signal(SIGCHLD, self.reap)  # capture sigchld and reap the process
 
@@ -417,29 +459,39 @@ class Service:
         A process from a previous invocation is trying to report its status
         """
         # Speed things up by only looking at direct zombie children
-        for p in psutil.Process().children(recursive=False):
+        try:
+            children = psutil.Process().children(recursive=False)
+        except (OSError, psutil.AccessDenied):
+            # psutil may raise AccessDenied during /proc scans on hosts with PID churn.
+            # Catch it to keep the dispatcher alive and re-arm reaping, since no
+            # further SIGCHLD may arrive to retry pending children.
+            self.reap_flag = True
+            logger.debug("Could not enumerate child processes", exc_info=True)
+            return
+        for p in children:
             try:
-                cmd = (
-                    p.cmdline()
-                )  # cmdline is uncached, so needs to go here to avoid NoSuchProcess
                 status = p.status()
 
                 if status == psutil.STATUS_ZOMBIE:
                     pid = p.pid
                     r = os.waitpid(p.pid, os.WNOHANG)
-                    warning(
-                        'Reaped long running job "%s" in state %s with PID %d - job returned %d',
-                        cmd,
+                    logger.warning(
+                        "Reaped long running job in state %s with PID %d - job returned %d",
                         status,
                         r[0],
                         r[1],
                     )
-            except (OSError, psutil.NoSuchProcess):
-                # process was already reaped
+            except psutil.NoSuchProcess:
+                # process was already reaped, nothing to retry
+                continue
+            except (OSError, psutil.AccessDenied):
+                # child was unreadable mid-reap, re-arm so a possible zombie
+                # gets another chance on the next loop iteration
+                self.reap_flag = True
                 continue
 
     def start(self):
-        debug("Performing startup checks...")
+        logger.debug("Performing startup checks...")
 
         if self.config.single_instance:
             self.check_single_instance()  # don't allow more than one service at a time
@@ -448,29 +500,24 @@ class Service:
             raise RuntimeWarning("Not allowed to start Poller twice")
         self._started = True
 
-        debug("Starting up queue managers...")
+        logger.debug("Starting up queue managers...")
 
         # initialize and start the worker pools
         self.poller_manager = LibreNMS.PollerQueueManager(self.config, self._lm)
         self.queue_managers["poller"] = self.poller_manager
         self.discovery_manager = LibreNMS.DiscoveryQueueManager(self.config, self._lm)
         self.queue_managers["discovery"] = self.discovery_manager
-        if self.config.alerting.enabled:
-            self.queue_managers["alerting"] = LibreNMS.AlertQueueManager(
-                self.config, self._lm
-            )
-        if self.config.services.enabled:
-            self.queue_managers["services"] = LibreNMS.ServicesQueueManager(
-                self.config, self._lm
-            )
-        if self.config.billing.enabled:
-            self.queue_managers["billing"] = LibreNMS.BillingQueueManager(
-                self.config, self._lm
-            )
-        if self.config.ping.enabled:
-            self.queue_managers["ping"] = LibreNMS.PingQueueManager(
-                self.config, self._lm
-            )
+        self.queue_managers["alerting"] = LibreNMS.AlertQueueManager(
+            self.config, self._lm
+        )
+        self.queue_managers["services"] = LibreNMS.ServicesQueueManager(
+            self.config, self._lm
+        )
+        self.queue_managers["billing"] = LibreNMS.BillingQueueManager(
+            self.config, self._lm
+        )
+        self.queue_managers["ping"] = LibreNMS.PingQueueManager(self.config, self._lm)
+
         if self.config.update_enabled:
             self.daily_timer.start()
         self.stats_timer.start()
@@ -478,28 +525,51 @@ class Service:
         if self.config.watchdog_enabled:
             self.watchdog_timer.start()
 
-        info("LibreNMS Service: {} started!".format(self.config.unique_name))
-        info(
+        logger.info("LibreNMS Service: {} started!".format(self.config.unique_name))
+        logger.info(
             "Poller group {}. Using Python {} and {} locks and queues".format(
                 "0 (default)" if self.config.group == [0] else self.config.group,
                 python_version(),
                 "redis" if isinstance(self._lm, LibreNMS.RedisLock) else "internal",
             )
         )
+        logger.info(
+            "Queue Workers: Discovery={} Poller={} Services={} Alerting={} Billing={} Ping={}".format(
+                (
+                    self.config.discovery.workers
+                    if self.config.discovery.enabled
+                    else "disabled"
+                ),
+                (
+                    self.config.poller.workers
+                    if self.config.poller.enabled
+                    else "disabled"
+                ),
+                (
+                    self.config.services.workers
+                    if self.config.services.enabled
+                    else "disabled"
+                ),
+                "enabled" if self.config.alerting.enabled else "disabled",
+                "enabled" if self.config.billing.enabled else "disabled",
+                "enabled" if self.config.ping.enabled else "disabled",
+            )
+        )
+
         if self.config.update_enabled:
-            info(
+            logger.info(
                 "Maintenance tasks will be run every {}".format(
                     timedelta(seconds=self.config.update_frequency)
                 )
             )
         else:
-            warning("Maintenance tasks are disabled.")
+            logger.warning("Maintenance tasks are disabled.")
 
         # Main dispatcher loop
         try:
             while not self.terminate_flag:
                 if self.reload_flag:
-                    info("Picked up reload flag, calling the reload process")
+                    logger.info("Picked up reload flag, calling the reload process")
                     self.restart()
 
                 if self.reap_flag:
@@ -509,7 +579,9 @@ class Service:
                 master_lock = self._acquire_master()
                 if master_lock:
                     if not self.is_master:
-                        info("{} is now the master dispatcher".format(self.config.name))
+                        logger.info(
+                            "{} is now the master dispatcher".format(self.config.name)
+                        )
                         self.is_master = True
                         self.start_dispatch_timers()
 
@@ -525,7 +597,7 @@ class Service:
                             self.dispatch_immediate_discovery(device_id, group)
                 else:
                     if self.is_master:
-                        info(
+                        logger.info(
                             "{} is no longer the master dispatcher".format(
                                 self.config.name
                             )
@@ -536,7 +608,7 @@ class Service:
         except KeyboardInterrupt:
             pass
 
-        info("Dispatch loop terminated")
+        logger.info("Dispatch loop terminated")
         self.shutdown()
 
     def _acquire_master(self):
@@ -565,7 +637,7 @@ class Service:
                 if elapsed > (
                     self.config.poller.frequency - self.config.master_resolution
                 ):
-                    debug(
+                    logger.debug(
                         "Dispatching polling for device {}, time since last poll {:.2f}s".format(
                             device_id, elapsed
                         )
@@ -579,16 +651,16 @@ class Service:
             result = self._db.query(
                 """SELECT `device_id`,
                   `poller_group`,
-                  COALESCE(`last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL `last_polled_timetaken` SECOND), 1) AS `poll`,
-                  IF(snmp_disable=1 OR status=0, 0, IF (%s < `last_discovered_timetaken` * 1.25, 0, COALESCE(`last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL `last_discovered_timetaken` SECOND), 1))) AS `discover`
+                  IF(last_discovered IS NULL AND last_polled IS NULL, 0, COALESCE(`last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND), 1)) AS `poll`,
+                  IF(status=0, IF(last_discovered IS NULL, 1, 0), IF (%s < `last_discovered_timetaken` * 1.25, 0, COALESCE(`last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND), 1))) AS `discover`
                 FROM `devices`
                 WHERE `disabled` = 0 AND (
                     `last_polled` IS NULL OR
                     `last_discovered` IS NULL OR
-                    `last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL `last_polled_timetaken` SECOND) OR
-                    `last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL `last_discovered_timetaken` SECOND)
+                    `last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND) OR
+                    `last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND)
                 )
-                ORDER BY `last_polled_timetaken` DESC""",
+                ORDER BY `last_discovered` IS NULL DESC, `last_polled_timetaken` DESC""",
                 (
                     poller_find_time,
                     self.service_age(),
@@ -602,7 +674,7 @@ class Service:
         except pymysql.err.Error:
             self.db_failures += 1
             if self.db_failures > self.config.max_db_failures:
-                warning(
+                logger.warning(
                     "Too many DB failures ({}), attempting to release master".format(
                         self.db_failures
                     )
@@ -615,34 +687,16 @@ class Service:
 
     def run_maintenance(self):
         """
-        Runs update and cleanup tasks by calling daily.sh.  Reloads the python script after the update.
-        Sets a schema-update lock so no distributed pollers will update until the schema has been updated.
+        Run update and cleanup tasks by calling daily.sh, then reload on success.
         """
-        attempt = 0
-        wait = 5
-        max_runtime = 86100
-        max_tries = int(max_runtime / wait)
-        info("Waiting for schema lock")
-        while not self._lm.lock("schema-update", self.config.unique_name, max_runtime):
-            attempt += 1
-            if attempt >= max_tries:  # don't get stuck indefinitely
-                warning("Reached max wait for other pollers to update, updating now")
-                break
-            sleep(wait)
+        logger.info("Running maintenance tasks")
+        exit_code, output = LibreNMS.call_script("daily.sh")
+        if exit_code == 0:
+            logger.info("Maintenance tasks complete\n{}".format(output))
+        else:
+            logger.error("Error {} in daily.sh:\n{}".format(exit_code, output))
 
-        info("Running maintenance tasks")
-        try:
-            output = LibreNMS.call_script("daily.sh")
-            info("Maintenance tasks complete\n{}".format(output))
-        except subprocess.CalledProcessError as e:
-            error(
-                "Error in daily.sh:\n"
-                + (e.output.decode() if e.output is not None else "No output")
-            )
-
-        self._lm.unlock("schema-update", self.config.unique_name)
-
-        self.restart()
+        self.reload_flag = True
 
     def create_lock_manager(self):
         """
@@ -653,27 +707,43 @@ class Service:
         """
         try:
             return LibreNMS.RedisLock(
+                sentinel_kwargs={
+                    "username": self.config.redis_sentinel_user,
+                    "password": self.config.redis_sentinel_pass,
+                    "socket_timeout": self.config.redis_timeout,
+                    "unix_socket_path": self.config.redis_socket,
+                },
                 namespace="librenms.lock",
                 host=self.config.redis_host,
                 port=self.config.redis_port,
                 db=self.config.redis_db,
+                username=self.config.redis_user,
                 password=self.config.redis_pass,
                 unix_socket_path=self.config.redis_socket,
                 sentinel=self.config.redis_sentinel,
                 sentinel_service=self.config.redis_sentinel_service,
                 socket_timeout=self.config.redis_timeout,
+                ssl=(self.config.redis_scheme == "tls"),
             )
         except ImportError:
             if self.config.distributed:
-                critical("ERROR: Redis connection required for distributed polling")
-                critical(
+                logger.critical(
+                    "ERROR: Redis connection required for distributed polling"
+                )
+                logger.critical(
                     "Please install redis-py, either through your os software repository or from PyPI"
                 )
                 self.exit(2)
         except Exception as e:
             if self.config.distributed:
-                critical("ERROR: Redis connection required for distributed polling")
-                critical("Could not connect to Redis. {}".format(e))
+                logger.critical(
+                    "ERROR: Redis connection required for distributed polling"
+                )
+                logger.critical(
+                    "Lock manager could not connect to Redis. {}: {}".format(
+                        type(e).__name__, e
+                    )
+                )
                 self.exit(2)
 
         return LibreNMS.ThreadingLock()
@@ -682,21 +752,28 @@ class Service:
         """
         Stop then recreate this entire process by re-calling the original script.
         Has the effect of reloading the python files from disk.
+
+        This should only ever be called from the main thread and never directly.
+        In all other cases, set `reload_flag` to `True`.
         """
         if sys.version_info < (3, 4, 0):
-            warning("Skipping restart as running under an incompatible interpreter")
-            warning("Please restart manually")
+            logger.warning(
+                "Skipping restart as running under an incompatible interpreter"
+            )
+            logger.warning("Please restart manually")
             return
 
-        info("Restarting service... ")
+        logger.info("Restarting service... ")
 
         if "psutil" not in sys.modules:
-            warning("psutil is not available, polling gap possible")
+            logger.warning("psutil is not available, polling gap possible")
             self._stop_managers_and_wait()
         else:
             self._stop_managers()
         self._release_master()
 
+        # Set the SIGCHLD signal handler to ignore so remaining processes don't fail to report in and become zombies
+        signal(SIGCHLD, SIG_IGN)
         python = sys.executable
         sys.stdout.flush()
         os.execl(python, python, *sys.argv)
@@ -715,7 +792,9 @@ class Service:
         :param signalnum: UNIX signal number
         :param flag: Flags accompanying signal
         """
-        info("Received signal on thread %s, handling", threading.current_thread().name)
+        logger.info(
+            "Received signal on thread %s, handling", threading.current_thread().name
+        )
         self.reload_flag = True
 
     def terminate(self, signalnum=None, flag=None):
@@ -724,7 +803,9 @@ class Service:
         :param signalnum: UNIX signal number
         :param flag: Flags accompanying signal
         """
-        info("Received signal on thread %s, handling", threading.current_thread().name)
+        logger.info(
+            "Received signal on thread %s, handling", threading.current_thread().name
+        )
         self.terminate_flag = True
 
     def shutdown(self, signalnum=None, flag=None):
@@ -733,7 +814,7 @@ class Service:
         :param signalnum: UNIX signal number
         :param flag: Flags accompanying signal
         """
-        info("Shutting down, waiting for running jobs to complete...")
+        logger.info("Shutting down, waiting for running jobs to complete...")
 
         self.stop_dispatch_timers()
         self._release_master()
@@ -747,7 +828,9 @@ class Service:
         self._stop_managers_and_wait()
 
         # try to release master lock
-        info("Shutdown of %s/%s complete", os.getpid(), threading.current_thread().name)
+        logger.info(
+            "Shutdown of %s/%s complete", os.getpid(), threading.current_thread().name
+        )
         self.exit(0)
 
     def start_dispatch_timers(self):
@@ -802,25 +885,35 @@ class Service:
         try:
             fcntl.lockf(self._fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
-            warning("Another instance is already running, quitting.")
+            logger.warning("Another instance is already running, quitting.")
             self.exit(2)
 
     def log_performance_stats(self):
-        info("Counting up time spent polling")
+        logger.info("Counting up time spent polling")
 
         try:
             # Report on the poller instance as a whole
             self._db.query(
                 "INSERT INTO poller_cluster(node_id, poller_name, poller_version, poller_groups, last_report, master) "
                 'values("{0}", "{1}", "{2}", "{3}", NOW(), {4}) '
-                'ON DUPLICATE KEY UPDATE poller_version="{2}", poller_groups="{3}", last_report=NOW(), master={4}; '.format(
+                'ON DUPLICATE KEY UPDATE poller_version="{2}", last_report=NOW(), master={4}; '.format(
                     self.config.node_id,
                     self.config.name,
                     "librenms-service",
-                    ",".join(str(g) for g in self.config.group),
+                    ",".join(str(i) for i in self.config.group),
                     1 if self.is_master else 0,
                 )
             )
+
+            try:
+                poller_details = self.get_poller_details_due()
+                if poller_details is not None:
+                    self._db.query(
+                        "UPDATE `poller_cluster` SET `poller_details`=%s WHERE `node_id`=%s",
+                        (poller_details, self.config.node_id),
+                    )
+            except Exception:
+                logger.warning("Could not record poller details", exc_info=True)
 
             # Find our ID
             self._db.query(
@@ -850,12 +943,23 @@ class Service:
                         getattr(self.config, worker_type).frequency,
                     )
                 )
-        except pymysql.err.Error:
-            exception(
-                "Unable to log performance statistics - is the database still online?"
+        except (pymysql.err.Error, ConnectionResetError, RedisConnectionError):
+            logger.critical(
+                "Unable to log performance statistics - is the database still online?",
+                exc_info=True,
             )
 
+    def get_poller_details_due(self):
+        now = time.time()
+        if now - self._poller_details_time > POLLER_DETAILS_REFRESH:
+            self._poller_details_time = now
+            return LibreNMS.get_poller_details_json()
+
+        return None
+
     def systemd_watchdog(self):
+        if self.config.health_file:
+            utime(self.config.health_file)
         if "systemd.daemon" in sys.modules:
             notify("WATCHDOG=1")
 
@@ -867,18 +971,19 @@ class Service:
                 self.config.watchdog_logfile
             )
         except FileNotFoundError as e:
-            error("Log file not found! {}".format(e))
+            logger.error("Log file not found! {}".format(e))
             return
 
         if logfile_mdiff > self.config.poller.frequency:
-            critical(
+            logger.critical(
                 "BARK! Log file older than {}s, restarting service!".format(
                     self.config.poller.frequency
-                )
+                ),
+                exc_info=True,
             )
-            self.restart()
+            self.reload_flag = True
         else:
-            info("Log file updated {}s ago".format(int(logfile_mdiff)))
+            logger.info("Log file updated {}s ago".format(int(logfile_mdiff)))
 
     def exit(self, code=0):
         sys.stdout.flush()

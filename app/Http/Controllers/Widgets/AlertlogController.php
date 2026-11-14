@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AlertlogController.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,24 +27,23 @@
 namespace App\Http\Controllers\Widgets;
 
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AlertlogController extends WidgetController
 {
-    protected $title = 'Alert history';
+    protected string $name = 'alertlog';
     protected $defaults = [
         'title' => null,
         'device_id' => '',
-        'state' => -1,
-        'min_severity' => null,
+        'device_group' => null,
+        'state' => null,
+        'severity' => [],
+        'from' => null,
+        'to' => null,
         'hidenavigation' => 0,
     ];
 
-    public function getView(Request $request)
-    {
-        return view('widgets.alertlog', $this->getSettings());
-    }
-
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
         $data['severities'] = [
@@ -50,9 +51,6 @@ class AlertlogController extends WidgetController
             'ok' => 1,
             'warning' => 2,
             'critical' => 3,
-            'ok only' => 4,
-            'warning only' => 5,
-            'critical only' => 6,
         ];
 
         return view('widgets.settings.alertlog', $data);

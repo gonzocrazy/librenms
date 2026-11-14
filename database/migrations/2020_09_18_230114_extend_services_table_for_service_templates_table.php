@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class ExtendServicesTableForServiceTemplatesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('services', function (Blueprint $table) {
+        Schema::table('services', function (Blueprint $table): void {
             $table->unsignedInteger('service_template_id')->default(0);
             $table->string('service_name')->nullable()->default(null);
             $table->text('service_desc')->nullable()->default(null)->change();
@@ -29,9 +29,9 @@ class ExtendServicesTableForServiceTemplatesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('services', function (Blueprint $table) {
+        Schema::table('services', function (Blueprint $table): void {
             $table->dropColumn([
                 'service_template_id',
                 'service_name',
@@ -44,4 +44,4 @@ class ExtendServicesTableForServiceTemplatesTable extends Migration
             $table->text('service_message')->change();
         });
     }
-}
+};

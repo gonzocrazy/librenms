@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Edgeos.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,16 +27,36 @@
 namespace LibreNMS\OS;
 
 use App\Models\Device;
+use App\Models\EntPhysical;
+use LibreNMS\OS\Traits\EntityMib;
+use LibreNMS\Util\StringHelpers;
 
 class Edgeos extends \LibreNMS\OS
 {
+    use EntityMib {
+        EntityMib::discoverEntityPhysical as discoverBaseEntityPhysical;
+    }
+
     public function discoverOS(Device $device): void
     {
         parent::discoverOS($device); // yaml
 
-        $hw = implode(PHP_EOL, snmp_get_multi_oid($this->getDeviceArray(), ['.1.3.6.1.2.1.25.4.2.1.5.3818', '.1.3.6.1.2.1.25.4.2.1.5.3819'], '-Ovq'));
-        if (preg_match('/(?<=UBNT )(.*)(?= running on)/', $hw, $matches)) {
-            $this->getDevice()->hardware = $matches[0];
+        $hw = snmpwalk_cache_oid($this->getDeviceArray(), 'hrSWRunParameters', [], 'HOST-RESOURCES-MIB');
+        foreach ($hw as $entry) {
+            if (preg_match('/(?<=UBNT )(.*)(?= running on)/', (string) $entry['hrSWRunParameters'], $matches)) {
+                $this->getDevice()->hardware = $matches[0];
+                break;
+            }
         }
+    }
+
+    public function discoverEntityPhysical(): \Illuminate\Support\Collection
+    {
+        return $this->discoverBaseEntityPhysical()->each(function (EntPhysical $entity): void {
+            // clean garbage in fields "...............\n00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+            $entity->entPhysicalDescr = StringHelpers::trimHexGarbage($entity->entPhysicalDescr);
+            $entity->entPhysicalName = StringHelpers::trimHexGarbage($entity->entPhysicalName);
+            $entity->entPhysicalVendorType = StringHelpers::trimHexGarbage($entity->entPhysicalVendorType);
+        });
     }
 }

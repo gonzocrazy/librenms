@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Device.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,8 +28,9 @@ namespace LibreNMS\Cache;
 
 class Device
 {
-    private $devices = [];
-    private $primary;
+    /** @var \App\Models\Device[] */
+    private array $devices = [];
+    private ?int $primary = null;
 
     /**
      * Gets the current primary device.
@@ -43,49 +46,59 @@ class Device
      * Set the primary device.
      * This will be fetched by getPrimary()
      *
-     * @param int $device_id
+     * @param  int  $device_id
      */
-    public function setPrimary(int $device_id)
+    public function setPrimary(int $device_id): void
     {
         $this->primary = $device_id;
     }
 
     /**
-     * Get a device by device_id
+     * Check if a primary device is set
+     */
+    public function hasPrimary(): bool
+    {
+        return $this->primary !== null;
+    }
+
+    /**
+     * Get a device by device_id or hostname
      *
-     * @param int $device_id
+     * @param  int|string|null  $device  device_id or hostname
      * @return \App\Models\Device
      */
-    public function get(?int $device_id): \App\Models\Device
+    public function get(int|string|null $device): \App\Models\Device
     {
-        if (! is_null($device_id) && ! array_key_exists($device_id, $this->devices)) {
-            return $this->load($device_id);
+        if ($device === null) {
+            return new \App\Models\Device;
         }
 
-        return $this->devices[$device_id] ?? new \App\Models\Device;
+        // if string input is not an integer, get by hostname
+        if (is_string($device) && ! ctype_digit($device)) {
+            return $this->getByHostname($device);
+        }
+
+        // device is not be loaded, try to load it
+        return $this->devices[$device] ?? $this->load($device);
     }
 
     /**
      * Get a device by hostname
      *
-     * @param string $hostname
+     * @param  string|null  $hostname
      * @return \App\Models\Device
      */
     public function getByHostname($hostname): \App\Models\Device
     {
-        $device_id = collect($this->devices)->pluck('device_id', 'hostname')->get($hostname);
+        $device_id = array_column($this->devices, 'device_id', 'hostname')[$hostname] ?? 0;
 
-        if (! $device_id) {
-            return $this->load($hostname, 'hostname');
-        }
-
-        return $this->devices[$device_id] ?? new \App\Models\Device;
+        return $this->devices[$device_id] ?? $this->load($hostname, 'hostname');
     }
 
     /**
      * Ignore cache and load the device fresh from the database
      *
-     * @param int $device_id
+     * @param  int  $device_id
      * @return \App\Models\Device
      */
     public function refresh(?int $device_id): \App\Models\Device
@@ -98,12 +111,25 @@ class Device
     /**
      * Flush the cache
      */
-    public function flush()
+    public function flush(): void
     {
         $this->devices = [];
     }
 
-    private function load($value, $field = 'device_id')
+    /**
+     * Check if the device id is currently loaded into cache
+     */
+    public function has(int $device_id): bool
+    {
+        return isset($this->devices[$device_id]);
+    }
+
+    public function fake(\App\Models\Device $device): void
+    {
+        $this->devices[$device->device_id] = $device;
+    }
+
+    private function load(mixed $value, string $field = 'device_id'): \App\Models\Device
     {
         $device = \App\Models\Device::query()->where($field, $value)->first();
 

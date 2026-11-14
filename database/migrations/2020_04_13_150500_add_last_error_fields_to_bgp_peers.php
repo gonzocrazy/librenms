@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddLastErrorFieldsToBgpPeers extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('bgpPeers', function (Blueprint $table) {
+        Schema::table('bgpPeers', function (Blueprint $table): void {
             $table->integer('bgpPeerLastErrorCode')->nullable()->after('bgpPeerAdminStatus');
             $table->integer('bgpPeerLastErrorSubCode')->nullable()->after('bgpPeerLastErrorCode');
             $table->string('bgpPeerLastErrorText', 254)->nullable()->after('bgpPeerLastErrorSubCode');
@@ -28,10 +28,10 @@ class AddLastErrorFieldsToBgpPeers extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('bgpPeers', function (Blueprint $table) {
+        Schema::table('bgpPeers', function (Blueprint $table): void {
             $table->dropColumn(['bgpPeerLastErrorCode', 'bgpPeerLastErrorSubCode', 'bgpPeerLastErrorText']);
         });
     }
-}
+};

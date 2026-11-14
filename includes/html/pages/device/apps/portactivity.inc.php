@@ -1,36 +1,30 @@
 <?php
 
-$ports = get_portactivity_ports($device['device_id']);
-
-sort($ports);
-
 $link_array = [
-    'page'   => 'device',
+    'page' => 'device',
     'device' => $device['device_id'],
-    'tab'    => 'apps',
-    'app'    => 'portactivity',
+    'tab' => 'apps',
+    'app' => 'portactivity',
 ];
 
 print_optionbar_start();
 
 echo 'Ports:';
-$ports_int = 0;
-while (isset($ports[$ports_int])) {
-    $port = $ports[$ports_int];
-    $label = $ports[$ports_int];
+$ports = $app->data['ports'] ?? [];
+sort($ports);
+foreach ($ports as $index => $port) {
+    $label = $port;
+    $link = generate_link($label, $link_array, ['port' => $port]);
 
-    if ($vars['port'] == $port) {
-        $label = '>>' . $port . '<<';
+    $link = $vars['port'] == $port
+        ? '<span class="pagemenu-selected">' . $link . '</span>'
+        : $link;
+
+    echo $link;
+
+    if ($index < (count($ports) - 1)) {
+        echo ', ';
     }
-
-    $ports_int++;
-
-    $append = '';
-    if (isset($ports[$ports_int])) {
-        $append = ', ';
-    }
-
-    echo generate_link($label, $link_array, ['port'=>$port]) . $append;
 }
 
 print_optionbar_end();
@@ -43,10 +37,10 @@ if (! isset($vars['port'])) {
     ];
 } else {
     $graphs = [
-        'portactivity_totals'=>'Total Connections',
-        'portactivity_total_details'=>'Total Connections Details',
-        'portactivity_to'=>'Connections To Server',
-        'portactivity_from'=>'Connections From Server',
+        'portactivity_totals' => 'Total Connections',
+        'portactivity_total_details' => 'Total Connections Details',
+        'portactivity_to' => 'Connections To Server',
+        'portactivity_from' => 'Connections From Server',
     ];
 }
 
@@ -54,7 +48,7 @@ foreach ($graphs as $key => $text) {
     $graph_type = $key;
     $graph_array['height'] = '100';
     $graph_array['width'] = '215';
-    $graph_array['to'] = \LibreNMS\Config::get('time.now');
+    $graph_array['to'] = \App\Facades\LibrenmsConfig::get('time.now');
     $graph_array['id'] = $app['app_id'];
     $graph_array['type'] = 'application_' . $key;
 

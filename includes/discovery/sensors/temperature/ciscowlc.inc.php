@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LibreNMS Cisco wireless controller temperature monitoring module
  *
@@ -9,6 +10,8 @@
  * option) any later version.  Please see LICENSE.txt at the top level of
  * the source code distribution for details.
  */
+
+use LibreNMS\Enum\SensorType;
 
 echo ' AIRESPACE temperature ';
 
@@ -21,6 +24,6 @@ if (is_array($temp)) {
     foreach ($temp as $index => $entry) {
         $descr = 'Unit Temperature ' . $index;
         echo " $descr, ";
-        discover_sensor($valid['sensor'], 'temperature', $device, $cur_oid . $index, $index, 'wlc', $descr, '1', '1', null, $low[$index]['bsnTemperatureAlarmLowLimit'], $high[$index]['bsnTemperatureAlarmHighLimit'], null, $temp[$index]['bsnSensorTemperature'], 'snmp', $index);
+        discover_sensor(null, SensorType::Temperature, $device, $cur_oid . $index, $index, 'wlc', $descr, '1', '1', null, $low[$index]['bsnTemperatureAlarmLowLimit'], $high[$index]['bsnTemperatureAlarmHighLimit'], null, $temp[$index]['bsnSensorTemperature'], 'snmp', $index);
     }
 }

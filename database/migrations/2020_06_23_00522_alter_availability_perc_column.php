@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterAvailabilityPercColumn extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('availability', function (Blueprint $table) {
+        Schema::table('availability', function (Blueprint $table): void {
             $table->decimal('availability_perc', 9, 6)->default(0)->change();
         });
     }
@@ -23,10 +23,10 @@ class AlterAvailabilityPercColumn extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('availability', function (Blueprint $table) {
-            $table->float('availability_perc', 6, 6)->default(0)->change();
+        Schema::table('availability', function (Blueprint $table): void {
+            $table->double('availability_perc')->default(0)->change();
         });
     }
-}
+};

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * apc.inc.php
  *
@@ -18,15 +19,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
+
+use LibreNMS\Enum\SensorType;
+
 foreach ($pre_cache['cooling_unit_analog'] as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.4.1.2.1.3.' . $index;
     $descr = $data['coolingUnitStatusAnalogDescription'];
-    $scale = $data['coolingUnitStatusAnalogScale'];
-    $value = $data['coolingUnitStatusAnalogValue'];
-    if (preg_match('/Fan Speed/', $descr) && $data['coolingUnitStatusAnalogUnits'] == '%' && $value >= 0) {
-        discover_sensor($valid['sensor'], 'fanspeed', $device, $cur_oid, $cur_oid, 'apc', $descr, $scale, 1, null, null, null, null, $value);
+    $scale = $data['coolingUnitStatusAnalogScale'] ?? null;
+    $value = $data['coolingUnitStatusAnalogValue'] ?? null;
+    if (preg_match('/Fan Speed/', (string) $descr) && $data['coolingUnitStatusAnalogUnits'] == '%' && $value >= 0) {
+        discover_sensor(null, SensorType::Fanspeed, $device, $cur_oid, $cur_oid, 'apc', $descr, $scale, 1, null, null, null, null, $value);
     }
 }

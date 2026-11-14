@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ipv4Address.php
  *
@@ -18,18 +19,68 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
+ * @author     Peca Nesovanovic <peca.nesovanovic@sattrakt.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Gate;
+use LibreNMS\Interfaces\Models\Keyable;
 
-class Ipv4Address extends PortRelatedModel
+class Ipv4Address extends PortRelatedModel implements Keyable
 {
     use HasFactory;
 
     public $timestamps = false;
     protected $primaryKey = 'ipv4_address_id';
+    protected $fillable = [
+        'ipv4_address',
+        'ipv4_prefixlen',
+        'ipv4_network_id',
+        'port_id',
+        'context_name',
+    ];
+
+    /**
+     * @return BelongsTo<Ipv4Network, $this>
+     */
+    public function network(): BelongsTo
+    {
+        return $this->belongsTo(Ipv4Network::class, 'ipv4_network_id', 'ipv4_network_id');
+    }
+
+    /**
+     * This is not a standard relationship it is a shortcut to generate an aggregate for sorting.
+     * Use port.device nested relationship to access device.
+     *
+     * @return HasOneThrough<Device, Port, $this>
+     */
+    public function deviceViaPort(): HasOneThrough
+    {
+        return $this->hasOneThrough(Device::class, Port::class, 'port_id', 'device_id', 'port_id', 'device_id');
+    }
+
+    /**
+     * This table has no device_id column, so filter by accessible ports only.
+     */
+    protected function scopeHasAccess(Builder $query, User $user): Builder
+    {
+        if (Gate::forUser($user)->allows('viewAll', Port::class)) {
+            return $query;
+        }
+
+        return $query->whereIn($this->qualifyColumn('port_id'), Port::query()->hasAccess($user)->select('ports.port_id'));
+    }
+
+    public function getCompositeKey(): string
+    {
+        return "$this->ipv4_address-$this->ipv4_prefixlen-$this->port_id-$this->context_name";
+    }
 }

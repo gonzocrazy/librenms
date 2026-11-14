@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserPref.php
  *
@@ -18,24 +19,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class UserPref extends BaseModel
 {
     public $timestamps = false;
     public $incrementing = false;
     protected $table = 'users_prefs';
-    /** @var array */
-    protected $primaryKey = ['user_id', 'pref'];
+    protected $primaryKey = 'user_id';
+    /** @var string[] */
+    protected array $compositeKey = ['user_id', 'pref'];
     protected $fillable = ['user_id', 'pref', 'value'];
 
     // ---- Helper Functions ----
     public static function getPref(User $user, $pref)
     {
+        if ($user->relationLoaded('preferences')) {
+            return optional($user->preferences->firstWhere('pref', $pref))->value;
+        }
+
         return $user->preferences()->where('pref', $pref)->value('value');
     }
 
@@ -53,7 +62,7 @@ class UserPref extends BaseModel
 
     public function getValueAttribute($value)
     {
-        $decoded = json_decode($value, true);
+        $decoded = json_decode((string) $value, true);
         if (json_last_error() == JSON_ERROR_NONE) {
             return $decoded;
         }
@@ -78,49 +87,26 @@ class UserPref extends BaseModel
     }
 
     // ---- Define Relationships ----
-
-    public function user()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this>
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * Set the keys for a save update query. (no primary key)
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function setKeysForSaveQuery($query)
     {
-        /** @var array */
-        $keys = $this->getKeyName();
-        if (! is_array($keys)) {
-            return parent::setKeysForSaveQuery($query);
-        }
-
-        foreach ($keys as $keyName) {
-            $query->where($keyName, '=', $this->getKeyForSaveQuery($keyName));
+        foreach ($this->compositeKey as $keyName) {
+            $query->where($keyName, '=', $this->original[$keyName] ?? $this->getAttribute($keyName));
         }
 
         return $query;
-    }
-
-    /**
-     * Get the primary key value for a save query. (no primary key)
-     *
-     * @param mixed $keyName
-     * @return mixed
-     */
-    protected function getKeyForSaveQuery($keyName = null)
-    {
-        if (is_null($keyName)) {
-            $keyName = $this->getKeyName();
-        }
-
-        if (isset($this->original[$keyName])) {
-            return $this->original[$keyName];
-        }
-
-        return $this->getAttribute($keyName);
     }
 }

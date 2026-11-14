@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ifotec.inc.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  LibreNMS contributors
  * @author     Cedric MARMONIER
  */
@@ -36,7 +38,7 @@ class Ifotec extends OS implements OSDiscovery
         if (Str::startsWith($device->sysObjectID, '.1.3.6.1.4.1.21362.100.')) {
             $ifoSysProductIndex = snmp_get($this->getDeviceArray(), 'ifoSysProductIndex.0', '-Oqv', 'IFOTEC-SMI');
 
-            if ($ifoSysProductIndex !== null) {
+            if ($ifoSysProductIndex !== false) {
                 $oids = [
                     'ifoSysSerialNumber.' . $ifoSysProductIndex,
                     'ifoSysFirmware.' . $ifoSysProductIndex,

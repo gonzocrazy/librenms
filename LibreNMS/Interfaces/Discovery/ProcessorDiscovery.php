@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ProcessorDiscovery.php
  *
@@ -18,19 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Interfaces\Discovery;
 
+use App\Models\Processor;
+use Illuminate\Support\Collection;
+
 interface ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns a Collection of Processor models that have been discovered.
+     * Processors without a usage value are discarded.
      *
-     * @return array Processors
+     * @return Collection<int, Processor>
      */
-    public function discoverProcessors();
+    public function discoverProcessors(): Collection;
 }

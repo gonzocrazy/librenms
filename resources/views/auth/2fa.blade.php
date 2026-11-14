@@ -1,7 +1,7 @@
 @extends('layouts.librenmsv1')
 
 @section('javascript')
-    <script src="{{ asset('js/jquery.qrcode.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-qrcode.min.js') }}"></script>
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
     <div class="col-md-6 col-md-offset-3">
         <x-panel>
             <x-slot name="title">
-                <img class="logon-logo img-responsive" src="{{ asset(\LibreNMS\Config::get('title_image', 'images/librenms_logo_light.svg')) }}">
+                <x-logo class="logon-logo tw:h-auto tw:w-full" />
             </x-slot>
 
             <div class="container-fluid">
@@ -18,7 +18,9 @@
                 <div class="row">
                     <div id="twofactorqrcontainer" class="col-md-12">
                         <h4>Scan with your Two Factor Authenticator.</h4>
-                        <div class="col-md-12 text-center" id="twofactorqr"></div>
+                        <div class="col-md-12 text-center tw:mb-2">
+                            <div class="tw:inline-block tw:bg-white tw:p-4 tw:pb-2 tw:rounded-lg" id="twofactorqr"></div>
+                        </div>
                         <div class="col-md-12 text-center">
                             <button class="btn btn-default" onclick="$('#twofactorqrcontainer').hide(); $('#twofactorkeycontainer').show();">Manual</button>
                         </div>
@@ -56,7 +58,7 @@
                                            class="form-control"
                                            autocomplete="off"
                                            aria-describedby="twoFactorErrors"
-                                           placeholder="@lang('Please enter auth token')"
+                                           placeholder="{{ __('Please enter auth token') }}"
                                            required autofocus>
                                     @endif
                                 </div>
@@ -65,7 +67,7 @@
                                 @if(!$errors->has('lockout'))
                                     <div class="col-md-12" style="margin:8px">
                                         <button type="submit" class="btn btn-primary btn-block" name="submit">
-                                            <i class="fa fa-btn fa-sign-in"></i> @lang('Submit')
+                                            <i class="fa fa-btn fa-sign-in"></i> {{ __('Submit') }}
                                         </button>
                                     </div>
                                 @endif
@@ -73,7 +75,7 @@
                                     <div class="col-md-12" style="margin:8px">
                                         <button type="submit" class="btn btn-default btn-block" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             <i class="fa fa-btn fa-sign-out" aria-hidden="true"></i>
-                                            @lang('Logout')
+                                            {{ __('Logout') }}
                                         </button>
                                     </div>
                                 @endif
@@ -81,7 +83,7 @@
                                     <div class="col-md-12" style="margin:8px">
                                         <button type="submit" class="btn btn-danger btn-block" onclick="event.preventDefault(); document.getElementById('cancel-form').submit();">
                                             <i class="fa fa-btn fa-sign-out" aria-hidden="true"></i>
-                                            @lang('Cancel')
+                                            {{ __('Cancel') }}
                                         </button>
                                     </div>
                                 @endif

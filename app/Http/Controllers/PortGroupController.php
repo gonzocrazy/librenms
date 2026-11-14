@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Interfaces\ToastInterface;
+use App\Models\Port;
 use App\Models\PortGroup;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Toastr;
 
 class PortGroupController extends Controller
 {
@@ -14,10 +16,13 @@ class PortGroupController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
+        $this->authorize('viewAny', PortGroup::class);
+
         return view('port-group.index', [
-            'port_groups' => PortGroup::orderBy('name')->get(),
+            'port_groups' => PortGroup::hasAccess($request->user())
+                ->orderBy('name')->withCount('ports')->get(),
         ]);
     }
 
@@ -28,6 +33,8 @@ class PortGroupController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', PortGroup::class);
+
         return view('port-group.create', [
             'port_group' => new PortGroup(),
         ]);
@@ -36,19 +43,29 @@ class PortGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request, ToastInterface $toast)
     {
+        $this->authorize('create', PortGroup::class);
+
         $this->validate($request, [
             'name' => 'required|string|unique:port_groups',
         ]);
 
-        $portGroup = PortGroup::make($request->only(['name', 'desc']));
+        $portGroup = new PortGroup($request->only(['name', 'desc']));
         $portGroup->save();
 
-        Toastr::success(__('Port Group :name created', ['name' => $portGroup->name]));
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id' => $portGroup->id,
+                'text' => $portGroup->name,
+                'message' => __('Port Group :name created', ['name' => $portGroup->name]),
+            ], 201);
+        }
+
+        $toast->success(__('Port Group :name created', ['name' => $portGroup->name]));
 
         return redirect()->route('port-groups.index');
     }
@@ -56,11 +73,13 @@ class PortGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\PortGroup $portGroup
+     * @param  PortGroup  $portGroup
      * @return \Illuminate\View\View
      */
     public function edit(PortGroup $portGroup)
     {
+        $this->authorize('update', $portGroup);
+
         return view('port-group.edit', [
             'port_group' => $portGroup,
         ]);
@@ -69,18 +88,20 @@ class PortGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\PortGroup $portGroup
+     * @param  Request  $request
+     * @param  PortGroup  $portGroup
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, PortGroup $portGroup)
+    public function update(Request $request, PortGroup $portGroup, ToastInterface $toast)
     {
+        $this->authorize('update', $portGroup);
+
         $this->validate($request, [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('port_groups', 'name')->where(function ($query) use ($portGroup) {
+                Rule::unique('port_groups', 'name')->where(function ($query) use ($portGroup): void {
                     $query->where('id', '!=', $portGroup->id);
                 }),
             ],
@@ -90,9 +111,9 @@ class PortGroupController extends Controller
         $portGroup->fill($request->only(['name', 'desc']));
 
         if ($portGroup->save()) {
-            Toastr::success(__('Port Group :name updated', ['name' => $portGroup->name]));
+            $toast->success(__('Port Group :name updated', ['name' => $portGroup->name]));
         } else {
-            Toastr::error(__('Failed to save'));
+            $toast->error(__('Failed to save'));
 
             return redirect()->back()->withInput();
         }
@@ -103,15 +124,30 @@ class PortGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\PortGroup $portGroup
+     * @param  PortGroup  $portGroup
      * @return \Illuminate\Http\Response
      */
     public function destroy(PortGroup $portGroup)
     {
+        $this->authorize('delete', $portGroup);
+
         $portGroup->delete();
 
-        $msg = __('Port Group :name deleted', ['name' => $portGroup->name]);
+        $msg = __('Port Group :name deleted', ['name' => htmlentities($portGroup->name)]);
 
         return response($msg, 200);
+    }
+
+    /**
+     * Show graph of all ports in a group
+     */
+    public function graph(Request $request, PortGroup $group): View
+    {
+        $this->authorize('view', $group);
+
+        return view('port-group.graph', [
+            'group' => $group,
+            'ports' => Port::hasAccess($request->user())->inPortGroup($group->id)->with('device')->withCount('macAccounting')->get(),
+        ]);
     }
 }

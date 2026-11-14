@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AuthorizerBase.php
  *
@@ -18,12 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Authentication;
 
+use App\Facades\LibrenmsConfig;
 use LibreNMS\Interfaces\Authentication\Authorizer;
 
 abstract class AuthorizerBase implements Authorizer
@@ -38,38 +41,14 @@ abstract class AuthorizerBase implements Authorizer
         return static::$CAN_UPDATE_PASSWORDS;
     }
 
-    public function changePassword($username, $newpassword)
-    {
-        //not supported by default
-        return false;
-    }
-
     public function canManageUsers()
     {
         return static::$HAS_AUTH_USERMANAGEMENT;
     }
 
-    public function addUser($username, $password, $level = 0, $email = '', $realname = '', $can_modify_passwd = 0, $description = '')
-    {
-        //not supported by default
-        return false;
-    }
-
-    public function deleteUser($user_id)
-    {
-        //not supported by default
-        return false;
-    }
-
     public function canUpdateUsers()
     {
         return static::$CAN_UPDATE_USER;
-    }
-
-    public function updateUser($user_id, $realname, $level, $can_modify_passwd, $email)
-    {
-        //not supported by default
-        return false;
     }
 
     public function authIsExternal()
@@ -79,12 +58,11 @@ abstract class AuthorizerBase implements Authorizer
 
     public function getExternalUsername()
     {
-        if (isset($_SERVER['REMOTE_USER'])) {
-            return $_SERVER['REMOTE_USER'];
-        } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
-            return $_SERVER['PHP_AUTH_USER'];
-        }
+        return $_SERVER[LibrenmsConfig::get('http_auth_header')] ?? $_SERVER['PHP_AUTH_USER'] ?? null;
+    }
 
-        return null;
+    public function getRoles(string $username): array|false
+    {
+        return false; // return false don't update roles by default
     }
 }

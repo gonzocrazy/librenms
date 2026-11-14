@@ -3,16 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateWirelessSensorsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('wireless_sensors', function (Blueprint $table) {
+        Schema::create('wireless_sensors', function (Blueprint $table): void {
             $table->increments('sensor_id');
             $table->boolean('sensor_deleted')->default(0);
             $table->string('sensor_class', 64)->index();
@@ -44,8 +44,8 @@ class CreateWirelessSensorsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('wireless_sensors');
     }
-}
+};

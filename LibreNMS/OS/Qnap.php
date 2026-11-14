@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qnap.php
  *
@@ -18,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2020 Daniel Baeza
  * @author     Daniel Baeza <doctoruve@gmail.com>
  */
@@ -27,14 +29,20 @@ namespace LibreNMS\OS;
 use App\Models\Device;
 use LibreNMS\Interfaces\Discovery\OSDiscovery;
 use LibreNMS\OS;
+use SnmpQuery;
 
 class Qnap extends OS implements OSDiscovery
 {
     public function discoverOS(Device $device): void
     {
-        $info = snmp_getnext_multi($this->getDeviceArray(), ['enclosureModel', 'enclosureSerialNum', 'entPhysicalFirmwareRev'], '-OQUs', 'NAS-MIB:ENTITY-MIB');
-        $device->version = trim($info['entPhysicalFirmwareRev'], '\"');
-        $device->hardware = $info['enclosureModel'];
-        $device->serial = $info['enclosureSerialNum'];
+        $response = SnmpQuery::next([
+            'NAS-MIB::enclosureModel',
+            'NAS-MIB::enclosureSerialNum',
+            'ENTITY-MIB::entPhysicalFirmwareRev',
+        ]);
+
+        $device->version = trim((string) $response->value('ENTITY-MIB::entPhysicalFirmwareRev'), '\"') ?: null;
+        $device->hardware = $response->value('NAS-MIB::enclosureModel') ?: null;
+        $device->serial = $response->value('NAS-MIB::enclosureSerialNum') ?: null;
     }
 }

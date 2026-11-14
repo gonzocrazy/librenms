@@ -1,12 +1,13 @@
-source: Support/Bare-Dashboard.md
-path: blob/master/doc/
+# Bare Dashboard
 
-# Hide Menubar
+These settings help with wall displays and monitor displays.
 
-To hide Menubar e.g. for Monitoring TV Screens
-attach `?bare=yes` on URL
+## Hide Menubar
 
-# No Search Fields in Dashboard Widgets
+To hide the menu bar, add `?bare=yes` to the URL. This is useful for a
+monitoring screen on a TV.
 
-To hide Search Field in Dashboard Widgets take a look into
-Widget Settings.
+## No Search Fields in Dashboard Widgets
+
+To hide the search field in a dashboard widget, open the widget
+settings.

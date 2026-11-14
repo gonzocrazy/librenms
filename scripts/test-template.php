@@ -7,20 +7,25 @@ require __DIR__ . '/../includes/init.php';
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\RunAlerts;
 use LibreNMS\Alert\Template;
+use LibreNMS\Util\Debug;
 
 $options = getopt('t:h:r:p:s:d::');
 
 if (isset($options['t']) && isset($options['h']) && isset($options['r'])) {
-    set_debug(isset($options['d']));
+    Debug::set(isset($options['d']));
     $runAlerts = new RunAlerts();
 
     $template_id = $options['t'];
-    $device_id = ctype_digit($options['h']) ? $options['h'] : getidbyname($options['h']);
+    $device = DeviceCache::get($options['h']);
+    if (! $device->exists) {
+        echo "Device {$options['h']} not found\n";
+        exit(1);
+    }
     $rule_id = (int) $options['r'];
 
-    $where = 'alerts.device_id=' . $device_id . ' && alerts.rule_id=' . $rule_id;
+    $where = 'alerts.device_id=' . $device->device_id . ' && alerts.rule_id=' . $rule_id;
     if (isset($options['s'])) {
-        $where .= ' alerts.state=' . (int) $options['s'];
+        $where .= ' && alerts.state=' . (int) $options['s'];
     }
 
     $alerts = $runAlerts->loadAlerts($where);
@@ -34,8 +39,8 @@ if (isset($options['t']) && isset($options['h']) && isset($options['r'])) {
         $obj['transport'] = $options['p'];
     }
     $type = new Template;
-    $obj['alert'] = new AlertData($obj);
     $obj['title'] = $type->getTitle($obj);
+    $obj['alert'] = new AlertData($obj);
     $obj['msg'] = $type->getBody($obj);
     unset($obj['template']);
     unset($obj['alert']);
@@ -47,8 +52,8 @@ Usage:
     -h Is the device ID or hostname
     -r Is the rule ID
     -p Is the transport name (optional)
-    -s Is the alert state <0|1|2|3|4> (optional - defaults to current state.)
-       0 = ok, 1 = alert, 2 = acknowledged, 3 = got worse, 4 = got better
+    -s Is the alert state <0|1|2|3|4|5> (optional - defaults to current state.)
+       0 = ok, 1 = alert, 2 = acknowledged, 3 = got worse, 4 = got better, 5 = changed
     -d Debug
 
 Example:

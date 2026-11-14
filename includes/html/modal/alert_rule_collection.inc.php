@@ -18,15 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
 
 use LibreNMS\Alerting\QueryBuilderParser;
-
-if (! Auth::user()->hasGlobalAdmin()) {
-    exit('ERROR: You need to be admin');
-}
 
 ?>
 
@@ -55,7 +52,7 @@ if (! Auth::user()->hasGlobalAdmin()) {
                                 <tr>
                                     <td>{$rule['name']}</td>
                                     <td>";
-                            echo ! empty($rule['builder']) ? QueryBuilderParser::fromJson($rule['builder'])->toSql(false) : $rule['rule'];
+                            echo QueryBuilderParser::fromJson($rule['builder'])->toSql(false);
                             echo "  </td>
                                     <td>{$rule['rule_id']}</td>
                                 </tr>
@@ -80,15 +77,14 @@ if (! Auth::user()->hasGlobalAdmin()) {
                             grid.find(".rule_from_collection").on("click", function(e) {
                                 var template_rule_id = $(this).data("rule_id");
                                 $.ajax({
-                                    type: "POST",
-                                    url: "ajax_form.php",
-                                    data: {type: 'sql-from-alert-collection', template_id: template_rule_id},
+                                    type: "GET",
+                                    url: route('alert-rule-template', template_rule_id),
                                     dataType: "json",
                                     success: function (data) {
                                         if (data.status == 'ok') {
                                             $("#search_rule_modal").one('hidden.bs.modal', function(event) {
-                                                loadRule(data);
                                                 $('#create-alert').modal('show');
+                                                loadRule(data);
                                             });
                                             $("#search_rule_modal").modal('hide');
                                         } else {
@@ -113,5 +109,11 @@ if (! Auth::user()->hasGlobalAdmin()) {
         $("#template_rule_id").val('');
         $("#rule_suggest").val('');
         $("#rule_display").html('');
+
+        var $parent = $('#create-alert');
+        if ($parent.hasClass('in')) {
+            $('body').addClass('modal-open');
+            $parent.modal('handleUpdate');
+        }
     });
 </script>

@@ -1,13 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\JsonAppException;
 use LibreNMS\Exceptions\JsonAppParsingFailedException;
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'fbsd-nfs-client';
-$app_id = $app['app_id'];
-
-echo $name;
 
 try {
     $nfs = json_app_get($device, 'fbsdnfsclient', 0);
@@ -20,23 +18,23 @@ try {
     ];
 
     [$nfs['data']['Getattr'], $nfs['data']['Setattr'], $nfs['data']['Lookup'], $nfs['data']['Readlink'],
-         $nfs['data']['Read'], $nfs['data']['Write'], $nfs['data']['Create'], $nfs['data']['Remove'], $nfs['data']['Rename'],
-         $nfs['data']['Link'], $nfs['data']['Symlink'], $nfs['data']['Mkdir'], $nfs['data']['Rmdir'], $nfs['data']['Readdir'],
-         $nfs['data']['RdirPlus'], $nfs['data']['Access'], $nfs['data']['Mknod'], $nfs['data']['Fsstat'], $nfs['data']['Fsinfo'],
-         $nfs['data']['PathConf'], $nfs['data']['Commit'], $nfs['data']['TimedOut'], $nfs['data']['Invalid'], $nfs['data']['XReplies'],
-         $nfs['data']['Retries'], $nfs['data']['Requests'], $nfs['data']['AttrHits'], $nfs['data']['AttrMisses'], $nfs['data']['LkupHits'],
-         $nfs['data']['LkupMisses'], $nfs['data']['BioRHits'], $nfs['data']['BioRMisses'], $nfs['data']['BioWHits'],
-         $nfs['data']['BioWMisses'], $nfs['data']['BioRLHits'], $nfs['data']['BioRLMisses'], $nfs['data']['BioDHits'],
-         $nfs['data']['BioDMisses'], $nfs['data']['DirEHits'], $nfs['data']['DirEMisses'], $nfs['data']['AccsHits'],
-         $nfs['data']['AccsMisses']] = explode("\n", $legacy);
+        $nfs['data']['Read'], $nfs['data']['Write'], $nfs['data']['Create'], $nfs['data']['Remove'], $nfs['data']['Rename'],
+        $nfs['data']['Link'], $nfs['data']['Symlink'], $nfs['data']['Mkdir'], $nfs['data']['Rmdir'], $nfs['data']['Readdir'],
+        $nfs['data']['RdirPlus'], $nfs['data']['Access'], $nfs['data']['Mknod'], $nfs['data']['Fsstat'], $nfs['data']['Fsinfo'],
+        $nfs['data']['PathConf'], $nfs['data']['Commit'], $nfs['data']['TimedOut'], $nfs['data']['Invalid'], $nfs['data']['XReplies'],
+        $nfs['data']['Retries'], $nfs['data']['Requests'], $nfs['data']['AttrHits'], $nfs['data']['AttrMisses'], $nfs['data']['LkupHits'],
+        $nfs['data']['LkupMisses'], $nfs['data']['BioRHits'], $nfs['data']['BioRMisses'], $nfs['data']['BioWHits'],
+        $nfs['data']['BioWMisses'], $nfs['data']['BioRLHits'], $nfs['data']['BioRLMisses'], $nfs['data']['BioDHits'],
+        $nfs['data']['BioDMisses'], $nfs['data']['DirEHits'], $nfs['data']['DirEMisses'], $nfs['data']['AccsHits'],
+        $nfs['data']['AccsMisses']] = explode("\n", (string) $legacy);
 } catch (JsonAppException $e) {
-    echo PHP_EOL . $name . ':' . $e->getCode() . ':' . $e->getMessage() . PHP_EOL;
+    Log::info($name . ':' . $e->getCode() . ':' . $e->getMessage());
     update_application($app, $e->getCode() . ':' . $e->getMessage(), []); // Set empty metrics and error message
 
     return;
 }
 
-$rrd_name = ['app', $name, $app_id];
+$rrd_name = ['app', $name, $app->app_id];
 $rrd_def = RrdDefinition::make()
     ->addDataset('getattr', 'DERIVE', 0)
     ->addDataset('setattr', 'DERIVE', 0)
@@ -82,50 +80,50 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('accsmisses', 'DERIVE', 0);
 
 $fields = [
-    'getattr' => $nfs['data']['Getattr'],
-    'setattr' => $nfs['data']['Setattr'],
-    'lookup' => $nfs['data']['Lookup'],
-    'readlink' => $nfs['data']['Readlink'],
-    'read' => $nfs['data']['Read'],
-    'write' => $nfs['data']['Write'],
-    'create' => $nfs['data']['Create'],
-    'remove' => $nfs['data']['Remove'],
-    'rename' => $nfs['data']['Rename'],
-    'link' => $nfs['data']['Link'],
-    'symlink' => $nfs['data']['SymLink'],
-    'mkdir' => $nfs['data']['Mkdir'],
-    'rmdir' => $nfs['data']['Rmdir'],
-    'readdir' => $nfs['data']['Readdir'],
-    'rdirplus' => $nfs['data']['RdirPlus'],
-    'access' => $nfs['data']['Access'],
-    'mknod' => $nfs['data']['Mknod'],
-    'fsstat' => $nfs['data']['Fsstat'],
-    'fsinfo' => $nfs['data']['Fsinfo'],
-    'pathconf' => $nfs['data']['PathConf'],
-    'commit' => $nfs['data']['Commit'],
-    'timedout' => $nfs['data']['Timedout'],
-    'invalid' => $nfs['data']['Invalid'],
-    'xreplies' => $nfs['data']['XReplies'],
-    'retries' => $nfs['data']['Retries'],
-    'requests' => $nfs['data']['Requests'],
-    'attrhits' => $nfs['data']['AttrHits'],
-    'attrmisses' => $nfs['data']['AttrMisses'],
-    'lkuphits' => $nfs['data']['LkupHits'],
-    'lkupmisses' => $nfs['data']['LkupMisses'],
-    'biorhits' => $nfs['data']['BioRHits'],
-    'biormisses' => $nfs['data']['BioRMisses'],
-    'biowhits' => $nfs['data']['BioWHits'],
-    'biowmisses' => $nfs['data']['BioWMisses'],
-    'biorlhits' => $nfs['data']['BioRLHits'],
-    'biorlmisses' => $nfs['data']['BioRLMisses'],
-    'biodhits' => $nfs['data']['BioDHits'],
-    'biodmisses' => $nfs['data']['BioDMisses'],
-    'direhits' => $nfs['data']['DirEHits'],
-    'diremisses' => $nfs['data']['DirEMisses'],
-    'accshits' => $nfs['data']['AccsHits'],
-    'accsmisses' => $nfs['data']['AccsMisses'],
+    'getattr' => $nfs['data']['Getattr'] ?? null,
+    'setattr' => $nfs['data']['Setattr'] ?? null,
+    'lookup' => $nfs['data']['Lookup'] ?? null,
+    'readlink' => $nfs['data']['Readlink'] ?? null,
+    'read' => $nfs['data']['Read'] ?? null,
+    'write' => $nfs['data']['Write'] ?? null,
+    'create' => $nfs['data']['Create'] ?? null,
+    'remove' => $nfs['data']['Remove'] ?? null,
+    'rename' => $nfs['data']['Rename'] ?? null,
+    'link' => $nfs['data']['Link'] ?? null,
+    'symlink' => $nfs['data']['SymLink'] ?? null,
+    'mkdir' => $nfs['data']['Mkdir'] ?? null,
+    'rmdir' => $nfs['data']['Rmdir'] ?? null,
+    'readdir' => $nfs['data']['Readdir'] ?? null,
+    'rdirplus' => $nfs['data']['RdirPlus'] ?? null,
+    'access' => $nfs['data']['Access'] ?? null,
+    'mknod' => $nfs['data']['Mknod'] ?? null,
+    'fsstat' => $nfs['data']['Fsstat'] ?? null,
+    'fsinfo' => $nfs['data']['Fsinfo'] ?? null,
+    'pathconf' => $nfs['data']['PathConf'] ?? null,
+    'commit' => $nfs['data']['Commit'] ?? null,
+    'timedout' => $nfs['data']['Timedout'] ?? null,
+    'invalid' => $nfs['data']['Invalid'] ?? null,
+    'xreplies' => $nfs['data']['XReplies'] ?? null,
+    'retries' => $nfs['data']['Retries'] ?? null,
+    'requests' => $nfs['data']['Requests'] ?? null,
+    'attrhits' => $nfs['data']['AttrHits'] ?? null,
+    'attrmisses' => $nfs['data']['AttrMisses'] ?? null,
+    'lkuphits' => $nfs['data']['LkupHits'] ?? null,
+    'lkupmisses' => $nfs['data']['LkupMisses'] ?? null,
+    'biorhits' => $nfs['data']['BioRHits'] ?? null,
+    'biormisses' => $nfs['data']['BioRMisses'] ?? null,
+    'biowhits' => $nfs['data']['BioWHits'] ?? null,
+    'biowmisses' => $nfs['data']['BioWMisses'] ?? null,
+    'biorlhits' => $nfs['data']['BioRLHits'] ?? null,
+    'biorlmisses' => $nfs['data']['BioRLMisses'] ?? null,
+    'biodhits' => $nfs['data']['BioDHits'] ?? null,
+    'biodmisses' => $nfs['data']['BioDMisses'] ?? null,
+    'direhits' => $nfs['data']['DirEHits'] ?? null,
+    'diremisses' => $nfs['data']['DirEMisses'] ?? null,
+    'accshits' => $nfs['data']['AccsHits'] ?? null,
+    'accsmisses' => $nfs['data']['AccsMisses'] ?? null,
 ];
 
-$tags = ['name' => $name, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $name, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 update_application($app, 'OK', $nfs['data']);

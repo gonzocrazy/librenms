@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -23,6 +24,6 @@ $colour_area_max = 'FFEE99';
 $graph_max = 10000;
 $unit_text = 'net tcp connections';
 
-$rrd_filename = Rrd::name($device['hostname'], ['app', 'nfs-server-default', $app['app_id']]);
+$rrd_filename = Rrd::name($device['hostname'], ['app', 'nfs-server-default', $app->app_id]);
 
 require 'includes/html/graphs/generic_simplex.inc.php';

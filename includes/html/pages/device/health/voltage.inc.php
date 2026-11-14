@@ -1,7 +1,5 @@
 <?php
 
-$class = 'voltage';
-$unit = 'V';
-$graph_type = 'sensor_voltage';
+$class = \LibreNMS\Enum\SensorType::Voltage;
 
 require 'sensors.inc.php';

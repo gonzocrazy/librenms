@@ -1,4 +1,5 @@
 <?php
+
 /*
  * PortController.php
  *
@@ -26,23 +27,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Port;
+use Illuminate\Support\Facades\Validator;
 
 class PortController extends Controller
 {
     public function update(\Illuminate\Http\Request $request, Port $port)
     {
-        $this->validate($request, [
+        $this->authorize('update', $port);
+
+        $validated = Validator::make($request->json()->all(), [
+            'groups' => 'array',
             'groups.*' => 'int',
-        ]);
+        ])->validate();
 
         $updated = false;
         $message = '';
 
-        if ($request->has('groups')) {
-            $changes = $port->groups()->sync($request->get('groups'));
-            $groups_updated = array_sum(array_map(function ($group_ids) {
-                return count($group_ids);
-            }, $changes));
+        if (array_key_exists('groups', $validated)) {
+            $changes = $port->groups()->sync($validated['groups']);
+            $groups_updated = array_sum(array_map(count(...), $changes));
 
             if ($groups_updated > 0) {
                 $message .= trans('port.groups.updated', ['port' => $port->getLabel()]);

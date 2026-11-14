@@ -1,7 +1,7 @@
 @extends('layouts.librenmsv1')
 
 @section('title')
-    @lang('Public Devices')
+    {{ __('Public Devices') }}
 @append
 
 @section('content')
@@ -11,8 +11,8 @@
 
     <div id="public-status">
         <div class="well">
-            <div class="status-header">@lang('System Status')
-            <button class="btn btn-default pull-right" type="submit" id="ToggleLogon">@lang('Logon')</button>
+            <div class="status-header">{{ __('System Status') }}
+            <button class="btn btn-default pull-right" type="submit" id="ToggleLogon">{{ __('Logon') }}</button>
             </div>
         </div>
         <x-panel>
@@ -21,18 +21,18 @@
                     <tr>
                         <th></th>
                         <th id="icon-header"></th>
-                        <th>@lang('Device')</th>
-                        <th>@lang('Platform')</th>
-                        <th>@lang('Uptime')/@lang('Location')</th>
+                        <th>{{ __('Device') }}</th>
+                        <th>{{ __('Platform') }}</th>
+                        <th>{{ __('Uptime') }}/{{ __('Location') }}</th>
                     </tr>
 
                     @foreach($devices as $device)
                         <tr>
                             <td><span class="alert-status {{ $device->status ? 'label-success' : 'label-danger' }}"></span></td>
                             <td><img src="{{ asset($device->icon) }}" width="32px" height="32px"></td>
-                            <td class="device-name">{{ $device->displayName() }}</td>
+                            <td class="device-name">{{ $device->display }}</td>
                             <td>{{ $device->hardware }} {{ $device->features }}</td>
-                            <td>{{ $device->formatDownUptime(true) }}<br>{{ substr($device->location, 0, 32) }}</td>
+                            <td>{{ $device->formatDownUptime(true) }}<br>{{ substr((string) $device->location, 0, 32) }}</td>
                         </tr>
                     @endforeach
                 </table>
@@ -42,8 +42,8 @@
 
     <div id="public-logon" style="display:none;">
         <div class="well">
-            <div class="status-header">@lang('Logon')
-                <button class="btn btn-default pull-right" type="submit" id="ToggleStatus">@lang('Status')</button>
+            <div class="status-header">{{ __('Logon') }}
+                <button class="btn btn-default pull-right" type="submit" id="ToggleStatus">{{ __('Status') }}</button>
             </div>
         </div>
         <div class="row">
@@ -81,11 +81,11 @@
 @section('javascript')
             <script class="code" type="text/javascript">
                 $(document).ready(function () {
-                    $("#ToggleLogon").click(function () {
+                    $("#ToggleLogon").on("click", function () {
                         document.getElementById('public-logon').style.display = "block";
                         document.getElementById('public-status').style.display = "none";
                     });
-                    $("#ToggleStatus").click(function () {
+                    $("#ToggleStatus").on("click", function () {
                         document.getElementById('public-logon').style.display = "none";
                         document.getElementById('public-status').style.display = "block";
                     });

@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\JsonAppException;
 use LibreNMS\Exceptions\JsonAppMissingKeysException;
 use LibreNMS\RRD\RrdDefinition;
 
 $name = 'pureftpd';
-$app_id = $app['app_id'];
 $output = 'OK';
 
 try {
@@ -13,7 +13,7 @@ try {
 } catch (JsonAppMissingKeysException $e) {
     $pureftpd_data = $e->getParsedJson();
 } catch (JsonAppException $e) {
-    echo PHP_EOL . $name . ':' . $e->getCode() . ':' . $e->getMessage() . PHP_EOL;
+    Log::info($name . ':' . $e->getCode() . ':' . $e->getMessage());
     update_application($app, $e->getCode() . ':' . $e->getMessage(), []); // Set empty metrics and error message
 
     return;
@@ -52,7 +52,7 @@ foreach ($pureftpd_data as $client) {
 $metrics = [];
 //PureFTPd - Connections
 $dataset = 'connections';
-$rrd_name = ['app', $name, $app_id, $dataset];
+$rrd_name = ['app', $name, $app->app_id, $dataset];
 $rrd_def = RrdDefinition::make()
     ->addDataset('download', 'GAUGE', 0)
     ->addDataset('upload', 'GAUGE', 0)
@@ -63,24 +63,24 @@ $fields = [
     'idle' => $idle_connections,
 ];
 $metrics[$dataset] = $fields;
-$tags = ['name' => $dataset, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $dataset, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 
 //PureFTPd - connected Users
 $dataset = 'users';
-$rrd_name = ['app', $name, $app_id, $dataset];
+$rrd_name = ['app', $name, $app->app_id, $dataset];
 $rrd_def = RrdDefinition::make()
     ->addDataset('total', 'GAUGE', 0);
 $fields = [
     'total' => $users_connected,
 ];
 $metrics[$dataset] = $fields;
-$tags = ['name' => $dataset, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $dataset, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 
 //PureFTPd - Bitrate
 $dataset = 'bitrate';
-$rrd_name = ['app', $name, $app_id, $dataset];
+$rrd_name = ['app', $name, $app->app_id, $dataset];
 $rrd_def = RrdDefinition::make()
     ->addDataset('download', 'GAUGE', 0)
     ->addDataset('upload', 'GAUGE', 0);
@@ -89,7 +89,7 @@ $fields = [
     'upload' => $ul_bitrate,
 ];
 $metrics[$dataset] = $fields;
-$tags = ['name' => $dataset, 'app_id' => $app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
-data_update($device, 'app', $tags, $fields);
+$tags = ['name' => $dataset, 'app_id' => $app->app_id, 'rrd_def' => $rrd_def, 'rrd_name' => $rrd_name];
+app('Datastore')->put($device, 'app', $tags, $fields);
 
 update_application($app, $output, $metrics);
